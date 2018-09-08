@@ -108,13 +108,6 @@
 	"BETWEEN" {return BETWEEN;}
 	"INLIST" {return INLIST;}
 
-
-	":=" { return OP_AS;}
-	"+" { return OP_SUMA;}
-	{ID} { guardar_en_TS () ;return ID;}
-	{CONST_REAL} { return CONST_INT;}
-	{DIGITO}+ { yylval = atoi( yytext ) ;return ENTERO;}
-
 %%
 
 /* codigo */
