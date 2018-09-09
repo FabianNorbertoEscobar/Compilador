@@ -61,6 +61,8 @@
 	WRITE					"WRITE"
 	BETWEEN  				"BETWEEN"
 	INLIST					"INLIST"
+	MAIN 					"int main"{PARENTESIS_I}{MAIN_PARAM}{PARENTESIS_F}
+	MAIN_PARAM				" "|"int argc, char *argv[]"
 
 /* definicion de reglas */
 
@@ -107,6 +109,8 @@
 	"WRITE" {return WRITE;}
 	"BETWEEN" {return BETWEEN;}
 	"INLIST" {return INLIST;}
+	"int main"{PARENTESIS_I}{MAIN_PARAM}{PARENTESIS_F} {return "MAIN"}
+	" "|"int argc, char *argv[]" {return "MAIN_PARAM"}
 
 %%
 
