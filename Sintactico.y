@@ -186,6 +186,16 @@
 	                  	{
 
 	                  	}
+	|
+						between
+						{
+							printf("between\n");
+						}
+	|
+						inlist
+						{
+							printf("in list\n");
+						}
 	;
 
 	comparacion:		expresion
@@ -361,7 +371,7 @@
 						termino OP_DIV factor
 	                  	{
 							printf("%s",buscarEnTOS($1));
-							printf("|/|");
+							printf("/\n");
 							printf("%s",buscarEnTOS($3));
 	                  	}
 	;
@@ -369,14 +379,39 @@
 	factor: 			CTE
 						{
 							$$=yylval;
+							printf("%s\n", yylval);
 						}
 	|
 	                  	ID
 	                  	{
 	                  		$$=yylval;
+	                  		printf("%s\n", yylval);
 	                  	}
 	|
 						PARENTESIS_I expresion PARENTESIS_F
+	;
+
+	between:			BETWEEN PARENTESIS_I ID COMA rango PARENTESIS_F
+	;
+
+	rango:				CORCHETE_I expresion PUNTO_Y_COMA expresion CORCHETE_F
+						{
+							printf("rango\n");
+						}
+	;
+
+	inlist:				INLIST PARENTESIS_I ID PUNTO_Y_COMA lista_expresiones PARENTESIS_F
+	;
+
+	lista_expresiones:	CORCHETE_I expresiones CORCHETE_F
+						{
+							printf("lista de expresiones\n");
+						}
+	;
+
+	expresiones: 		expresion
+	|
+						expresion PUNTO_Y_COMA expresiones
 	;
 
 %%
