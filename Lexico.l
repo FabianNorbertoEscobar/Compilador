@@ -264,7 +264,7 @@ void grabarTablaDeSimbolos(int error){
 	int i;
 	
 	if(!pf){
-		printf("Error al crear la tabla de simbolos\n");
+		printf("Error al crear la tabla de símbolos\n");
 		return;
 	}
 	
@@ -296,7 +296,7 @@ void grabarTablaDeSimbolos(int error){
 
 	if(error==1) 
 	{
-		fprintf(pf,"\n**** TABLA INCOMPLETA (ERROR DE COMPILACION) ****\n");
+		fprintf(pf,"\n**** TABLA INCOMPLETA (ERROR DE COMPILACIÓN) ****\n");
 	}
 	
 	fclose(pf);
@@ -304,7 +304,7 @@ void grabarTablaDeSimbolos(int error){
 
 void mostrarTablaDeSimbolos(){
 	
-	printf("%-32s|\t%-15s|\t%-32s|\t%-13s|\t%-13s\n\n","NOMBRE","TIPO","VALOR","LONGITUD","LIMITE");
+	printf("%-32s|\t%-15s|\t%-32s|\t%-13s|\t%-13s\n\n","NOMBRE","TIPO","VALOR","LONGITUD","LÍMITE");
 	int i;
 	
 	for(i = 0; i<indiceVariable; i++)
@@ -503,7 +503,7 @@ void mensajeDeError(enum error error,const char* info){
             break ;
 
 		case errorRealFueraDeRango: 
-            printf("ERROR LÉXICO. Descripcion: Float %s fuera de rango. Debe ser un float de 32bits.\n",info);
+            printf("ERROR LÉXICO. Descripción: Float %s fuera de rango. Debe ser un float de 32bits.\n",info);
             break ;
 
         case errorCadenaDemasiadoLarga:
