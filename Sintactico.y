@@ -5,6 +5,7 @@
 	#include <stdio.h>
 	#include <conio.h>
 	#include <stdlib.h>
+	#include <locale.h>
 
 	#define TRUE 1
 	#define FALSE 0
@@ -20,7 +21,8 @@
 	%token CTE_INT
 	%token CTE_FLOAT
 	%token CTE_STRING		
-	%token ID	
+	%token ID
+	%token CARACTER
 	%token OP_SUM
 	%token OP_REST
 	%token OP_MULT
@@ -418,3 +420,28 @@
 
 /* codigo */
 
+int main(int argc,char *argv[])
+{
+
+	setlocale(LC_CTYPE,"Spanish");
+
+	if(!(yyin = fopen(argv[1], "rt")))
+  	{
+		printf("\n No se puede abrir el archivo: %s \n", argv[1]);
+		return TRUE;
+  	}
+  	else
+  	{
+		yyparse();
+  	}
+  	
+  	fclose(yyin);
+  	return FALSE;
+}
+
+int yyerror(void)
+{
+	printf ("Error de Sintaxis\n");
+	system ("Pause");
+	exit (1);
+}

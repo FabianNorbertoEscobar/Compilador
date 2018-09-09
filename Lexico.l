@@ -5,6 +5,10 @@
 	#include <stdio.h>
 	#include <conio.h>
 	#include <stdlib.h>
+	#include <locale.h>
+	#include <string.h>
+	#include <float.h>
+	#include "y.tab.h"
 
 	#define TRUE 1
 	#define FALSE 0
@@ -16,14 +20,18 @@
 
 /* conjuntos y regex */
 
+	%option noyywrap
+	%option yylineno
+
 	DIGITO					[0-9]
 	LETRA					[a-zA-Z]
 	LETRA_MINUS				[a-z]
 	LETRA_MAYUS				[A-Z]
 	CTE_INT					{DIGITO}+
 	CTE_FLOAT				{DIGITO}+"."{DIGITO}+
-	CTE_STRING				\"({LETRA}|{DIGITO}|" ")*\"			
-	ID 						{LETRA_MINUS}({LETRA}|{DIGITO}|_)*		
+	CTE_STRING				\"({LETRA}|{DIGITO}|{CARACTER}|" ")*\"			
+	ID 						{LETRA_MINUS}({LETRA}|{DIGITO}|_)*	
+	CARACTER				" "|!|¡|>|:|<|[ ]|+|@|"%"|#|&|°|´|^|`|?|¿|~|/|\\|-|_|.|;
 	OP_SUM					"+"
 	OP_REST					"-"
 	OP_MULT					"*"
@@ -68,10 +76,11 @@
 
 %%
 
-	{DIGITO}+ {verificar_rango_int(); return CTE_INT;}
-	{DIGITO}+"."{DIGITO}+ {verificar_rango_float(); return CTE_FLOAT;}
+	{DIGITO}+ {yylval = atoi(yytext); verificar_rango_int(); return CTE_INT;}
+	{DIGITO}+"."{DIGITO}+ {yylval = atoi(yytext); verificar_rango_float(); return CTE_FLOAT;}
 	\"({LETRA}|{DIGITO}|" ")*\" {return CTE_STRING;}
-	{LETRA_MINUS}({LETRA}|{DIGITO}|_)* {guardar_en_tos(); return ID;}
+	{LETRA_MINUS}({LETRA}|{DIGITO}|{CARACTER}|_)* {printf("ID: %s\n",yytext); return ID;guardar_en_tos(); return ID;}
+	" "|!|¡|>|:|<|[ ]|+|@|"%"|#|&|°|´|^|`|?|¿|~|/|\\|-|_|.|; {RETURN CARACTER;}
 	"+" {return OP_SUM;}
 	"-" {return OP_REST;}
 	"*" {return OP_MULT;}
@@ -111,6 +120,10 @@
 	"INLIST" {return INLIST;}
 	"int main"{PARENTESIS_I}{MAIN_PARAM}{PARENTESIS_F} {return "MAIN"}
 	" "|"int argc, char *argv[]" {return "MAIN_PARAM"}
+	"\n"
+	"\r\n"
+	"\t"
+	" "
 
 %%
 
@@ -119,10 +132,12 @@
 int main(int argc, char *argv[])
 {
 
+	setlocale(LC_CTYPE,"Spanish");
+
 	if (!(yyin = fopen(argv[1], "rt")))
 	{
 		printf("\n No se puede abrir el archivo: %s \n", argv[1]);
-		return FALSE;
+		return TRUE;
 	}
 	else
 	{
@@ -130,7 +145,7 @@ int main(int argc, char *argv[])
 	}
 	
 	fclose(yyin);
-	return TRUE;
+	return FALSE;
 }
 
 int guardar_en_tos()

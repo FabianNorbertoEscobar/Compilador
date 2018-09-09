@@ -1,4 +1,5 @@
 # Compilador
+NOTACIÓN INTERMEDIA EN POLACA
 
 ## TP de Lenguajes y Compiladores
 
@@ -9,6 +10,22 @@
 * Ricky Salva ([rnsalva](https://github.com/rnsalva))<br>
 * Ivo Strficek ([ivostrficek](https://github.com/ivostrficek))<br>
 * Gustavo Céspedes ([gtemporalis](https://github.com/gtemporalis))<br>
+
+- Instructivo:
+
+- Instalar:<br>
+	•Flex<br>
+	•Bison<br>
+	•MinGW<br>
+
+- Crear las variables de entorno: <br>
+    • bison (ruta hacia bison.exe ..\GnuWin32\bin\bison.exe)<br>
+    • flex 	(ruta hacia flex.exe ..\GnuWin32\bin\flex.exe)<br>
+    • gcc	(ruta hacia gcc.exe	..\MinGW\bin\gcc.exe)<br>
+    • m4	(ruta hacia m4.exe	..\GnuWin32\bin\m4.exe)<br>
+
+- Agregar ..\MinGW\bin a la variable de entorno Path
+
 
 Un compilador es un programa informático que traduce o compila un programa que ha sido escrito en un lenguaje de programación a un lenguaje común, usualmente lenguaje de máquina, aunque también puede ser traducido a un código intermedio o a texto y que reúne diversos elementos o fragmentos en una misma unidad. Tiene dos fases:
 
