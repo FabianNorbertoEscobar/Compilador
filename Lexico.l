@@ -33,7 +33,6 @@
 		tipoInt,
 		tipoFloat,
 		tipoString,
-		tipoArray,
 		sinTipo
 	};
 
@@ -382,9 +381,6 @@ char* obtenerTipo(enum sectorTabla sector, enum tipoDato tipo){
 					break;
 				case tipoInt:
 					return("int");
-					break;
-				case tipoArray:
-					return("array");
 					break;
 				case sinTipo:
 					return("sin tipo");

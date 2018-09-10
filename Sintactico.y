@@ -30,9 +30,9 @@
 	};
 
 	enum tipoDato{
-		tipoEntero,
-		tipoReal,
-		tipoCadena,
+		tipoInt,
+		tipoFloat,
+		tipoString,
 		tipoArray,
 		sinTipo
 	};
@@ -51,8 +51,6 @@
 		ErrorOperacionNoValida,
 		ErrorIdDistintoTipo,
 		ErrorConstanteDistintoTipo,
-		ErrorArrayAsignacionMultiple,
-		ErrorTipoAverage
 	};
 
 	enum tipoDeError{
@@ -62,7 +60,7 @@
 
 	enum tipoCondicion{
 		condicionIf,
-		condicionRepeat
+		condicionWhile
 	};
 
 	enum and_or{
@@ -74,7 +72,74 @@
 	enum tipoSalto{
 		normal,
 		inverso
-};
+	};
+
+	/* structs */
+
+	typedef struct{
+		char nombre[100];
+		char valor[100];
+		enum tipoDato tipo;
+		int longitud;
+		int limite;
+	} registro;
+
+	typedef struct
+	{
+		char *cadena;
+		int cantExpresiones;
+		int salto1;
+		int salto2;
+		int nro;
+		enum and_or andOr;
+		enum tipoDato tipo;
+	}t_info;
+
+	typedef struct s_nodoPila{
+    	t_info info;
+    	struct s_nodoPila* psig;
+	}t_nodoPila;
+
+	typedef t_nodoPila *t_pila;
+
+	/* funciones */
+
+	int yyerrormsj(const char *,enum tipoDeError,enum error, const char*);
+	int yyerror();
+
+	/* variables globales */
+
+	extern registro tablaVariables[TAM];
+	extern registro tablaConstantes[TAM];
+	extern int yylineno;
+	extern int indiceConstante;
+	extern int indiceVariable;
+	extern char *tiraDeTokens;
+	int yystopparser=0;
+	FILE  *yyin;
+	char *yyltext;
+	char *yytext;
+	int indicesParaAsignarTipo[TAM];
+	enum tipoDato tipoAsignacion=sinTipo;
+	int esAsignacion=0;
+	int esAsignacionVectorMultiple;
+	int contadorListaVar=0;
+	int contadorExpresionesVector=0;
+	int cantidadDeExpresionesEsperadasEnVector=0;
+	int contadorIf=0;
+	int contadorWhile=0;
+	int auxiliaresNecesarios=0;
+	char ultimoComparador[3];
+	char nombreVector[CADENA_MAXIMA];
+	int inicioAsignacionMultiple;
+	int expresionesRestantes;
+	enum tipoCondicion tipoCondicion;
+
+	%union {
+		int entero;
+		double real;
+		char cadena[50];
+	}
 
 }%
 
@@ -195,9 +260,14 @@
 
 	asignacion:			ID OP_ASIG expresion
 						{
-							printf("%s",buscarEnTOS($1));
-							printf(":=");
-							printf("%s",buscarEnTOS($3));
+							if(tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,$<cadena>1)].tipo==sinTipo)
+							{
+								yyerrormsj($<cadena>1,ErrorSintactico,ErrorIdNoDeclarado,"");
+							}
+							esAsignacion=1;
+							printf("asignación: %s\t", $<cadena>1);
+							tipoAsignacion=tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,$<cadena>1)].tipo;
+							printf("(tipo: %s)\n",obtenerTipo(sectorVariables,tipoAsignacion));
 						}
 	;
 
@@ -392,14 +462,54 @@
 
 	tipodato: 			CTE_INT
 						{
+							int i;
+							printf("  Declaradas: ");
+							for(i=0;i<contadorListaVar;i++)
+							{
+								if(tablaVariables[indicesParaAsignarTipo[i]].tipo==sinTipo){
+									printf("'%s' ",tablaVariables[indicesParaAsignarTipo[i]].valor);
+									tablaVariables[indicesParaAsignarTipo[i]].tipo=tipoInt;
+								}
+								else
+								{
+									yyerrormsj(tablaVariables[indicesParaAsignarTipo[i]].valor,ErrorSintactico,ErrorIdRepetida,"");
+								}
+							}
 							printf("tipo entero\n");
 						}
 	|					CTE_FLOAT
 						{
+							int i;
+							printf("  Declaradas: ");
+							for(i=0;i<contadorListaVar;i++)
+							{
+								if(tablaVariables[indicesParaAsignarTipo[i]].tipo==sinTipo){
+									printf("'%s' ",tablaVariables[indicesParaAsignarTipo[i]].valor);
+									tablaVariables[indicesParaAsignarTipo[i]].tipo=tipoFloat;
+								}
+								else
+								{
+									yyerrormsj(tablaVariables[indicesParaAsignarTipo[i]].valor,ErrorSintactico,ErrorIdRepetida,"");
+								}
+							}
 							printf("tipo flotante\n");
 						}
 	|					CTE_STRING
 						{
+							int i;
+							printf("  Declaradas: ");
+							for(i=0;i<contadorListaVar;i++)
+							{
+								if(tablaVariables[indicesParaAsignarTipo[i]].tipo==sinTipo)
+								{
+									printf("'%s' ",tablaVariables[indicesParaAsignarTipo[i]].valor);
+									tablaVariables[indicesParaAsignarTipo[i]].tipo=tipoString;
+								}
+								else
+								{
+									yyerrormsj(tablaVariables[indicesParaAsignarTipo[i]].valor,ErrorSintactico,ErrorIdRepetida,"");
+								}
+							}
 							printf("tipo string\n");
 						}
 	;
@@ -411,16 +521,12 @@
 	|
 						expresion OP_SUM termino
 						{
-							printf("%s\n",buscarEnTOS($1));
 							printf("+\n");
-							printf("%s\n",buscarEnTOS($3));
 						}
 	|
 						expresion OP_REST termino
 						{
-							printf("%s\n",buscarEnTOS($1));
 							printf("-\n");
-							printf("%s\n",buscarEnTOS($3));
 						}
 	;
 
@@ -431,16 +537,12 @@
 	|
 						termino OP_MULT factor
 	                  	{
-	                    	printf("%s\n",buscarEnTOS($1));
 	                    	printf("*\n");
-	                    	printf("%s\n",buscarEnTOS($3));
 	                    }
 	|
 						termino OP_DIV factor
 	                  	{
-							printf("%s",buscarEnTOS($1));
 							printf("/\n");
-							printf("%s",buscarEnTOS($3));
 	                  	}
 	;
 
@@ -448,12 +550,19 @@
 						{
 							$$=yylval;
 							printf("%s\n", yylval);
+							if(atoi($<cadena>4)<=0)
+							{
+								yyerrormsj($<cadena>3,ErrorSintactico,ErrorLimiteArrayNoPermitido,$<cadena>4);
+							}
+							tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,$<cadena>3)].limite=atoi($<cadena>4);
 						}
 	|
 	                  	ID
 	                  	{
 	                  		$$=yylval;
 	                  		printf("%s\n", yylval);
+	                  		int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
+							indicesParaAsignarTipo[contadorListaVar++]=posicion;
 	                  	}
 	|
 						PARENTESIS_I expresion PARENTESIS_F
