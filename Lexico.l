@@ -100,8 +100,8 @@
 	CTE_STRING				\"({LETRA}|{DIGITO}|{CARACTER}|" ")*\"		
 	ID 						{LETRA_MINUS}({LETRA}|{DIGITO}|_)*	
 	CARACTER				" "|!|¡|>|:|<|[ ]|+|@|"%"|#|&|°|´|^|`|?|¿|~|/|\\|-|_|.|;
-	MAIN 					"int main"{PARENTESIS_I}{MAIN_PARAM}{PARENTESIS_F}
-	MAIN_PARAM				" "|"int argc, char *argv[]"
+	INICIO_PROGRAMA			"PROGRAMA"
+	FIN_PROGRAMA			"END_PROGRAMA"
 	OP_SUM					"+"
 	OP_REST					"-"
 	OP_MULT					"*"
@@ -130,6 +130,7 @@
 	DECVAR					"DECVAR"
 	ENDDEC					"ENDDEC"
 	WHILE					"WHILE"
+	ENDWHILE				"ENDWHILE"
 	IF 						"IF"
 	ELSE 					"ELSE"
 	ENDIF					"ENDIF"
@@ -148,9 +149,9 @@
 	{CTE_FLOAT} {guardarToken("CTE_FLOAT"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoFloat, yytext); return CTE_FLOAT;}
 	{CTE_STRING} {guardarToken("CTE_STRING"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoString, yytext); return CTE_STRING;}
 	{ID} {guardarToken("ID"); printf("ID: %s\n",yytext); strcpy(yylval.cadena,yytext); insertarEnTablaDeSimbolos(sectorVariables, sinTipo, yytext); return ID;}
-	{CARACTER} {guardarToken("CARACTER"); RETURN CARACTER;}
-	{MAIN} {guardarToken("MAIN"); return "MAIN"}
-	{MAIN_PARAM} {guardarToken("MAIN_PARAM"); return "MAIN_PARAM"}
+	{CARACTER} {guardarToken("CARACTER"); return CARACTER;}
+	{INICIO_PROGRAMA} {guardarToken("INICIO_PROGRAMA"); return INICIO_PROGRAMA;}
+	{FIN_PROGRAMA} {guardarToken("FIN_PROGRAMA"); return FIN_PROGRAMA;}
 	{OP_SUM} {guardarToken("OP_SUM"); return OP_SUM;}
 	{OP_REST} {guardarToken("OP_REST"); return OP_REST;}
 	{OP_MULT} {guardarToken("OP_MULT"); return OP_MULT;}
@@ -179,6 +180,7 @@
 	{DECVAR} {guardarToken("DECVAR"); return DECVAR;}
 	{ENDDEC} {guardarToken("ENDDEC"); return ENDDEC;}
 	{WHILE} {guardarToken("WHILE"); return WHILE;}
+	{ENDWHILE} {guardarToken("ENDWHILE"); return ENDWHILE;}
 	{IF} {guardarToken("IF"); return IF;}
 	{ELSE} {guardarToken("ELSE"); return ELSE;}
 	{ENDIF} {guardarToken("ENDIF"); return ENDIF;}

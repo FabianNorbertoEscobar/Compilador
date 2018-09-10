@@ -154,6 +154,8 @@
 	%token CTE_STRING		
 	%token ID
 	%token CARACTER
+	%token INICIO_PROGRAMA
+	%token FIN_PROGRAMA
 	%token OP_SUM
 	%token OP_REST
 	%token OP_MULT
@@ -182,6 +184,7 @@
 	%token DECVAR
 	%token ENDDEC
 	%token WHILE
+	%token ENDWHILE
 	%token IF
 	%token ELSE
 	%token ENDIF
@@ -191,8 +194,6 @@
 	%token WRITE
 	%token BETWEEN
 	%token INLIST
-	%token MAIN
-	%token MAIN_PARAM
 
 	%right OP_ASIG
 	%left OP_SUM OP_REST
@@ -204,9 +205,14 @@
 
 %%
 
-	programa:			MAIN bloque
+	programa:			INICIO_PROGRAMA
 						{
-							printf("programa\n");
+							printf("inicio del programa\n");
+						}
+						bloque
+						FIN_PROGRAMA
+						{
+							printf("fin del programa\n");
 	             		}
 	;
 
