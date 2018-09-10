@@ -72,7 +72,7 @@ PROGRAMA
 		WRITE "h no está entre 2 y g*(b+a)
 	ENDIF
 
-	IF(INLIST([g; [7.0;8.0;9.0])
+	IF(INLIST(g; [7.0;8.0;9.0])
 		WRITE "g está en la lista [7.0;8.0;9.0]"
 	ELSE
 		WRITE "g no está en la lista [7.0;8.0;9.0]"
