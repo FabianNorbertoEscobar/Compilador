@@ -1,14 +1,80 @@
 /* declaraciones */
 
 %{
+	/* includes */
 
 	#include <stdio.h>
 	#include <conio.h>
 	#include <stdlib.h>
 	#include <locale.h>
+	#include <string.h>
+	#include <float.h>
+	#include "y.tab.h"
 
+	/* defines */
+
+	#define CARACTER_NOMBRE "_"
+	#define NO_ENCONTRADO -1
+	#define SIN_ASIGNAR "SinAsignar"
 	#define TRUE 1
 	#define FALSE 0
+	#define ERROR -1
+	#define OK 3
+
+	/* enums */
+
+	enum valorMaximo{
+		ENTERO_MAXIMO = 32768,
+		CADENA_MAXIMA = 31,
+		TAM = 100
+	};
+
+	enum tipoDato{
+		tipoEntero,
+		tipoReal,
+		tipoCadena,
+		tipoArray,
+		sinTipo
+	};
+
+	enum sectorTabla{
+		sectorVariables,
+		sectorConstantes
+	};
+
+	enum error{
+		ErrorIdRepetida,
+		ErrorIdNoDeclarado,
+		ErrorArraySinTipo,
+		ErrorArrayFueraDeRango,
+		ErrorLimiteArrayNoPermitido,
+		ErrorOperacionNoValida,
+		ErrorIdDistintoTipo,
+		ErrorConstanteDistintoTipo,
+		ErrorArrayAsignacionMultiple,
+		ErrorTipoAverage
+	};
+
+	enum tipoDeError{
+		ErrorSintactico,
+		ErrorLexico
+	};
+
+	enum tipoCondicion{
+		condicionIf,
+		condicionRepeat
+	};
+
+	enum and_or{
+		and,
+		or,
+		condicionSimple
+	};
+
+	enum tipoSalto{
+		normal,
+		inverso
+};
 
 }%
 
@@ -422,26 +488,138 @@
 
 int main(int argc,char *argv[])
 {
-
 	setlocale(LC_CTYPE,"Spanish");
 
-	if(!(yyin = fopen(argv[1], "rt")))
-  	{
-		printf("\n No se puede abrir el archivo: %s \n", argv[1]);
-		return TRUE;
-  	}
-  	else
-  	{
+	crearPila(&pilaWhile);
+	crearPila(&pilaIf);
+
+	if ((yyin = fopen(argv[1], "rt")) == NULL)
+	{
+		printf("\n No se puede abrir el archivo: %s\n", argv[1]);
+	}
+	else
+	{
+		tiraDeTokens=(char*)malloc(sizeof(char));
+		if(tiraDeTokens==NULL)
+		{
+			printf("\n Error al solicitar memoria\n");
+			exit(1);
+		}
+		strcpy(tiraDeTokens,"");
 		yyparse();
-  	}
-  	
-  	fclose(yyin);
-  	return FALSE;
+	}
+	fclose(yyin);
+
+	grabarTablaDeSimbolos(0);
+	vaciarPila(&pilaWhile);
+	vaciarPila(&pilaIf);
+	
+	printf("\n*** COMPILACIÓN EXITOSA ***\n");
+
+	return 0;
 }
 
-int yyerror(void)
+/* funciones */
+
+int yyerrormsj(const char * info,enum tipoDeError tipoDeError ,enum error error, const char *infoAdicional)
 {
-	printf ("Error de Sintaxis\n");
+	grabarTablaDeSimbolos(1);
+	printf("[Línea %d] ",yylineno);
+  	switch(tipoDeError){
+        case ErrorSintactico:
+            printf("Error sintáctico. ");
+            break;
+        case ErrorLexico:
+            printf("Error léxico. ");
+            break;
+    }
+  	switch(error){
+		case ErrorIdRepetida:
+			printf("Descripción: el id '%s' ha sido declarado más de una vez\n",info);
+			break;
+		case ErrorIdNoDeclarado:
+			printf("Descripción: el id '%s' no ha sido declarado\n",info);
+			break;
+		case ErrorArraySinTipo:
+			printf("Descripción: el id '%s' NO tiene un tipo asignado\n",info);
+			break;
+		case ErrorArrayFueraDeRango:
+			printf("Descripción: vector '%s(0..%d)' fuera de rango. Se intenta acceder a '%s[%s]'\n",info,(tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,info)].limite),info,infoAdicional);
+			break;
+		case ErrorLimiteArrayNoPermitido:
+			printf("Descripción: el vector %s (%s) no tiene un límite válido, debe ser mayor a 0\n",info, infoAdicional);
+			break;
+		case ErrorOperacionNoValida:
+			printf("Descripción: La operación %s no es válida para variables de tipo %s\n",info, obtenerTipo(sectorVariables, tipoAsignacion));
+			break;
+		case ErrorIdDistintoTipo:
+			printf("Descripción: La variable '%s' no es de tipo %s\n",info,obtenerTipo(sectorVariables, tipoAsignacion));
+			break;
+		case ErrorConstanteDistintoTipo:
+			printf("Descripción: La constante %s no es de tipo %s\n", info, obtenerTipo(sectorVariables, tipoAsignacion));
+			break;
+		case ErrorArrayAsignacionMultiple:
+			printf("Descripción: El vector %s esperaba %d expresiones, pero se recibieron %d.\n", info,cantidadDeExpresionesEsperadasEnVector,contadorExpresionesVector );
+			break;
+    }
+
+  	system ("Pause");
+    exit (1);
+}
+
+int yyerror()
+{
+	grabarTablaDeSimbolos(1);
+	printf("Error sintáctico \n");
 	system ("Pause");
 	exit (1);
+}
+
+/* pila */
+
+void crearPila(t_pila* pp)
+{
+    *pp=NULL;
+}
+
+int ponerEnPila(t_pila* pp,t_info* info)
+{
+    t_nodoPila* pn=(t_nodoPila*)malloc(sizeof(t_nodoPila));
+    if(!pn) 
+    {
+        return 0;
+    }
+    pn->info=*info;
+    pn->psig=*pp;
+    *pp=pn;
+    return 1;
+}
+
+t_info * sacarDePila(t_pila* pp)
+{
+	t_info* info = (t_info *) malloc(sizeof(t_info));
+    if(!*pp)
+    {
+    	return NULL;
+    }
+    *info=(*pp)->info;
+    *pp=(*pp)->psig;
+    return info;
+
+}
+
+void vaciarPila(t_pila* pp)
+{
+    t_nodoPila* pn;
+    while(*pp)
+    {
+        pn=*pp;
+        *pp=(*pp)->psig;
+        free(pn);
+    }
+}
+
+t_info* topeDePila(t_pila* pila)
+{
+	return &((*pila)->info);
 }
