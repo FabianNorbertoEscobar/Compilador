@@ -1,5 +1,5 @@
 # Compilador
-NOTACIÓN INTERMEDIA EN POLACA
+NOTACIÓN INTERMEDIA EN POLACA INVERSA
 
 ## TP de Lenguajes y Compiladores
 
