@@ -205,6 +205,11 @@
 
 %%
 
+	start: 				programa
+						{
+							printf("COMPILACIÓN EXITOSA\n");
+						}
+
 	programa:			INICIO_PROGRAMA
 						{
 							printf("inicio del programa\n");

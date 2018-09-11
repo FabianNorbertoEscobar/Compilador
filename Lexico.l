@@ -10,6 +10,7 @@
 	#include <locale.h>
 	#include <string.h>
 	#include <float.h>
+	#include <limits.h>
 	#include "y.tab.h"
 
 	/* defines */
@@ -72,6 +73,10 @@
 	void guardarToken(char *);
 	char* obtenerTipo(enum sectorTabla, enum tipoDato);
 	void mostrarTablaDeSimbolos();
+	int validarInt(int entero);
+	int validarString(char *str);
+	int validarReal(float flotante);
+	int validarID(char *str);
 
 	/* variables globales */
 
@@ -97,7 +102,7 @@
 	LETRA_MAYUS				[A-Z]
 	CTE_INT					{DIGITO}+
 	CTE_FLOAT				{DIGITO}*"."{DIGITO}+
-	CTE_STRING				\"({LETRA}|{DIGITO}|{CARACTER}|" ")*\"		
+	CTE_STRING				\"({LETRA}|{DIGITO}|{CARACTER})*\"		
 	ID 						{LETRA_MINUS}({LETRA}|{DIGITO}|_)*	
 	CARACTER				" "|!|¡|>|:|<|[ ]|+|@|"%"|#|&|°|´|^|`|?|¿|~|/|\\|-|_|.|;
 	INICIO_PROGRAMA			"PROGRAMA"
@@ -145,10 +150,10 @@
 
 %%
 
-	{CTE_INT} {guardarToken("CTE_INT"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoInt, yytext); return CTE_INT;}
-	{CTE_FLOAT} {guardarToken("CTE_FLOAT"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoFloat, yytext); return CTE_FLOAT;}
-	{CTE_STRING} {guardarToken("CTE_STRING"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoString, yytext); return CTE_STRING;}
-	{ID} {guardarToken("ID"); printf("ID: %s\n",yytext); strcpy(yylval.cadena,yytext); insertarEnTablaDeSimbolos(sectorVariables, sinTipo, yytext); return ID;}
+	{CTE_INT} {guardarToken("CTE_INT"); strcpy(yylval.cadena, yytext); validarInt(yylval.intVal); insertarEnTablaDeSimbolos(sectorConstantes, tipoInt, yytext); return CTE_INT;}
+	{CTE_FLOAT} {guardarToken("CTE_FLOAT"); strcpy(yylval.cadena, yytext); validarReal(yylval.realVal); insertarEnTablaDeSimbolos(sectorConstantes, tipoFloat, yytext); return CTE_FLOAT;}
+	{CTE_STRING} {guardarToken("CTE_STRING"); strcpy(yylval.cadena, yytext); validarString(yylval.strVal); insertarEnTablaDeSimbolos(sectorConstantes, tipoString, yytext); return CTE_STRING;}
+	{ID} {guardarToken("ID"); printf("ID: %s\n",yytext); strcpy(yylval.cadena,yytext); validarID(yylval.strVal); insertarEnTablaDeSimbolos(sectorVariables, sinTipo, yytext); return ID;}
 	{CARACTER} {guardarToken("CARACTER"); return CARACTER;}
 	{INICIO_PROGRAMA} {guardarToken("INICIO_PROGRAMA"); return INICIO_PROGRAMA;}
 	{FIN_PROGRAMA} {guardarToken("FIN_PROGRAMA"); return FIN_PROGRAMA;}
@@ -534,4 +539,59 @@ void guardarToken(char* token){
 	tiraDeTokens=(char*) malloc ( sizeof(char) * (strlen(aux)) + strlen(token)+1);
 	strcpy(tiraDeTokens,aux);
 	strcat(tiraDeTokens,token);
+}
+
+
+/* 
+	Funcion para validar el rango de enteros 
+*/
+int validarInt(int entero)
+{
+
+	if(entero < INT_MIN || entero > INT_MAX)
+	{
+		printf("(!) ERROR: Constante entera fuera de rango (32 bits máximo) -> Línea %d\n", yylineno);
+		fprintf(stderr, "Fin de ejecución.\n");
+		system ("Pause");
+		exit (1);
+	}
+	return TRUE;
+}
+
+int validarString(char *str)
+{
+	if(strlen(str) > 30)
+	{
+		printf("(!) ERROR: Constante string fuera de rango (30 caracteres máximo) -> Línea %d\n", yylineno);
+		fprintf(stderr, "Fin de ejecución.\n");
+		system ("Pause");
+		exit (1);
+	}
+	return TRUE;
+}
+
+int validarReal(float real)
+{
+
+	if(real < FLT_MIN || real > FLT_MAX){
+		printf("(!) ERROR: Constante real fuera de rango (-1.17549e-38; 3.40282e38) -> Línea %d\n", yylineno);
+		fprintf(stderr, "Fin de ejecución.\n");
+		system ("Pause");
+		exit (1);
+	}
+	return TRUE;
+}
+
+
+int validarID(char *str)
+{
+    int largo = strlen(str);
+ 
+	if(largo > 10){
+		printf("(!) ERROR: Identificador fuera de rango (10 caracteres máximo) -> Línea %d\n", yylineno);
+		fprintf(stderr, "Fin de ejecución.\n");
+		system ("Pause");
+		exit (1);
+	}
+	return TRUE;
 }
