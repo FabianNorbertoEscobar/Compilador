@@ -187,6 +187,7 @@
 	{ENDDEC} {guardarToken("ENDDEC"); return ENDDEC;}
 	{WHILE} {guardarToken("WHILE"); return WHILE;}
 	{ENDWHILE} {guardarToken("ENDWHILE"); return ENDWHILE;}
+	{DO} {guardarToken("DO"); return DO;}
 	{IF} {guardarToken("IF"); return IF;}
 	{ELSE} {guardarToken("ELSE"); return ELSE;}
 	{ENDIF} {guardarToken("ENDIF"); return ENDIF;}

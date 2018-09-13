@@ -185,6 +185,7 @@
 	%token ENDDEC
 	%token WHILE
 	%token ENDWHILE
+	%token DO
 	%token IF
 	%token ELSE
 	%token ENDIF
