@@ -136,6 +136,7 @@
 	ENDDEC					"ENDDEC"
 	WHILE					"WHILE"
 	ENDWHILE				"ENDWHILE"
+	DO 						"DO"
 	IF 						"IF"
 	ELSE 					"ELSE"
 	ENDIF					"ENDIF"

@@ -221,18 +221,18 @@
 	             		}
 	;
 
-	bloque:            	LLAVE_I lista_sentencias LLAVE_F
+	bloque:            	lista_sentencias
 						{
 							printf("bloque\n");
 						}
 	;
 	
-	lista_sentencias: 	sentencia PUNTO_Y_COMA
+	lista_sentencias: 	sentencia
 						{
 
 						}
 	|					
-						lista_sentencias sentencia PUNTO_Y_COMA
+						lista_sentencias sentencia
 						{
 
 						}
@@ -286,14 +286,16 @@
 						{
 							printf("while\n");
 						}
-						bloque
+						DO bloque
+						ENDWHILE
 	;
 
 	seleccion:			IF PARENTESIS_I condicion PARENTESIS_F
 						{
 							printf("if\n");
 						}
-	                  	resto
+	                  	DO resto
+	                  	ENDIF
 	;
 
 	condicion: 			comparacion
@@ -443,6 +445,23 @@
 	                    {
 	                    	printf("if false\n");
 	                    }
+	|
+						bloque
+						{
+							printf("if true\n");
+						}
+						ELSIF
+						{
+							printf("elsif");
+						}
+						ELSE
+						{
+							printf("else");
+						}
+						bloque
+						{
+							printf("if false");
+						}
 	;
 
 	lectura:			READ PARENTESIS_I CTE_STRING PARENTESIS_F

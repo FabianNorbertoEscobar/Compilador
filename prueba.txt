@@ -1,4 +1,4 @@
-PROGRAMA
+﻿PROGRAMA
 	DECVAR
 		a, b , z, x: INTEGER
 		c, d: STRING
@@ -43,17 +43,18 @@ PROGRAMA
 	WRITE e
 
 	-/PRUEBA: selecciones y ciclos anidados/-
-	IF(a<b and b==20)
+	IF(a<b and b==20) DO
 		-/WRITE a/-
-		WHILE(a!=0)
+		WHILE(a!=0) DO
 		e=2
-			WHILE (e>1)
+			WHILE (e>1) DO
 				-/WRITE e/-
 				e=e-1
 			ENDWHILE
 			a=a-1
 		ENDWHILE
-		IF(a==0)
+
+		IF(a==0) DO
 			WRITE "a es igual a cero"
 		ELSE
 			WRITE "a es distinto de cero"
@@ -66,13 +67,13 @@ PROGRAMA
 	g=6.0
 	WRITE h
 	WRITE a
-	IF(BETWEEN(h, [2;g*(b+a)]))
+	IF(BETWEEN(h, [2;g*(b+a)])) DO
 		WRITE "h está entre 2 y g*(b+a)"
 	ELSE
 		WRITE "h no está entre 2 y g*(b+a)
 	ENDIF
 
-	IF(INLIST(g; [7.0;8.0;9.0])
+	IF(INLIST(g; [7.0;8.0;9.0]) DO
 		WRITE "g está en la lista [7.0;8.0;9.0]"
 	ELSE
 		WRITE "g no está en la lista [7.0;8.0;9.0]"
