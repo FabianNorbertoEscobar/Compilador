@@ -259,9 +259,7 @@ char * cortarCadena(char* cad,int tam){
 }
 
 void grabarTablaDeSimbolos(int error){
-	
-	//tira de tokens
-	
+		
 	FILE*pt=fopen("tiraDeTokens.txt","w+");
 	
 	if(!pt)
@@ -541,17 +539,13 @@ void guardarToken(char* token){
 	strcat(tiraDeTokens,token);
 }
 
-
-/* 
-	Funcion para validar el rango de enteros 
-*/
 int validarInt(int entero)
 {
 
 	if(entero < INT_MIN || entero > INT_MAX)
 	{
-		printf("(!) ERROR: Constante entera fuera de rango (32 bits máximo) -> Línea %d\n", yylineno);
-		fprintf(stderr, "Fin de ejecución.\n");
+		printf("Línea %d: CTE_INT fuera de rango\n", yylineno);
+		fprintf(stderr, "ejecución abortada"\n");
 		system ("Pause");
 		exit (1);
 	}
@@ -562,8 +556,8 @@ int validarString(char *str)
 {
 	if(strlen(str) > 30)
 	{
-		printf("(!) ERROR: Constante string fuera de rango (30 caracteres máximo) -> Línea %d\n", yylineno);
-		fprintf(stderr, "Fin de ejecución.\n");
+		printf("Línea %d: CTE_STRING fuera de rango\n", yylineno);
+		fprintf(stderr, "ejecución abortada\n");
 		system ("Pause");
 		exit (1);
 	}
@@ -574,8 +568,8 @@ int validarReal(float real)
 {
 
 	if(real < FLT_MIN || real > FLT_MAX){
-		printf("(!) ERROR: Constante real fuera de rango (-1.17549e-38; 3.40282e38) -> Línea %d\n", yylineno);
-		fprintf(stderr, "Fin de ejecución.\n");
+		printf("Línea %d: CTE_FLOAT fuera de rango\n", yylineno);
+		fprintf(stderr, "ejecución abortada\n");
 		system ("Pause");
 		exit (1);
 	}
@@ -588,8 +582,8 @@ int validarID(char *str)
     int largo = strlen(str);
  
 	if(largo > 10){
-		printf("(!) ERROR: Identificador fuera de rango (10 caracteres máximo) -> Línea %d\n", yylineno);
-		fprintf(stderr, "Fin de ejecución.\n");
+		printf("Línea %d: ID fuera de rango\n", yylineno);
+		fprintf(stderr, "ejecución abortada\n");
 		system ("Pause");
 		exit (1);
 	}
