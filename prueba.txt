@@ -43,7 +43,7 @@
 	WRITE e
 
 	-/PRUEBA: selecciones y ciclos anidados/-
-	IF(a<b and b==20) DO
+	IF(a<b AND b==20) DO
 		-/WRITE a/-
 		WHILE(a!=0) DO
 		e=2

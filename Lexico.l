@@ -73,10 +73,6 @@
 	void guardarToken(char *);
 	char* obtenerTipo(enum sectorTabla, enum tipoDato);
 	void mostrarTablaDeSimbolos();
-	int validarInt(int entero);
-	int validarString(char *str);
-	int validarReal(float flotante);
-	int validarID(char *str);
 
 	/* variables globales */
 
@@ -151,10 +147,10 @@
 
 %%
 
-	{CTE_INT} {guardarToken("CTE_INT"); strcpy(yylval.cadena, yytext); validarInt(yylval.intVal); insertarEnTablaDeSimbolos(sectorConstantes, tipoInt, yytext); return CTE_INT;}
-	{CTE_FLOAT} {guardarToken("CTE_FLOAT"); strcpy(yylval.cadena, yytext); validarReal(yylval.realVal); insertarEnTablaDeSimbolos(sectorConstantes, tipoFloat, yytext); return CTE_FLOAT;}
-	{CTE_STRING} {guardarToken("CTE_STRING"); strcpy(yylval.cadena, yytext); validarString(yylval.strVal); insertarEnTablaDeSimbolos(sectorConstantes, tipoString, yytext); return CTE_STRING;}
-	{ID} {guardarToken("ID"); printf("ID: %s\n",yytext); strcpy(yylval.cadena,yytext); validarID(yylval.strVal); insertarEnTablaDeSimbolos(sectorVariables, sinTipo, yytext); return ID;}
+	{CTE_INT} {guardarToken("CTE_INT"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoInt, yytext); return CTE_INT;}
+	{CTE_FLOAT} {guardarToken("CTE_FLOAT"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoFloat, yytext); return CTE_FLOAT;}
+	{CTE_STRING} {guardarToken("CTE_STRING"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoString, yytext); return CTE_STRING;}
+	{ID} {guardarToken("ID"); printf("ID: %s\n",yytext); strcpy(yylval.cadena,yytext); insertarEnTablaDeSimbolos(sectorVariables, sinTipo, yytext); return ID;}
 	{CARACTER} {guardarToken("CARACTER"); return CARACTER;}
 	{INICIO_PROGRAMA} {guardarToken("INICIO_PROGRAMA"); return INICIO_PROGRAMA;}
 	{FIN_PROGRAMA} {guardarToken("FIN_PROGRAMA"); return FIN_PROGRAMA;}
@@ -214,7 +210,6 @@ int main(int argc,char *argv[])
 
 	return FALSE;
 }
-
 
 char * reemplazarCaracter(char const * const original,  char const * const pattern,  char const * const replacement)
 {
@@ -505,7 +500,7 @@ int buscarEnTablaDeSimbolos(enum sectorTabla sector, char* objetivo){
 void mensajeDeError(enum error error,const char* info){
 	grabarTablaDeSimbolos(1);
 
-	printf("[Linea %d] ",yylineno);
+	printf("[Línea %d] ",yylineno);
 	switch(error){ 
 
         case errorEnteroFueraDeRango: 
@@ -521,7 +516,7 @@ void mensajeDeError(enum error error,const char* info){
             break ; 
 
         case errorIdDemasiadoLargo:
-            printf("ERROR LÉXICO. Descripción: El id \"%s\" es demasiado largo. La longitud máxima es de 30 caracteres.\n", info);
+            printf("ERROR LÉXICO. Descripción: Id \"%s\" demasiado largo. La longitud máxima es de 30 caracteres.\n", info);
             break ; 
 
         case errorCaracterInvalido:
@@ -539,55 +534,4 @@ void guardarToken(char* token){
 	tiraDeTokens=(char*) malloc ( sizeof(char) * (strlen(aux)) + strlen(token)+1);
 	strcpy(tiraDeTokens,aux);
 	strcat(tiraDeTokens,token);
-}
-
-int validarInt(int entero)
-{
-
-	if(entero < INT_MIN || entero > INT_MAX)
-	{
-		printf("Línea %d: CTE_INT fuera de rango\n", yylineno);
-		fprintf(stderr, "ejecución abortada"\n");
-		system ("Pause");
-		exit (1);
-	}
-	return TRUE;
-}
-
-int validarString(char *str)
-{
-	if(strlen(str) > 30)
-	{
-		printf("Línea %d: CTE_STRING fuera de rango\n", yylineno);
-		fprintf(stderr, "ejecución abortada\n");
-		system ("Pause");
-		exit (1);
-	}
-	return TRUE;
-}
-
-int validarReal(float real)
-{
-
-	if(real < FLT_MIN || real > FLT_MAX){
-		printf("Línea %d: CTE_FLOAT fuera de rango\n", yylineno);
-		fprintf(stderr, "ejecución abortada\n");
-		system ("Pause");
-		exit (1);
-	}
-	return TRUE;
-}
-
-
-int validarID(char *str)
-{
-    int largo = strlen(str);
- 
-	if(largo > 10){
-		printf("Línea %d: ID fuera de rango\n", yylineno);
-		fprintf(stderr, "ejecución abortada\n");
-		system ("Pause");
-		exit (1);
-	}
-	return TRUE;
 }

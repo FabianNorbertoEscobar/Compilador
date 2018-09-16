@@ -239,9 +239,9 @@
 						}
 	;
 
-	sentencia:			declaracion
+	sentencia:			bloque_declaracion
 						{
-							printf("declaración\n");
+							printf("bloque de declaración\n");
 						}
 	|
 	                 	asignacion
@@ -451,10 +451,11 @@
 						{
 							printf("if true\n");
 						}
-						ELSIF
+						ELSIF PARENTESIS_I condicion PARENTESIS_F
 						{
 							printf("elsif");
 						}
+	                  	bloque
 						ELSE
 						{
 							printf("else");
@@ -465,28 +466,43 @@
 						}
 	;
 
-	lectura:			READ PARENTESIS_I CTE_STRING PARENTESIS_F
+	lectura:			READ
 	                    {
 	                    	printf("read\n");
 	                    }
+	                    ID
 	;
 
-	escritura:			WRITE PARENTESIS_I CTE_STRING PARENTESIS_F
+	escritura:			WRITE ID
 	                    {
-	                    	printf("write\n");
+	                    	printf("write id\n");
 	                    }
+ 	|
+ 						WRITE CTE_STRING
+ 						{
+ 							printf("write string\n");
+ 						}
 	;
 
-	declaracion:		DECVAR lista_id_y_tipo ENDDEC
+	bloque_declaracion:	DECVAR 
 						{
 							printf("bloque de declaración\n");
+						}
+						declaraciones ENDDEC
+						{
+							printf("fin bloque de declaración\n");
+						}
+	;
+
+	declaraciones:		lista_id_y_tipo
+	|
+						declaraciones lista_id_y_tipo
+						{
+							printf("múltiple\n");
 						}
 	;
 
 	lista_id_y_tipo: 	ID OP_DEC tipodato
-						{
-							printf("declaración\n");
-						}
 	|
 						ID COMA lista_id_y_tipo
 	;
