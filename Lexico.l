@@ -85,7 +85,7 @@
 	FILE *yyin;
 	int yylval;
 
-}%
+%}
 
 /* conjuntos y regex */
 
