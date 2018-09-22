@@ -739,9 +739,6 @@ int yyerrormsj(const char * info,enum tipoDeError tipoDeError ,enum error error,
 		case ErrorConstanteDistintoTipo:
 			printf("Descripción: La constante %s no es de tipo %s\n", info, obtenerTipo(sectorVariables, tipoAsignacion));
 			break;
-		case ErrorArrayAsignacionMultiple:
-			printf("Descripción: El vector %s esperaba %d expresiones, pero se recibieron %d.\n", info,cantidadDeExpresionesEsperadasEnVector,contadorExpresionesVector );
-			break;
     }
 
   	system ("Pause");
