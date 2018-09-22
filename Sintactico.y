@@ -602,15 +602,31 @@
 	                  	}
 	;
 
-	factor: 			CTE
+	factor: 			CTE_INT
+    					{
+					    	printf("CTE_INT: %s\n", $<cadena>1);
+				    		if(esAsignacion==1&&tipoAsignacion!=tipoInt)
+				    		{
+				    			yyerrormsj($<cadena>1, ErrorSintactico,ErrorConstanteDistintoTipo,"");
+				    		}
+					    }
+	| 					
+						CTE_FLOAT
+					    {
+					    	printf("CTE_FLOAT: %s\n", $<cadena>1);
+					    	if(esAsignacion==1&&tipoAsignacion!=tipoFloat)
+					    	{
+					    		yyerrormsj($<cadena>1, ErrorSintactico,ErrorConstanteDistintoTipo,"");
+					    	}
+					    }
+	|					
+						CTE_STRING
 						{
-							$$=yylval;
-							printf("%s\n", yylval);
-							if(atoi($<cadena>4)<=0)
+							printf("CTE_STRING: %s\n", $<cadena>1);
+							if(esAsignacion==1&&tipoAsignacion!=tipoString)
 							{
-								yyerrormsj($<cadena>3,ErrorSintactico,ErrorLimiteArrayNoPermitido,$<cadena>4);
+					    		yyerrormsj($<cadena>1, ErrorSintactico,ErrorConstanteDistintoTipo,"");
 							}
-							tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,$<cadena>3)].limite=atoi($<cadena>4);
 						}
 	|
 	                  	ID
