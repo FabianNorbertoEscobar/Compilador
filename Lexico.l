@@ -135,6 +135,7 @@
 	DO 						"DO"
 	IF 						"IF"
 	ELSE 					"ELSE"
+	ELSIF					"ELSIF"
 	ENDIF					"ENDIF"
 	INTEGER					"INTEGER"
 	FLOAT 					"FLOAT"
@@ -186,6 +187,7 @@
 	{DO} {guardarToken("DO"); return DO;}
 	{IF} {guardarToken("IF"); return IF;}
 	{ELSE} {guardarToken("ELSE"); return ELSE;}
+	{ELSIF} {guardarToken(ELSIF"); return ELSIF;}
 	{ENDIF} {guardarToken("ENDIF"); return ENDIF;}
 	{INTEGER} {guardarToken("INTEGER"); return INTEGER;}
 	{FLOAT} {guardarToken("FLOAT"); return FLOAT;}
