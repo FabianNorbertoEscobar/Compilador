@@ -96,8 +96,8 @@
 	LETRA					[a-zA-Z]
 	LETRA_MINUS				[a-z]
 	LETRA_MAYUS				[A-Z]
-	CTE_INT					{DIGITO}+
-	CTE_FLOAT				{DIGITO}*"."{DIGITO}+
+	CTE_INT					-?{DIGITO}+
+	CTE_FLOAT				-?{DIGITO}*"."{DIGITO}+
 	CTE_STRING				\"({LETRA}|{DIGITO}|{CARACTER})*\"		
 	ID 						{LETRA_MINUS}({LETRA}|{DIGITO}|_)*	
 	CARACTER				" "|!|¡|>|:|<|[ ]|+|@|"%"|#|&|°|´|^|`|?|¿|~|/|\\|-|_|.|;

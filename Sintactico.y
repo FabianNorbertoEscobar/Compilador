@@ -107,6 +107,14 @@
 	int yyerrormsj(const char *,enum tipoDeError,enum error, const char*);
 	int yyerror();
 
+	/* primitivas de pila */
+
+	void vaciarPila(t_pila*);
+	t_info* sacarDePila(t_pila*);
+	void crearPila(t_pila*);
+	int ponerEnPila(t_pila*,t_info*);
+	t_info* topeDePila(t_pila*);
+
 	/* variables globales */
 
 	extern registro tablaVariables[TAM];
@@ -731,7 +739,7 @@ int yyerror()
 	exit (1);
 }
 
-/* pila */
+/* primitivas de pila */
 
 void crearPila(t_pila* pp)
 {
