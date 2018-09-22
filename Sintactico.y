@@ -196,6 +196,7 @@
 	%token DO
 	%token IF
 	%token ELSE
+	%token ELSIF
 	%token ENDIF
 	%token INTEGER
 	%token FLOAT
