@@ -149,7 +149,7 @@
 		char cadena[50];
 	}
 
-}%
+%}
 
 /* tokens */
 
