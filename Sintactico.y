@@ -572,7 +572,7 @@
 
 	expresion:			termino
 						{
-							$$=$1;
+							printf("término\n");
 						}
 	|
 						expresion OP_SUM termino
@@ -588,7 +588,7 @@
 
 	termino: 			factor
 						{
-							$$=$1;
+							printf("factor\n");
 	                    }
 	|
 						termino OP_MULT factor
@@ -631,7 +631,7 @@
 	|
 	                  	ID
 	                  	{
-	                  		$$=yylval;
+	                  		printf("id\n");
 	                  		printf("%s\n", yylval);
 	                  		int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
 							indicesParaAsignarTipo[contadorListaVar++]=posicion;
