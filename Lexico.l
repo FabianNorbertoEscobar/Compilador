@@ -152,7 +152,7 @@
 	{CTE_FLOAT} {guardarToken("CTE_FLOAT"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoFloat, yytext); return CTE_FLOAT;}
 	{CTE_STRING} {guardarToken("CTE_STRING"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoString, yytext); return CTE_STRING;}
 	{ID} {guardarToken("ID"); printf("ID: %s\n",yytext); strcpy(yylval.cadena,yytext); insertarEnTablaDeSimbolos(sectorVariables, sinTipo, yytext); return ID;}
-	{CARACTER;} {guardarToken("CARACTER"); return CARACTER;}
+	{CARACTER} {guardarToken("CARACTER"); return CARACTER;}
 	{INICIO_PROGRAMA} {guardarToken("INICIO_PROGRAMA"); return INICIO_PROGRAMA;}
 	{FIN_PROGRAMA} {guardarToken("FIN_PROGRAMA"); return FIN_PROGRAMA;}
 	{OP_SUM} {guardarToken("OP_SUM"); return OP_SUM;}
