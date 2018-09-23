@@ -47,50 +47,49 @@
      CTE_FLOAT = 263,
      CTE_STRING = 264,
      ID = 265,
-     CARACTER = 266,
-     INICIO_PROGRAMA = 267,
-     FIN_PROGRAMA = 268,
-     OP_SUM = 269,
-     OP_REST = 270,
-     OP_MULT = 271,
-     OP_DIV = 272,
-     OP_ASIG = 273,
-     OP_DEC = 274,
-     OP_AND = 275,
-     OP_OR = 276,
-     OP_NOT = 277,
-     PARENTESIS_I = 278,
-     PARENTESIS_F = 279,
-     LLAVE_I = 280,
-     LLAVE_F = 281,
-     CORCHETE_I = 282,
-     CORCHETE_F = 283,
-     COMENTARIO_I = 284,
-     COMENTARIO_F = 285,
-     PUNTO_Y_COMA = 286,
-     COMA = 287,
-     COMP_MAYOR_ESTR = 288,
-     COMP_MENOR_ESTR = 289,
-     COMP_MAYOR_IGUAL = 290,
-     COMP_MENOR_IGUAL = 291,
-     COMP_IGUAL = 292,
-     COMP_DIST = 293,
-     DECVAR = 294,
-     ENDDEC = 295,
-     WHILE = 296,
-     ENDWHILE = 297,
-     DO = 298,
-     IF = 299,
-     ELSE = 300,
-     ELSIF = 301,
-     ENDIF = 302,
-     INTEGER = 303,
-     FLOAT = 304,
-     STRING = 305,
-     READ = 306,
-     WRITE = 307,
-     BETWEEN = 308,
-     INLIST = 309
+     INICIO_PROGRAMA = 266,
+     FIN_PROGRAMA = 267,
+     OP_SUM = 268,
+     OP_REST = 269,
+     OP_MULT = 270,
+     OP_DIV = 271,
+     OP_ASIG = 272,
+     OP_DEC = 273,
+     OP_AND = 274,
+     OP_OR = 275,
+     OP_NOT = 276,
+     PARENTESIS_I = 277,
+     PARENTESIS_F = 278,
+     LLAVE_I = 279,
+     LLAVE_F = 280,
+     CORCHETE_I = 281,
+     CORCHETE_F = 282,
+     COMENTARIO_I = 283,
+     COMENTARIO_F = 284,
+     PUNTO_Y_COMA = 285,
+     COMA = 286,
+     COMP_MAYOR_ESTR = 287,
+     COMP_MENOR_ESTR = 288,
+     COMP_MAYOR_IGUAL = 289,
+     COMP_MENOR_IGUAL = 290,
+     COMP_IGUAL = 291,
+     COMP_DIST = 292,
+     DECVAR = 293,
+     ENDDEC = 294,
+     WHILE = 295,
+     ENDWHILE = 296,
+     DO = 297,
+     IF = 298,
+     ELSE = 299,
+     ELSIF = 300,
+     ENDIF = 301,
+     INTEGER = 302,
+     FLOAT = 303,
+     STRING = 304,
+     READ = 305,
+     WRITE = 306,
+     BETWEEN = 307,
+     INLIST = 308
    };
 #endif
 /* Tokens.  */
@@ -102,50 +101,49 @@
 #define CTE_FLOAT 263
 #define CTE_STRING 264
 #define ID 265
-#define CARACTER 266
-#define INICIO_PROGRAMA 267
-#define FIN_PROGRAMA 268
-#define OP_SUM 269
-#define OP_REST 270
-#define OP_MULT 271
-#define OP_DIV 272
-#define OP_ASIG 273
-#define OP_DEC 274
-#define OP_AND 275
-#define OP_OR 276
-#define OP_NOT 277
-#define PARENTESIS_I 278
-#define PARENTESIS_F 279
-#define LLAVE_I 280
-#define LLAVE_F 281
-#define CORCHETE_I 282
-#define CORCHETE_F 283
-#define COMENTARIO_I 284
-#define COMENTARIO_F 285
-#define PUNTO_Y_COMA 286
-#define COMA 287
-#define COMP_MAYOR_ESTR 288
-#define COMP_MENOR_ESTR 289
-#define COMP_MAYOR_IGUAL 290
-#define COMP_MENOR_IGUAL 291
-#define COMP_IGUAL 292
-#define COMP_DIST 293
-#define DECVAR 294
-#define ENDDEC 295
-#define WHILE 296
-#define ENDWHILE 297
-#define DO 298
-#define IF 299
-#define ELSE 300
-#define ELSIF 301
-#define ENDIF 302
-#define INTEGER 303
-#define FLOAT 304
-#define STRING 305
-#define READ 306
-#define WRITE 307
-#define BETWEEN 308
-#define INLIST 309
+#define INICIO_PROGRAMA 266
+#define FIN_PROGRAMA 267
+#define OP_SUM 268
+#define OP_REST 269
+#define OP_MULT 270
+#define OP_DIV 271
+#define OP_ASIG 272
+#define OP_DEC 273
+#define OP_AND 274
+#define OP_OR 275
+#define OP_NOT 276
+#define PARENTESIS_I 277
+#define PARENTESIS_F 278
+#define LLAVE_I 279
+#define LLAVE_F 280
+#define CORCHETE_I 281
+#define CORCHETE_F 282
+#define COMENTARIO_I 283
+#define COMENTARIO_F 284
+#define PUNTO_Y_COMA 285
+#define COMA 286
+#define COMP_MAYOR_ESTR 287
+#define COMP_MENOR_ESTR 288
+#define COMP_MAYOR_IGUAL 289
+#define COMP_MENOR_IGUAL 290
+#define COMP_IGUAL 291
+#define COMP_DIST 292
+#define DECVAR 293
+#define ENDDEC 294
+#define WHILE 295
+#define ENDWHILE 296
+#define DO 297
+#define IF 298
+#define ELSE 299
+#define ELSIF 300
+#define ENDIF 301
+#define INTEGER 302
+#define FLOAT 303
+#define STRING 304
+#define READ 305
+#define WRITE 306
+#define BETWEEN 307
+#define INLIST 308
 
 
 
@@ -164,7 +162,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 168 "y.tab.h"
+#line 166 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

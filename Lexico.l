@@ -91,14 +91,13 @@
 %option yylineno
 
 DIGITO					[0-9]
-LETRA					[a-zA-Z]
 LETRA_MINUS				[a-z]
 LETRA_MAYUS				[A-Z]
+LETRA					{LETRA_MINUS}|{LETRA_MAYUS}
 CTE_INT					{DIGITO}+
 CTE_FLOAT				{DIGITO}*"."{DIGITO}+
-CTE_STRING				"\""({LETRA}|{DIGITO}|{CARACTER})*"\""
-ID 						{LETRA_MINUS}({LETRA}|{DIGITO}|_)*	
-CARACTER				"$"|"!"|"#"|"@"|"%"|"^"|"&"|"*"|"("|")"|"?"|"-"|"_"|"="|"+"|"<"|">"|"["|"]"|"{"|"}"|"~"
+CTE_STRING				"\""({LETRA}|{DIGITO}|.)*"\""
+ID 						{LETRA_MINUS}({LETRA}|{DIGITO}|_)*
 INICIO_PROGRAMA			"PROGRAMA"
 FIN_PROGRAMA			"END_PROGRAMA"
 OP_SUM					"+"
@@ -164,6 +163,7 @@ INLIST					"INLIST"
 {CTE_STRING}		{
 						guardarToken("CTE_STRING");
 						strcpy(yylval.cadena, yytext);
+						printf("valor cadena: %s\n", yylval.cadena);
 						insertarEnTablaDeSimbolos(sectorConstantes, tipoString, yytext);
 						return CTE_STRING;
 					}
@@ -174,11 +174,6 @@ INLIST					"INLIST"
 						strcpy(yylval.cadena,yytext);
 						insertarEnTablaDeSimbolos(sectorVariables, sinTipo, yytext);
 						return ID;
-					}
-
-{CARACTER} 			{
-						guardarToken("CARACTER");
-						return CARACTER;
 					}
 
 {INICIO_PROGRAMA} 	{
@@ -513,7 +508,7 @@ void grabarTablaDeSimbolos(int error){
 
 	if(error==1) 
 	{
-		fprintf(pf,"\n**** TABLA INCOMPLETA (ERROR DE COMPILACIÓN) ****\n");
+		fprintf(pf,"\n**** TABLA INCOMPLETA (ERROR DE COMPILACION) ****\n");
 	}
 	
 	fclose(pf);

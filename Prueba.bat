@@ -1,1 +1,2 @@
-Compilador.exe prueba.txt
+Compilador.exe pruebatranqui.txt
+pause

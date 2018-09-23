@@ -165,7 +165,6 @@
 %token CTE_FLOAT
 %token CTE_STRING		
 %token ID
-%token CARACTER
 %token INICIO_PROGRAMA
 %token FIN_PROGRAMA
 %token OP_SUM
@@ -222,7 +221,7 @@
 
 	start: 				programa
 						{
-							printf("COMPILACIÓN EXITOSA\n");
+							printf("COMPILACION EXITOSA\n");
 						}
 
 	programa:			INICIO_PROGRAMA
@@ -255,12 +254,12 @@
 
 	sentencia:			bloque_declaracion
 						{
-							printf("bloque de declaración\n");
+							printf("bloque de declaracion\n");
 						}
 	|
 	                 	asignacion
 	                 	{
-	                 		printf("asignación\n");
+	                 		printf("asignacion\n");
 	                 	}
 	|
 	                 	lectura
@@ -275,12 +274,12 @@
 	|
 	                 	iteracion
 	                 	{
-	                 		printf("iteración\n");
+	                 		printf("iteracion\n");
 	                 	}
 	|
 	                 	seleccion
 	                 	{
-	                 		printf("selección\n");
+	                 		printf("seleccion\n");
 	                 	}
 	;
 
@@ -291,7 +290,7 @@
 								yyerrormsj($<cadena>1,ErrorSintactico,ErrorIdNoDeclarado,"");
 							}
 							esAsignacion=1;
-							printf("asignación: %s\t", $<cadena>1);
+							printf("asignacion: %s\t", $<cadena>1);
 							tipoAsignacion=tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,$<cadena>1)].tipo;
 							printf("(tipo: %s)\n",obtenerTipo(sectorVariables,tipoAsignacion));
 						}
@@ -315,7 +314,7 @@
 
 	condicion: 			comparacion
 						{
-							printf("comparación\n");
+							printf("comparacion\n");
 						}
 	|					
 						comparacion
@@ -498,13 +497,13 @@
  						}
 	;
 
-	bloque_declaracion:	DECVAR 
+	bloque_declaracion:	DECVAR
 						{
-							printf("bloque de declaración\n");
+							printf("bloque de declaracion\n");
 						}
 						declaraciones ENDDEC
 						{
-							printf("fin bloque de declaración\n");
+							printf("fin bloque de declaracion\n");
 						}
 	;
 
@@ -589,7 +588,7 @@
 	|
 						termino
 						{
-							printf("término\n");
+							printf("termino\n");
 						}
 	;
 
@@ -698,7 +697,7 @@ int main(int argc,char *argv[])
 
 	grabarTablaDeSimbolos(0);
 
-	printf("\n*** COMPILACIÓN EXITOSA ***\n");
+	printf("\n*** COMPILACION EXITOSA ***\n");
 
   	return 0;
 }
@@ -715,33 +714,33 @@ int yyerrormsj(char * info,enum tipoDeError tipoDeError ,enum error error, const
             printf("Error sintáctico. ");
             break;
         case ErrorLexico:
-            printf("Error léxico. ");
+            printf("Error lexico. ");
             break;
     }
   	switch(error){
 		case ErrorIdRepetida:
-			printf("Descripción: el id '%s' ha sido declarado más de una vez\n",info);
+			printf("Descripcion: el id '%s' ha sido declarado más de una vez\n",info);
 			break;
 		case ErrorIdNoDeclarado:
-			printf("Descripción: el id '%s' no ha sido declarado\n",info);
+			printf("Descripcion: el id '%s' no ha sido declarado\n",info);
 			break;
 		case ErrorArraySinTipo:
-			printf("Descripción: el id '%s' NO tiene un tipo asignado\n",info);
+			printf("Descripcion: el id '%s' NO tiene un tipo asignado\n",info);
 			break;
 		case ErrorArrayFueraDeRango:
-			printf("Descripción: vector '%s(0..%d)' fuera de rango. Se intenta acceder a '%s[%s]'\n",info,(tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,info)].limite),info,infoAdicional);
+			printf("Descripcion: vector '%s(0..%d)' fuera de rango. Se intenta acceder a '%s[%s]'\n",info,(tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,info)].limite),info,infoAdicional);
 			break;
 		case ErrorLimiteArrayNoPermitido:
-			printf("Descripción: el vector %s (%s) no tiene un límite válido, debe ser mayor a 0\n",info, infoAdicional);
+			printf("Descripcion: el vector %s (%s) no tiene un límite válido, debe ser mayor a 0\n",info, infoAdicional);
 			break;
 		case ErrorOperacionNoValida:
-			printf("Descripción: La operación %s no es válida para variables de tipo %s\n",info, obtenerTipo(sectorVariables, tipoAsignacion));
+			printf("Descripcion: La operacion %s no es válida para variables de tipo %s\n",info, obtenerTipo(sectorVariables, tipoAsignacion));
 			break;
 		case ErrorIdDistintoTipo:
-			printf("Descripción: La variable '%s' no es de tipo %s\n",info,obtenerTipo(sectorVariables, tipoAsignacion));
+			printf("Descripcion: La variable '%s' no es de tipo %s\n",info,obtenerTipo(sectorVariables, tipoAsignacion));
 			break;
 		case ErrorConstanteDistintoTipo:
-			printf("Descripción: La constante %s no es de tipo %s\n", info, obtenerTipo(sectorVariables, tipoAsignacion));
+			printf("Descripcion: La constante %s no es de tipo %s\n", info, obtenerTipo(sectorVariables, tipoAsignacion));
 			break;
     }
 

@@ -9,7 +9,6 @@ Terminals unused in grammar
    LETRA
    LETRA_MINUS
    LETRA_MAYUS
-   CARACTER
    LLAVE_I
    LLAVE_F
    COMENTARIO_I
@@ -144,13 +143,13 @@ Gramática
    65         | FLOAT
    66         | STRING
 
-   67 expresion: termino
-   68          | expresion OP_SUM termino
-   69          | expresion OP_REST termino
+   67 expresion: expresion OP_SUM termino
+   68          | expresion OP_REST termino
+   69          | termino
 
-   70 termino: factor
-   71        | termino OP_MULT factor
-   72        | termino OP_DIV factor
+   70 termino: termino OP_MULT factor
+   71        | termino OP_DIV factor
+   72        | factor
 
    73 factor: CTE_INT
    74       | CTE_FLOAT
@@ -182,158 +181,157 @@ CTE_INT (262) 73
 CTE_FLOAT (263) 74
 CTE_STRING (264) 57 75
 ID (265) 12 55 56 62 63 76 78 80
-CARACTER (266)
-INICIO_PROGRAMA (267) 2
-FIN_PROGRAMA (268) 2
-OP_SUM (269) 68
-OP_REST (270) 69
-OP_MULT (271) 71
-OP_DIV (272) 72
-OP_ASIG (273) 12
-OP_DEC (274) 63
-OP_AND (275) 20
-OP_OR (276) 23
-OP_NOT (277) 25
-PARENTESIS_I (278) 14 16 53 77 78 80
-PARENTESIS_F (279) 14 16 53 77 78 80
-LLAVE_I (280)
-LLAVE_F (281)
-CORCHETE_I (282) 79 81
-CORCHETE_F (283) 79 81
-COMENTARIO_I (284)
-COMENTARIO_F (285)
-PUNTO_Y_COMA (286) 79 80 83
-COMA (287) 62 78
-COMP_MAYOR_ESTR (288) 30
-COMP_MENOR_ESTR (289) 33
-COMP_MAYOR_IGUAL (290) 36
-COMP_MENOR_IGUAL (291) 39
-COMP_IGUAL (292) 42
-COMP_DIST (293) 45
-DECVAR (294) 59
-ENDDEC (295) 59
-WHILE (296) 14
-ENDWHILE (297) 14
-DO (298) 14 16
-IF (299) 16
-ELSE (300) 49 53
-ELSIF (301) 53
-ENDIF (302) 16
-INTEGER (303) 64
-FLOAT (304) 65
-STRING (305) 66
-READ (306) 55
-WRITE (307) 56 57
-BETWEEN (308) 78
-INLIST (309) 80
+INICIO_PROGRAMA (266) 2
+FIN_PROGRAMA (267) 2
+OP_SUM (268) 67
+OP_REST (269) 68
+OP_MULT (270) 70
+OP_DIV (271) 71
+OP_ASIG (272) 12
+OP_DEC (273) 63
+OP_AND (274) 20
+OP_OR (275) 23
+OP_NOT (276) 25
+PARENTESIS_I (277) 14 16 53 77 78 80
+PARENTESIS_F (278) 14 16 53 77 78 80
+LLAVE_I (279)
+LLAVE_F (280)
+CORCHETE_I (281) 79 81
+CORCHETE_F (282) 79 81
+COMENTARIO_I (283)
+COMENTARIO_F (284)
+PUNTO_Y_COMA (285) 79 80 83
+COMA (286) 62 78
+COMP_MAYOR_ESTR (287) 30
+COMP_MENOR_ESTR (288) 33
+COMP_MAYOR_IGUAL (289) 36
+COMP_MENOR_IGUAL (290) 39
+COMP_IGUAL (291) 42
+COMP_DIST (292) 45
+DECVAR (293) 59
+ENDDEC (294) 59
+WHILE (295) 14
+ENDWHILE (296) 14
+DO (297) 14 16
+IF (298) 16
+ELSE (299) 49 53
+ELSIF (300) 53
+ENDIF (301) 16
+INTEGER (302) 64
+FLOAT (303) 65
+STRING (304) 66
+READ (305) 55
+WRITE (306) 56 57
+BETWEEN (307) 78
+INLIST (308) 80
 
 
 No terminales con las reglas donde aparecen
 
-$accept (55)
+$accept (54)
     en la izquierda: 0
-programa (56)
+programa (55)
     en la izquierda: 2, en la derecha: 0
-$@1 (57)
+$@1 (56)
     en la izquierda: 1, en la derecha: 2
-bloque (58)
+bloque (57)
     en la izquierda: 3, en la derecha: 2 14 46 49 53
-lista_sentencias (59)
+lista_sentencias (58)
     en la izquierda: 4 5, en la derecha: 3 5
-sentencia (60)
+sentencia (59)
     en la izquierda: 6 7 8 9 10 11, en la derecha: 4 5
-asignacion (61)
+asignacion (60)
     en la izquierda: 12, en la derecha: 7
-iteracion (62)
+iteracion (61)
     en la izquierda: 14, en la derecha: 10
-$@2 (63)
+$@2 (62)
     en la izquierda: 13, en la derecha: 14
-seleccion (64)
+seleccion (63)
     en la izquierda: 16, en la derecha: 11
-$@3 (65)
+$@3 (64)
     en la izquierda: 15, en la derecha: 16
-condicion (66)
+condicion (65)
     en la izquierda: 17 20 23 25 26 27, en la derecha: 14 16 53
-$@4 (67)
+$@4 (66)
     en la izquierda: 18, en la derecha: 20
-$@5 (68)
+$@5 (67)
     en la izquierda: 19, en la derecha: 20
-$@6 (69)
+$@6 (68)
     en la izquierda: 21, en la derecha: 23
-$@7 (70)
+$@7 (69)
     en la izquierda: 22, en la derecha: 23
-$@8 (71)
+$@8 (70)
     en la izquierda: 24, en la derecha: 25
-comparacion (72)
+comparacion (71)
     en la izquierda: 30 33 36 39 42 45, en la derecha: 17 20 23 25
-$@9 (73)
+$@9 (72)
     en la izquierda: 28, en la derecha: 30
-$@10 (74)
+$@10 (73)
     en la izquierda: 29, en la derecha: 30
-$@11 (75)
+$@11 (74)
     en la izquierda: 31, en la derecha: 33
-$@12 (76)
+$@12 (75)
     en la izquierda: 32, en la derecha: 33
-$@13 (77)
+$@13 (76)
     en la izquierda: 34, en la derecha: 36
-$@14 (78)
+$@14 (77)
     en la izquierda: 35, en la derecha: 36
-$@15 (79)
+$@15 (78)
     en la izquierda: 37, en la derecha: 39
-$@16 (80)
+$@16 (79)
     en la izquierda: 38, en la derecha: 39
-$@17 (81)
+$@17 (80)
     en la izquierda: 40, en la derecha: 42
-$@18 (82)
+$@18 (81)
     en la izquierda: 41, en la derecha: 42
-$@19 (83)
+$@19 (82)
     en la izquierda: 43, en la derecha: 45
-$@20 (84)
+$@20 (83)
     en la izquierda: 44, en la derecha: 45
-resto (85)
+resto (84)
     en la izquierda: 46 49 53, en la derecha: 16
-$@21 (86)
+$@21 (85)
     en la izquierda: 47, en la derecha: 49
-$@22 (87)
+$@22 (86)
     en la izquierda: 48, en la derecha: 49
-$@23 (88)
+$@23 (87)
     en la izquierda: 50, en la derecha: 53
-$@24 (89)
+$@24 (88)
     en la izquierda: 51, en la derecha: 53
-$@25 (90)
+$@25 (89)
     en la izquierda: 52, en la derecha: 53
-lectura (91)
+lectura (90)
     en la izquierda: 55, en la derecha: 8
-$@26 (92)
+$@26 (91)
     en la izquierda: 54, en la derecha: 55
-escritura (93)
+escritura (92)
     en la izquierda: 56 57, en la derecha: 9
-bloque_declaracion (94)
+bloque_declaracion (93)
     en la izquierda: 59, en la derecha: 6
-$@27 (95)
+$@27 (94)
     en la izquierda: 58, en la derecha: 59
-declaraciones (96)
+declaraciones (95)
     en la izquierda: 60 61, en la derecha: 59 60
-lista_id_y_tipo (97)
+lista_id_y_tipo (96)
     en la izquierda: 62 63, en la derecha: 60 61 62
-tipodato (98)
+tipodato (97)
     en la izquierda: 64 65 66, en la derecha: 63
-expresion (99)
+expresion (98)
     en la izquierda: 67 68 69, en la derecha: 12 30 33 36 39 42 45
-    68 69 77 79 82 83
-termino (100)
-    en la izquierda: 70 71 72, en la derecha: 67 68 69 71 72
-factor (101)
+    67 68 77 79 82 83
+termino (99)
+    en la izquierda: 70 71 72, en la derecha: 67 68 69 70 71
+factor (100)
     en la izquierda: 73 74 75 76 77, en la derecha: 70 71 72
-between (102)
+between (101)
     en la izquierda: 78, en la derecha: 26
-rango (103)
+rango (102)
     en la izquierda: 79, en la derecha: 78
-inlist (104)
+inlist (103)
     en la izquierda: 80, en la derecha: 27
-lista_expresiones (105)
+lista_expresiones (104)
     en la izquierda: 81, en la derecha: 80
-expresiones (106)
+expresiones (105)
     en la izquierda: 82 83, en la derecha: 81 83
 
 
@@ -668,8 +666,8 @@ estado 33
 estado 34
 
    12 asignacion: ID OP_ASIG expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   67 expresion: expresion . OP_SUM termino
+   68          | expresion . OP_REST termino
 
     OP_SUM   desplazar e ir al estado 51
     OP_REST  desplazar e ir al estado 52
@@ -679,21 +677,21 @@ estado 34
 
 estado 35
 
-   67 expresion: termino .
-   71 termino: termino . OP_MULT factor
-   72        | termino . OP_DIV factor
+   69 expresion: termino .
+   70 termino: termino . OP_MULT factor
+   71        | termino . OP_DIV factor
 
     OP_MULT  desplazar e ir al estado 53
     OP_DIV   desplazar e ir al estado 54
 
-    $default  reduce usando la regla 67 (expresion)
+    $default  reduce usando la regla 69 (expresion)
 
 
 estado 36
 
-   70 termino: factor .
+   72 termino: factor .
 
-    $default  reduce usando la regla 70 (termino)
+    $default  reduce usando la regla 72 (termino)
 
 
 estado 37
@@ -775,8 +773,8 @@ estado 45
    39            | expresion . $@15 COMP_MENOR_IGUAL $@16 expresion
    42            | expresion . $@17 COMP_IGUAL $@18 expresion
    45            | expresion . $@19 COMP_DIST $@20 expresion
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   67 expresion: expresion . OP_SUM termino
+   68          | expresion . OP_REST termino
 
     OP_SUM   desplazar e ir al estado 51
     OP_REST  desplazar e ir al estado 52
@@ -826,8 +824,8 @@ estado 49
 
 estado 50
 
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   67 expresion: expresion . OP_SUM termino
+   68          | expresion . OP_REST termino
    77 factor: PARENTESIS_I expresion . PARENTESIS_F
 
     OP_SUM        desplazar e ir al estado 51
@@ -837,7 +835,7 @@ estado 50
 
 estado 51
 
-   68 expresion: expresion OP_SUM . termino
+   67 expresion: expresion OP_SUM . termino
 
     CTE_INT       desplazar e ir al estado 29
     CTE_FLOAT     desplazar e ir al estado 30
@@ -851,7 +849,7 @@ estado 51
 
 estado 52
 
-   69 expresion: expresion OP_REST . termino
+   68 expresion: expresion OP_REST . termino
 
     CTE_INT       desplazar e ir al estado 29
     CTE_FLOAT     desplazar e ir al estado 30
@@ -865,7 +863,7 @@ estado 52
 
 estado 53
 
-   71 termino: termino OP_MULT . factor
+   70 termino: termino OP_MULT . factor
 
     CTE_INT       desplazar e ir al estado 29
     CTE_FLOAT     desplazar e ir al estado 30
@@ -878,7 +876,7 @@ estado 53
 
 estado 54
 
-   72 termino: termino OP_DIV . factor
+   71 termino: termino OP_DIV . factor
 
     CTE_INT       desplazar e ir al estado 29
     CTE_FLOAT     desplazar e ir al estado 30
@@ -1036,9 +1034,21 @@ estado 72
 
 estado 73
 
-   68 expresion: expresion OP_SUM termino .
-   71 termino: termino . OP_MULT factor
-   72        | termino . OP_DIV factor
+   67 expresion: expresion OP_SUM termino .
+   70 termino: termino . OP_MULT factor
+   71        | termino . OP_DIV factor
+
+    OP_MULT  desplazar e ir al estado 53
+    OP_DIV   desplazar e ir al estado 54
+
+    $default  reduce usando la regla 67 (expresion)
+
+
+estado 74
+
+   68 expresion: expresion OP_REST termino .
+   70 termino: termino . OP_MULT factor
+   71        | termino . OP_DIV factor
 
     OP_MULT  desplazar e ir al estado 53
     OP_DIV   desplazar e ir al estado 54
@@ -1046,30 +1056,18 @@ estado 73
     $default  reduce usando la regla 68 (expresion)
 
 
-estado 74
-
-   69 expresion: expresion OP_REST termino .
-   71 termino: termino . OP_MULT factor
-   72        | termino . OP_DIV factor
-
-    OP_MULT  desplazar e ir al estado 53
-    OP_DIV   desplazar e ir al estado 54
-
-    $default  reduce usando la regla 69 (expresion)
-
-
 estado 75
 
-   71 termino: termino OP_MULT factor .
+   70 termino: termino OP_MULT factor .
 
-    $default  reduce usando la regla 71 (termino)
+    $default  reduce usando la regla 70 (termino)
 
 
 estado 76
 
-   72 termino: termino OP_DIV factor .
+   71 termino: termino OP_DIV factor .
 
-    $default  reduce usando la regla 72 (termino)
+    $default  reduce usando la regla 71 (termino)
 
 
 estado 77
@@ -1468,8 +1466,8 @@ estado 113
 estado 114
 
    30 comparacion: expresion $@9 COMP_MAYOR_ESTR $@10 expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   67 expresion: expresion . OP_SUM termino
+   68          | expresion . OP_REST termino
 
     OP_SUM   desplazar e ir al estado 51
     OP_REST  desplazar e ir al estado 52
@@ -1480,8 +1478,8 @@ estado 114
 estado 115
 
    33 comparacion: expresion $@11 COMP_MENOR_ESTR $@12 expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   67 expresion: expresion . OP_SUM termino
+   68          | expresion . OP_REST termino
 
     OP_SUM   desplazar e ir al estado 51
     OP_REST  desplazar e ir al estado 52
@@ -1492,8 +1490,8 @@ estado 115
 estado 116
 
    36 comparacion: expresion $@13 COMP_MAYOR_IGUAL $@14 expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   67 expresion: expresion . OP_SUM termino
+   68          | expresion . OP_REST termino
 
     OP_SUM   desplazar e ir al estado 51
     OP_REST  desplazar e ir al estado 52
@@ -1504,8 +1502,8 @@ estado 116
 estado 117
 
    39 comparacion: expresion $@15 COMP_MENOR_IGUAL $@16 expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   67 expresion: expresion . OP_SUM termino
+   68          | expresion . OP_REST termino
 
     OP_SUM   desplazar e ir al estado 51
     OP_REST  desplazar e ir al estado 52
@@ -1516,8 +1514,8 @@ estado 117
 estado 118
 
    42 comparacion: expresion $@17 COMP_IGUAL $@18 expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   67 expresion: expresion . OP_SUM termino
+   68          | expresion . OP_REST termino
 
     OP_SUM   desplazar e ir al estado 51
     OP_REST  desplazar e ir al estado 52
@@ -1528,8 +1526,8 @@ estado 118
 estado 119
 
    45 comparacion: expresion $@19 COMP_DIST $@20 expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   67 expresion: expresion . OP_SUM termino
+   68          | expresion . OP_REST termino
 
     OP_SUM   desplazar e ir al estado 51
     OP_REST  desplazar e ir al estado 52
@@ -1560,8 +1558,8 @@ estado 121
 
 estado 122
 
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   67 expresion: expresion . OP_SUM termino
+   68          | expresion . OP_REST termino
    79 rango: CORCHETE_I expresion . PUNTO_Y_COMA expresion CORCHETE_F
 
     OP_SUM        desplazar e ir al estado 51
@@ -1578,8 +1576,8 @@ estado 123
 
 estado 124
 
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   67 expresion: expresion . OP_SUM termino
+   68          | expresion . OP_REST termino
    82 expresiones: expresion .
    83            | expresion . PUNTO_Y_COMA expresiones
 
@@ -1688,8 +1686,8 @@ estado 135
 
 estado 136
 
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   67 expresion: expresion . OP_SUM termino
+   68          | expresion . OP_REST termino
    79 rango: CORCHETE_I expresion PUNTO_Y_COMA expresion . CORCHETE_F
 
     OP_SUM      desplazar e ir al estado 51
