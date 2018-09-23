@@ -1,1 +1,1 @@
-Compilador.exe pruebatranqui.txt
+Compilador.exe prueba.txt

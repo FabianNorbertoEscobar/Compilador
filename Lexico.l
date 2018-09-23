@@ -98,7 +98,7 @@ CTE_INT					{DIGITO}+
 CTE_FLOAT				{DIGITO}*"."{DIGITO}+
 CTE_STRING				"\""({LETRA}|{DIGITO}|{CARACTER})*"\""
 ID 						{LETRA_MINUS}({LETRA}|{DIGITO}|_)*	
-CARACTER				"$"
+CARACTER				"$"|"!"|"#"|"@"|"%"|"^"|"&"|"*"|"("|")"|"?"|"-"|"_"|"="|"+"|"<"|">"|"["|"]"|"{"|"}"|"~"
 INICIO_PROGRAMA			"PROGRAMA"
 FIN_PROGRAMA			"END_PROGRAMA"
 OP_SUM					"+"
