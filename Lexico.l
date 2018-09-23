@@ -137,6 +137,7 @@ ELSIF					"ELSIF"
 ENDIF					"ENDIF"
 INTEGER					"INTEGER"
 FLOAT 					"FLOAT"
+STRING 					"STRING"
 READ					"READ"
 WRITE					"WRITE"
 BETWEEN  				"BETWEEN"
@@ -356,6 +357,11 @@ INLIST					"INLIST"
 						return ELSE;
 					}
 
+{ELSIF}				{
+						guardarToken("ELSIF");
+						return ELSIF;
+					}
+
 {ENDIF} 			{
 						guardarToken("ENDIF");
 						return ENDIF;
@@ -369,6 +375,11 @@ INLIST					"INLIST"
 {FLOAT} 			{
 						guardarToken("FLOAT");
 						return FLOAT;
+					}
+
+{STRING} 			{
+						guardarToken("STRING");
+						return STRING;
 					}
 
 {READ} 				{
@@ -397,6 +408,7 @@ INLIST					"INLIST"
 %%
 
 /* codigo */
+
 /*
 int main(int argc,char *argv[])
 {
@@ -405,6 +417,7 @@ int main(int argc,char *argv[])
 	return FALSE;
 }
 */
+
 char * reemplazarCaracter(char const * const original,  char const * const pattern,  char const * const replacement)
 {
 	size_t const replen = strlen(replacement);
@@ -450,7 +463,9 @@ char * cortarCadena(char* cad,int tam){
 }
 
 void grabarTablaDeSimbolos(int error){
-		
+	
+	setlocale(LC_CTYPE,"Spanish");
+
 	FILE*pt=fopen("tiraDeTokens.txt","w+");
 	
 	if(!pt)
@@ -505,6 +520,8 @@ void grabarTablaDeSimbolos(int error){
 }
 
 void mostrarTablaDeSimbolos(){
+
+	setlocale(LC_CTYPE,"Spanish");
 	
 	printf("%-32s|\t%-15s|\t%-32s|\t%-13s|\t%-13s\n\n","NOMBRE","TIPO","VALOR","LONGITUD","LÍMITE");
 	int i;
@@ -692,6 +709,9 @@ int buscarEnTablaDeSimbolos(enum sectorTabla sector, char* objetivo){
 }
 
 void mensajeDeError(enum error error,const char* info){
+
+	setlocale(LC_CTYPE,"Spanish");
+
 	grabarTablaDeSimbolos(1);
 
 	printf("[Línea %d] ",yylineno);

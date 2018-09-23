@@ -86,10 +86,11 @@
      ENDIF = 302,
      INTEGER = 303,
      FLOAT = 304,
-     READ = 305,
-     WRITE = 306,
-     BETWEEN = 307,
-     INLIST = 308
+     STRING = 305,
+     READ = 306,
+     WRITE = 307,
+     BETWEEN = 308,
+     INLIST = 309
    };
 #endif
 /* Tokens.  */
@@ -140,10 +141,11 @@
 #define ENDIF 302
 #define INTEGER 303
 #define FLOAT 304
-#define READ 305
-#define WRITE 306
-#define BETWEEN 307
-#define INLIST 308
+#define STRING 305
+#define READ 306
+#define WRITE 307
+#define BETWEEN 308
+#define INLIST 309
 
 
 
@@ -153,7 +155,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 153 "Sintactico.y"
+#line 152 "Sintactico.y"
 
 	int entero;
 	double real;
@@ -162,7 +164,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 166 "y.tab.h"
+#line 168 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

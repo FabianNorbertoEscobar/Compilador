@@ -14,8 +14,6 @@ Terminals unused in grammar
    LLAVE_F
    COMENTARIO_I
    COMENTARIO_F
-   INTEGER
-   FLOAT
 
 
 Rules useless in grammar
@@ -136,15 +134,15 @@ Gramática
 
    59 bloque_declaracion: DECVAR $@27 declaraciones ENDDEC
 
-   60 declaraciones: lista_id_y_tipo
-   61              | declaraciones lista_id_y_tipo
+   60 declaraciones: declaraciones lista_id_y_tipo
+   61              | lista_id_y_tipo
 
-   62 lista_id_y_tipo: ID OP_DEC tipodato
-   63                | ID COMA lista_id_y_tipo
+   62 lista_id_y_tipo: ID COMA lista_id_y_tipo
+   63                | ID OP_DEC tipodato
 
-   64 tipodato: CTE_INT
-   65         | CTE_FLOAT
-   66         | CTE_STRING
+   64 tipodato: INTEGER
+   65         | FLOAT
+   66         | STRING
 
    67 expresion: termino
    68          | expresion OP_SUM termino
@@ -180,9 +178,9 @@ DIGITO (258)
 LETRA (259)
 LETRA_MINUS (260)
 LETRA_MAYUS (261)
-CTE_INT (262) 64 73
-CTE_FLOAT (263) 65 74
-CTE_STRING (264) 57 66 75
+CTE_INT (262) 73
+CTE_FLOAT (263) 74
+CTE_STRING (264) 57 75
 ID (265) 12 55 56 62 63 76 78 80
 CARACTER (266)
 INICIO_PROGRAMA (267) 2
@@ -192,7 +190,7 @@ OP_REST (270) 69
 OP_MULT (271) 71
 OP_DIV (272) 72
 OP_ASIG (273) 12
-OP_DEC (274) 62
+OP_DEC (274) 63
 OP_AND (275) 20
 OP_OR (276) 23
 OP_NOT (277) 25
@@ -205,7 +203,7 @@ CORCHETE_F (283) 79 81
 COMENTARIO_I (284)
 COMENTARIO_F (285)
 PUNTO_Y_COMA (286) 79 80 83
-COMA (287) 63 78
+COMA (287) 62 78
 COMP_MAYOR_ESTR (288) 30
 COMP_MENOR_ESTR (289) 33
 COMP_MAYOR_IGUAL (290) 36
@@ -221,120 +219,121 @@ IF (299) 16
 ELSE (300) 49 53
 ELSIF (301) 53
 ENDIF (302) 16
-INTEGER (303)
-FLOAT (304)
-READ (305) 55
-WRITE (306) 56 57
-BETWEEN (307) 78
-INLIST (308) 80
+INTEGER (303) 64
+FLOAT (304) 65
+STRING (305) 66
+READ (306) 55
+WRITE (307) 56 57
+BETWEEN (308) 78
+INLIST (309) 80
 
 
 No terminales con las reglas donde aparecen
 
-$accept (54)
+$accept (55)
     en la izquierda: 0
-programa (55)
+programa (56)
     en la izquierda: 2, en la derecha: 0
-$@1 (56)
+$@1 (57)
     en la izquierda: 1, en la derecha: 2
-bloque (57)
+bloque (58)
     en la izquierda: 3, en la derecha: 2 14 46 49 53
-lista_sentencias (58)
+lista_sentencias (59)
     en la izquierda: 4 5, en la derecha: 3 5
-sentencia (59)
+sentencia (60)
     en la izquierda: 6 7 8 9 10 11, en la derecha: 4 5
-asignacion (60)
+asignacion (61)
     en la izquierda: 12, en la derecha: 7
-iteracion (61)
+iteracion (62)
     en la izquierda: 14, en la derecha: 10
-$@2 (62)
+$@2 (63)
     en la izquierda: 13, en la derecha: 14
-seleccion (63)
+seleccion (64)
     en la izquierda: 16, en la derecha: 11
-$@3 (64)
+$@3 (65)
     en la izquierda: 15, en la derecha: 16
-condicion (65)
+condicion (66)
     en la izquierda: 17 20 23 25 26 27, en la derecha: 14 16 53
-$@4 (66)
+$@4 (67)
     en la izquierda: 18, en la derecha: 20
-$@5 (67)
+$@5 (68)
     en la izquierda: 19, en la derecha: 20
-$@6 (68)
+$@6 (69)
     en la izquierda: 21, en la derecha: 23
-$@7 (69)
+$@7 (70)
     en la izquierda: 22, en la derecha: 23
-$@8 (70)
+$@8 (71)
     en la izquierda: 24, en la derecha: 25
-comparacion (71)
+comparacion (72)
     en la izquierda: 30 33 36 39 42 45, en la derecha: 17 20 23 25
-$@9 (72)
+$@9 (73)
     en la izquierda: 28, en la derecha: 30
-$@10 (73)
+$@10 (74)
     en la izquierda: 29, en la derecha: 30
-$@11 (74)
+$@11 (75)
     en la izquierda: 31, en la derecha: 33
-$@12 (75)
+$@12 (76)
     en la izquierda: 32, en la derecha: 33
-$@13 (76)
+$@13 (77)
     en la izquierda: 34, en la derecha: 36
-$@14 (77)
+$@14 (78)
     en la izquierda: 35, en la derecha: 36
-$@15 (78)
+$@15 (79)
     en la izquierda: 37, en la derecha: 39
-$@16 (79)
+$@16 (80)
     en la izquierda: 38, en la derecha: 39
-$@17 (80)
+$@17 (81)
     en la izquierda: 40, en la derecha: 42
-$@18 (81)
+$@18 (82)
     en la izquierda: 41, en la derecha: 42
-$@19 (82)
+$@19 (83)
     en la izquierda: 43, en la derecha: 45
-$@20 (83)
+$@20 (84)
     en la izquierda: 44, en la derecha: 45
-resto (84)
+resto (85)
     en la izquierda: 46 49 53, en la derecha: 16
-$@21 (85)
+$@21 (86)
     en la izquierda: 47, en la derecha: 49
-$@22 (86)
+$@22 (87)
     en la izquierda: 48, en la derecha: 49
-$@23 (87)
+$@23 (88)
     en la izquierda: 50, en la derecha: 53
-$@24 (88)
+$@24 (89)
     en la izquierda: 51, en la derecha: 53
-$@25 (89)
+$@25 (90)
     en la izquierda: 52, en la derecha: 53
-lectura (90)
+lectura (91)
     en la izquierda: 55, en la derecha: 8
-$@26 (91)
+$@26 (92)
     en la izquierda: 54, en la derecha: 55
-escritura (92)
+escritura (93)
     en la izquierda: 56 57, en la derecha: 9
-bloque_declaracion (93)
+bloque_declaracion (94)
     en la izquierda: 59, en la derecha: 6
-$@27 (94)
+$@27 (95)
     en la izquierda: 58, en la derecha: 59
-declaraciones (95)
-    en la izquierda: 60 61, en la derecha: 59 61
-lista_id_y_tipo (96)
-    en la izquierda: 62 63, en la derecha: 60 61 63
-tipodato (97)
-    en la izquierda: 64 65 66, en la derecha: 62
-expresion (98)
+declaraciones (96)
+    en la izquierda: 60 61, en la derecha: 59 60
+lista_id_y_tipo (97)
+    en la izquierda: 62 63, en la derecha: 60 61 62
+tipodato (98)
+    en la izquierda: 64 65 66, en la derecha: 63
+expresion (99)
     en la izquierda: 67 68 69, en la derecha: 12 30 33 36 39 42 45
     68 69 77 79 82 83
-termino (99)
+termino (100)
     en la izquierda: 70 71 72, en la derecha: 67 68 69 71 72
-factor (100)
+factor (101)
     en la izquierda: 73 74 75 76 77, en la derecha: 70 71 72
-between (101)
+between (102)
     en la izquierda: 78, en la derecha: 26
-rango (102)
+rango (103)
     en la izquierda: 79, en la derecha: 78
-inlist (103)
+inlist (104)
     en la izquierda: 80, en la derecha: 27
-lista_expresiones (104)
+lista_expresiones (105)
     en la izquierda: 81, en la derecha: 80
-expresiones (105)
+expresiones (106)
     en la izquierda: 82 83, en la derecha: 81 83
 
 
@@ -699,8 +698,8 @@ estado 36
 
 estado 37
 
-   62 lista_id_y_tipo: ID . OP_DEC tipodato
-   63                | ID . COMA lista_id_y_tipo
+   62 lista_id_y_tipo: ID . COMA lista_id_y_tipo
+   63                | ID . OP_DEC tipodato
 
     OP_DEC  desplazar e ir al estado 55
     COMA    desplazar e ir al estado 56
@@ -709,7 +708,7 @@ estado 37
 estado 38
 
    59 bloque_declaracion: DECVAR $@27 declaraciones . ENDDEC
-   61 declaraciones: declaraciones . lista_id_y_tipo
+   60 declaraciones: declaraciones . lista_id_y_tipo
 
     ID      desplazar e ir al estado 37
     ENDDEC  desplazar e ir al estado 57
@@ -719,9 +718,9 @@ estado 38
 
 estado 39
 
-   60 declaraciones: lista_id_y_tipo .
+   61 declaraciones: lista_id_y_tipo .
 
-    $default  reduce usando la regla 60 (declaraciones)
+    $default  reduce usando la regla 61 (declaraciones)
 
 
 estado 40
@@ -892,18 +891,18 @@ estado 54
 
 estado 55
 
-   62 lista_id_y_tipo: ID OP_DEC . tipodato
+   63 lista_id_y_tipo: ID OP_DEC . tipodato
 
-    CTE_INT     desplazar e ir al estado 77
-    CTE_FLOAT   desplazar e ir al estado 78
-    CTE_STRING  desplazar e ir al estado 79
+    INTEGER  desplazar e ir al estado 77
+    FLOAT    desplazar e ir al estado 78
+    STRING   desplazar e ir al estado 79
 
     tipodato  ir al estado 80
 
 
 estado 56
 
-   63 lista_id_y_tipo: ID COMA . lista_id_y_tipo
+   62 lista_id_y_tipo: ID COMA . lista_id_y_tipo
 
     ID  desplazar e ir al estado 37
 
@@ -919,9 +918,9 @@ estado 57
 
 estado 58
 
-   61 declaraciones: declaraciones lista_id_y_tipo .
+   60 declaraciones: declaraciones lista_id_y_tipo .
 
-    $default  reduce usando la regla 61 (declaraciones)
+    $default  reduce usando la regla 60 (declaraciones)
 
 
 estado 59
@@ -1075,37 +1074,37 @@ estado 76
 
 estado 77
 
-   64 tipodato: CTE_INT .
+   64 tipodato: INTEGER .
 
     $default  reduce usando la regla 64 (tipodato)
 
 
 estado 78
 
-   65 tipodato: CTE_FLOAT .
+   65 tipodato: FLOAT .
 
     $default  reduce usando la regla 65 (tipodato)
 
 
 estado 79
 
-   66 tipodato: CTE_STRING .
+   66 tipodato: STRING .
 
     $default  reduce usando la regla 66 (tipodato)
 
 
 estado 80
 
-   62 lista_id_y_tipo: ID OP_DEC tipodato .
+   63 lista_id_y_tipo: ID OP_DEC tipodato .
 
-    $default  reduce usando la regla 62 (lista_id_y_tipo)
+    $default  reduce usando la regla 63 (lista_id_y_tipo)
 
 
 estado 81
 
-   63 lista_id_y_tipo: ID COMA lista_id_y_tipo .
+   62 lista_id_y_tipo: ID COMA lista_id_y_tipo .
 
-    $default  reduce usando la regla 63 (lista_id_y_tipo)
+    $default  reduce usando la regla 62 (lista_id_y_tipo)
 
 
 estado 82

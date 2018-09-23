@@ -50,8 +50,7 @@
 		ErrorLimiteArrayNoPermitido,
 		ErrorOperacionNoValida,
 		ErrorIdDistintoTipo,
-		ErrorConstanteDistintoTipo,
-		ErrorArrayAsignacionMultiple
+		ErrorConstanteDistintoTipo
 	};
 
 	enum tipoDeError{
@@ -205,6 +204,7 @@
 %token ENDIF
 %token INTEGER
 %token FLOAT
+%token STRING
 %token READ
 %token WRITE
 %token BETWEEN
@@ -508,26 +508,27 @@
 						}
 	;
 
-	declaraciones:		lista_id_y_tipo
-	|
-						declaraciones lista_id_y_tipo
+	declaraciones:		declaraciones lista_id_y_tipo
 						{
 							printf("múltiple\n");
 						}
-	;
-
-	lista_id_y_tipo: 	ID OP_DEC tipodato
 	|
-						ID COMA lista_id_y_tipo
+						lista_id_y_tipo
 	;
 
-	tipodato: 			CTE_INT
+	lista_id_y_tipo: 	ID COMA lista_id_y_tipo
+	|
+						ID OP_DEC tipodato 
+	;
+
+	tipodato: 			INTEGER
 						{
 							int i;
 							printf("  Declaradas: ");
 							for(i=0;i<contadorListaVar;i++)
 							{
-								if(tablaVariables[indicesParaAsignarTipo[i]].tipo==sinTipo){
+								if(tablaVariables[indicesParaAsignarTipo[i]].tipo==sinTipo)
+								{
 									printf("'%s' ",tablaVariables[indicesParaAsignarTipo[i]].valor);
 									tablaVariables[indicesParaAsignarTipo[i]].tipo=tipoInt;
 								}
@@ -538,13 +539,14 @@
 							}
 							printf("tipo entero\n");
 						}
-	|					CTE_FLOAT
+	|					FLOAT
 						{
 							int i;
 							printf("  Declaradas: ");
 							for(i=0;i<contadorListaVar;i++)
 							{
-								if(tablaVariables[indicesParaAsignarTipo[i]].tipo==sinTipo){
+								if(tablaVariables[indicesParaAsignarTipo[i]].tipo==sinTipo)
+								{
 									printf("'%s' ",tablaVariables[indicesParaAsignarTipo[i]].valor);
 									tablaVariables[indicesParaAsignarTipo[i]].tipo=tipoFloat;
 								}
@@ -555,7 +557,7 @@
 							}
 							printf("tipo flotante\n");
 						}
-	|					CTE_STRING
+	|					STRING
 						{
 							int i;
 							printf("  Declaradas: ");
@@ -575,12 +577,7 @@
 						}
 	;
 
-	expresion:			termino
-						{
-							printf("término\n");
-						}
-	|
-						expresion OP_SUM termino
+	expresion:			expresion OP_SUM termino
 						{
 							printf("+\n");
 						}
@@ -589,14 +586,14 @@
 						{
 							printf("-\n");
 						}
+	|
+						termino
+						{
+							printf("término\n");
+						}
 	;
 
-	termino: 			factor
-						{
-							printf("factor\n");
-	                    }
-	|
-						termino OP_MULT factor
+	termino: 			termino OP_MULT factor
 	                  	{
 	                    	printf("*\n");
 	                    }
@@ -605,6 +602,11 @@
 	                  	{
 							printf("/\n");
 	                  	}
+	|
+	                  	factor
+						{
+							printf("factor\n");
+	                    }
 	;
 
 	factor: 			CTE_INT
@@ -705,6 +707,7 @@ int main(int argc,char *argv[])
 
 int yyerrormsj(char * info,enum tipoDeError tipoDeError ,enum error error, const char *infoAdicional)
 {
+	setlocale(LC_CTYPE,"Spanish");
 	grabarTablaDeSimbolos(1);
 	printf("[Línea %d] ",yylineno);
   	switch(tipoDeError){
@@ -740,9 +743,6 @@ int yyerrormsj(char * info,enum tipoDeError tipoDeError ,enum error error, const
 		case ErrorConstanteDistintoTipo:
 			printf("Descripción: La constante %s no es de tipo %s\n", info, obtenerTipo(sectorVariables, tipoAsignacion));
 			break;
-		case ErrorArrayAsignacionMultiple:
-			printf("Descripción: El vector %s esperaba %d expresiones, pero se recibieron %d.\n", info,cantidadDeExpresionesEsperadasEnVector,contadorExpresionesVector );
-			break;
     }
 
   	system ("Pause");
@@ -751,6 +751,7 @@ int yyerrormsj(char * info,enum tipoDeError tipoDeError ,enum error error, const
 
 int yyerror()
 {
+	setlocale(LC_CTYPE,"Spanish");
 	grabarTablaDeSimbolos(1);
 	printf("Error sintáctico \n");
 	system ("Pause");
