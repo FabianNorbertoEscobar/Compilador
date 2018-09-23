@@ -141,6 +141,7 @@ READ					"READ"
 WRITE					"WRITE"
 BETWEEN  				"BETWEEN"
 INLIST					"INLIST"
+COMENTARIO 				{COMENTARIO_I}({LETRA}|{DIGITO}|.)*{COMENTARIO_F}
 
 /* definicion de reglas */
 
@@ -395,6 +396,11 @@ INLIST					"INLIST"
 {INLIST} 			{
 						guardarToken("INLIST");
 						return INLIST;
+					}
+
+{COMENTARIO}		{
+						guardarToken("COMENTARIO");
+						return COMENTARIO;
 					}
 "\n"
 "\r\n"

@@ -89,7 +89,8 @@
      READ = 305,
      WRITE = 306,
      BETWEEN = 307,
-     INLIST = 308
+     INLIST = 308,
+     COMENTARIO = 309
    };
 #endif
 /* Tokens.  */
@@ -144,6 +145,7 @@
 #define WRITE 306
 #define BETWEEN 307
 #define INLIST 308
+#define COMENTARIO 309
 
 
 
@@ -162,7 +164,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 166 "y.tab.h"
+#line 168 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -208,6 +208,7 @@
 %token WRITE
 %token BETWEEN
 %token INLIST
+%token COMENTARIO
 
 %right OP_ASIG
 %left OP_SUM OP_REST
@@ -281,6 +282,11 @@
 	                 	{
 	                 		printf("seleccion\n");
 	                 	}
+	|                 	
+						COMENTARIO
+						{
+							printf("comentario\n");
+						}
 	;
 
 	asignacion:			ID OP_ASIG expresion
@@ -602,36 +608,42 @@
 	factor: 			CTE_INT
     					{
 					    	printf("CTE_INT: %s\n", $<cadena>1);
+					    	/*
 				    		if(esAsignacion==1&&tipoAsignacion!=tipoInt)
 				    		{
 				    			yyerrormsj($<cadena>1, ErrorSintactico,ErrorConstanteDistintoTipo,"");
 				    		}
+				    		*/
 					    }
 	| 					
 						CTE_FLOAT
 					    {
 					    	printf("CTE_FLOAT: %s\n", $<cadena>1);
+					    	/*
 					    	if(esAsignacion==1&&tipoAsignacion!=tipoFloat)
 					    	{
 					    		yyerrormsj($<cadena>1, ErrorSintactico,ErrorConstanteDistintoTipo,"");
 					    	}
+					    	*/
 					    }
 	|					
 						CTE_STRING
 						{
 							printf("CTE_STRING: %s\n", $<cadena>1);
+							/*
 							if(esAsignacion==1&&tipoAsignacion!=tipoString)
 							{
 					    		yyerrormsj($<cadena>1, ErrorSintactico,ErrorConstanteDistintoTipo,"");
 							}
+							*/
 						}
 	|
 	                  	ID
 	                  	{
 	                  		printf("id\n");
 	                  		printf("%s\n", yylval.cadena);
-	                  		/*int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
-							indicesParaAsignarTipo[contadorListaVar++]=posicion; */
+	                  		int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
+							indicesParaAsignarTipo[contadorListaVar++]=posicion;
 	                  	}
 	|
 						PARENTESIS_I expresion PARENTESIS_F

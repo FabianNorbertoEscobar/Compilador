@@ -68,15 +68,15 @@
 	WRITE h
 	WRITE a
 	IF(BETWEEN(h, [2;g*(b+a)])) DO
-		WRITE "h está entre 2 y g*(b+a)"
+		WRITE "h esta entre 2 y g*(b+a)"
 	ELSE
-		WRITE "h no está entre 2 y g*(b+a)
+		WRITE "h no esta entre 2 y g*(b+a)"
 	ENDIF
 
-	IF(INLIST(g; [7.0;8.0;9.0]) DO
-		WRITE "g está en la lista [7.0;8.0;9.0]"
+	IF(INLIST(g; [7.0;8.0;9.0])) DO
+		WRITE "g incluido en [7.0;8.0;9.0]"
 	ELSE
-		WRITE "g no está en la lista [7.0;8.0;9.0]"
+		WRITE "g incluido en [7.0;8.0;9.0]"
 	ENDIF
 
 	WRITE "Fin del programa"
