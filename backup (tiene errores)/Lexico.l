@@ -1,6 +1,7 @@
 /* definiciones */
 
 %{
+
 	/* includes */
 
 	#include <stdio.h>
@@ -62,7 +63,7 @@
 	/* funciones */
 
 	char* cortarCadena(char* ,int);
-	char* reemplazarCaracter(char const * const,  char const * const,  char const * const);
+	char* reemplazarCaracter(char const * const,  char const * const,  char const * const) ;
 	void grabarTablaDeSimbolos(int);
 	void insertarEnTablaDeSimbolos(enum sectorTabla,enum tipoDato,char*);
 	char* normalizar(char*);
@@ -82,329 +83,136 @@
 	int indiceConstante=0;
 	char *tiraDeTokens;
 	FILE *yyin;
+	int yylval;
 
 %}
 
 /* conjuntos y regex */
 
-%option noyywrap
-%option yylineno
+	%option noyywrap
+	%option yylineno
 
-DIGITO					[0-9]
-LETRA					[a-zA-Z]
-LETRA_MINUS				[a-z]
-LETRA_MAYUS				[A-Z]
-CTE_INT					{DIGITO}+
-CTE_FLOAT				{DIGITO}*"."{DIGITO}+
-CTE_STRING				"\""({LETRA}|{DIGITO}|{CARACTER})*"\""
-ID 						{LETRA_MINUS}({LETRA}|{DIGITO}|_)*	
-CARACTER				"$"
-INICIO_PROGRAMA			"PROGRAMA"
-FIN_PROGRAMA			"END_PROGRAMA"
-OP_SUM					"+"
-OP_REST					"-"
-OP_MULT					"*"
-OP_DIV					"/"
-OP_ASIG					"="
-OP_DEC					":"
-OP_AND					"&"|"AND"
-OP_OR					"|"|"OR"
-OP_NOT					"!"|"NOT"
-PARENTESIS_I			"("
-PARENTESIS_F			")"
-LLAVE_I					"{"
-LLAVE_F					"}"
-CORCHETE_I				"["
-CORCHETE_F				"]"
-COMENTARIO_I			"-/"
-COMENTARIO_F			"/-"
-PUNTO_Y_COMA			";"
-COMA 					","
-COMP_MAYOR_ESTR			">"
-COMP_MENOR_ESTR			"<"
-COMP_MAYOR_IGUAL		">="
-COMP_MENOR_IGUAL		"<="
-COMP_IGUAL 				"=="
-COMP_DIST				"!="
-DECVAR					"DECVAR"
-ENDDEC					"ENDDEC"
-WHILE					"WHILE"
-ENDWHILE				"ENDWHILE"
-DO 						"DO"
-IF 						"IF"
-ELSE 					"ELSE"
-ELSIF					"ELSIF"
-ENDIF					"ENDIF"
-INTEGER					"INTEGER"
-FLOAT 					"FLOAT"
-READ					"READ"
-WRITE					"WRITE"
-BETWEEN  				"BETWEEN"
-INLIST					"INLIST"
+	DIGITO					[0-9]
+	LETRA					[a-zA-Z]
+	LETRA_MINUS				[a-z]
+	LETRA_MAYUS				[A-Z]
+	CTE_INT					-?{DIGITO}+
+	CTE_FLOAT				-?{DIGITO}*"."{DIGITO}+
+	CTE_STRING				\"({LETRA}|{DIGITO}|{CARACTER})*\"		
+	ID 						{LETRA_MINUS}({LETRA}|{DIGITO}|_)*	
+	CARACTER				" "|!|¡|>|:|<|[ ]|+|@|"%"|#|&|°|´|^|`|?|¿|~|/|\\|-|_|.|;
+	INICIO_PROGRAMA			"PROGRAMA"
+	FIN_PROGRAMA			"END_PROGRAMA"
+	OP_SUM					"+"
+	OP_REST					"-"
+	OP_MULT					"*"
+	OP_DIV					"/"
+	OP_ASIG					"="
+	OP_DEC					":"
+	OP_AND					"&"|"AND"
+	OP_OR					"|"|"OR"
+	OP_NOT					"!"|"NOT"
+	PARENTESIS_I			"("
+	PARENTESIS_F			")"
+	LLAVE_I					"{"
+	LLAVE_F					"}"
+	CORCHETE_I				"["
+	CORCHETE_F				"]"
+	COMENTARIO_I			"-/"
+	COMENTARIO_F			"/-"
+	PUNTO_Y_COMA			";"
+	COMA 					","
+	COMP_MAYOR_ESTR			">"
+	COMP_MENOR_ESTR			"<"
+	COMP_MAYOR_IGUAL		">="
+	COMP_MENOR_IGUAL		"<="
+	COMP_IGUAL 				"=="
+	COMP_DIST				"!="
+	DECVAR					"DECVAR"
+	ENDDEC					"ENDDEC"
+	WHILE					"WHILE"
+	ENDWHILE				"ENDWHILE"
+	DO 						"DO"
+	IF 						"IF"
+	ELSE 					"ELSE"
+	ELSIF					"ELSIF"
+	ENDIF					"ENDIF"
+	INTEGER					"INTEGER"
+	FLOAT 					"FLOAT"
+	READ					"READ"
+	WRITE					"WRITE"
+	BETWEEN  				"BETWEEN"
+	INLIST					"INLIST"
 
 /* definicion de reglas */
 
 %%
 
-{CTE_INT} 			{
-						guardarToken("CTE_INT");
-						strcpy(yylval.cadena, yytext);
-						insertarEnTablaDeSimbolos(sectorConstantes, tipoInt, yytext);
-						return CTE_INT;
-					}
+	{CTE_INT} {guardarToken("CTE_INT"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoInt, yytext); return CTE_INT;}
+	{CTE_FLOAT} {guardarToken("CTE_FLOAT"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoFloat, yytext); return CTE_FLOAT;}
+	{CTE_STRING} {guardarToken("CTE_STRING"); strcpy(yylval.cadena, yytext); insertarEnTablaDeSimbolos(sectorConstantes, tipoString, yytext); return CTE_STRING;}
+	{ID} {guardarToken("ID"); printf("ID: %s\n",yytext); strcpy(yylval.cadena,yytext); insertarEnTablaDeSimbolos(sectorVariables, sinTipo, yytext); return ID;}
+	{CARACTER} {guardarToken("CARACTER"); return CARACTER;}
+	{INICIO_PROGRAMA} {guardarToken("INICIO_PROGRAMA"); return INICIO_PROGRAMA;}
+	{FIN_PROGRAMA} {guardarToken("FIN_PROGRAMA"); return FIN_PROGRAMA;}
+	{OP_SUM} {guardarToken("OP_SUM"); return OP_SUM;}
+	{OP_REST} {guardarToken("OP_REST"); return OP_REST;}
+	{OP_MULT} {guardarToken("OP_MULT"); return OP_MULT;}
+	{OP_DIV} {guardarToken("OP_DIV"); return OP_DIV}
+	{OP_ASIG} {guardarToken("OP_ASIG"); return OP_ASIG;}
+	{OP_DEC} {guardarToken("OP_DEC"); return OP_DEC;}
+	{OP_AND} {guardarToken("OP_AND"); return OP_AND;}
+	{OP_OR} {guardarToken("OP_OR"); return OP_OR;}
+	{OP_NOT} {guardarToken("OP_NOT"); return OP_NOT;}
+	{PARENTESIS_I} {guardarToken("PARENTESIS_I"); return PARENTESIS_I;}
+	{PARENTESIS_F} {guardarToken("PARENTESIS_F"); return PARENTESIS_F;}
+	{LLAVE_I} {guardarToken("LLAVE_I"); return LLAVE_I;}
+	{LLAVE_F} {guardarToken("LLAVE_F"); return LLAVE_F;}
+	{CORCHETE_I} {guardarToken("CORCHETE_I"); return CORCHETE_I;}
+	{CORCHETE_F} {guardarToken("CORCHETE_F"); return CORCHETE_F;}
+	{COMENTARIO_I} {guardarToken("COMENTARIO_I"); return COMENTARIO_I;}
+	{COMENTARIO_F} {guardarToken("COMENTARIO_F"); return COMENTARIO_F;}
+	{PUNTO_Y_COMA} {guardarToken("PUNTO_Y_COMA"); return PUNTO_Y_COMA;}
+	{COMA} {guardarToken("COMA"); return COMA;}
+	{COMP_MAYOR_ESTR} {guardarToken("COMP_MAYOR_ESTR"); strcpy(yylval.cadena, yytext); return COMP_MAYOR_ESTR;}
+	{COMP_MENOR_ESTR} {guardarToken("COMP_MENOR_ESTR"); strcpy(yylval.cadena, yytext); return COMP_MENOR_ESTR;}
+	{COMP_MAYOR_IGUAL} {guardarToken("COMP_MAYOR_IGUAL"); strcpy(yylval.cadena, yytext); return COMP_MAYOR_IGUAL;}
+	{COMP_MENOR_IGUAL} {guardarToken("COMP_MENOR_IGUAL"); strcpy(yylval.cadena, yytext); return COMP_MENOR_IGUAL;}
+	{COMP_IGUAL} {guardarToken("COMP_IGUAL"); strcpy(yylval.cadena, yytext); return COMP_IGUAL;}
+	{COMP_DIST} {guardarToken("COMP_DIST"); strcpy(yylval.cadena, yytext); return COMP_DIST;}
+	{DECVAR} {guardarToken("DECVAR"); return DECVAR;}
+	{ENDDEC} {guardarToken("ENDDEC"); return ENDDEC;}
+	{WHILE} {guardarToken("WHILE"); return WHILE;}
+	{ENDWHILE} {guardarToken("ENDWHILE"); return ENDWHILE;}
+	{DO} {guardarToken("DO"); return DO;}
+	{IF} {guardarToken("IF"); return IF;}
+	{ELSE} {guardarToken("ELSE"); return ELSE;}
+	{ELSIF} {guardarToken(ELSIF"); return ELSIF;}
+	{ENDIF} {guardarToken("ENDIF"); return ENDIF;}
+	{INTEGER} {guardarToken("INTEGER"); return INTEGER;}
+	{FLOAT} {guardarToken("FLOAT"); return FLOAT;}
+	{READ} {guardarToken("READ"); return READ;}
+	{WRITE} {guardarToken("WRITE"); return WRITE;}
+	{BETWEEN} {guardarToken("BETWEEN"); return BETWEEN;}
+	{INLIST} {guardarToken("INLIST"); return INLIST;}
+	
+	"\n"
+	"\r\n"
+	"\t"
+	" "
+	. {mensajeDeError(errorCaracterInvalido,yytext);}
 
-{CTE_FLOAT}			{
-						guardarToken("CTE_FLOAT");
-						strcpy(yylval.cadena, yytext);
-						insertarEnTablaDeSimbolos(sectorConstantes, tipoFloat, yytext);
-						return CTE_FLOAT;
-					}
-
-{CTE_STRING}		{
-						guardarToken("CTE_STRING");
-						strcpy(yylval.cadena, yytext);
-						insertarEnTablaDeSimbolos(sectorConstantes, tipoString, yytext);
-						return CTE_STRING;
-					}
-
-{ID} 				{
-						guardarToken("ID");
-						printf("ID: %s\n",yytext);
-						strcpy(yylval.cadena,yytext);
-						insertarEnTablaDeSimbolos(sectorVariables, sinTipo, yytext);
-						return ID;
-					}
-
-{CARACTER} 			{
-						guardarToken("CARACTER");
-						return CARACTER;
-					}
-
-{INICIO_PROGRAMA} 	{
-						guardarToken("INICIO_PROGRAMA");
-						return INICIO_PROGRAMA;
-					}
-
-{FIN_PROGRAMA} 		{
-						guardarToken("FIN_PROGRAMA");
-						return FIN_PROGRAMA;
-					}
-
-{OP_SUM} 			{
-						guardarToken("OP_SUM");
-						return OP_SUM;
-					}
-
-{OP_REST} 			{
-						guardarToken("OP_REST");
-						return OP_REST;
-					}
-
-{OP_MULT} 			{	
-						guardarToken("OP_MULT");
-						return OP_MULT;
-					}
-
-{OP_DIV} 			{
-						guardarToken("OP_DIV");
-						return OP_DIV;
-					}
-
-{OP_ASIG} 			{
-						guardarToken("OP_ASIG");
-						return OP_ASIG;
-					}
-
-{OP_DEC} 			{
-						guardarToken("OP_DEC");
-						return OP_DEC;
-					}
-
-{OP_AND} 			{
-						guardarToken("OP_AND");
-						return OP_AND;
-					}
-
-{OP_OR} 			{
-						guardarToken("OP_OR");
-						return OP_OR;
-					}
-
-{OP_NOT} 			{
-						guardarToken("OP_NOT");
-						return OP_NOT;
-					}
-
-{PARENTESIS_I} 		{
-						guardarToken("PARENTESIS_I");
-						return PARENTESIS_I;
-					}
-
-{PARENTESIS_F} 		{
-						guardarToken("PARENTESIS_F");
-						return PARENTESIS_F;
-					}
-
-{LLAVE_I} 			{
-						guardarToken("LLAVE_I");
-						return LLAVE_I;
-					}
-
-{LLAVE_F} 			{
-						guardarToken("LLAVE_F");
-						return LLAVE_F;
-					}
-
-{CORCHETE_I} 		{
-						guardarToken("CORCHETE_I");
-						return CORCHETE_I;
-					}
-
-{CORCHETE_F} 		{
-						guardarToken("CORCHETE_F");
-						return CORCHETE_F;
-					}
-
-{COMENTARIO_I} 		{
-						guardarToken("COMENTARIO_I");
-						return COMENTARIO_I;
-					}
-
-{COMENTARIO_F} 		{
-						guardarToken("COMENTARIO_F");
-						return COMENTARIO_F;
-					}
-
-{PUNTO_Y_COMA} 		{
-						guardarToken("PUNTO_Y_COMA");
-						return PUNTO_Y_COMA;
-					}
-
-{COMA} 				{
-						guardarToken("COMA");
-						return COMA;
-					}
-
-{COMP_MAYOR_ESTR} 	{
-						guardarToken("COMP_MAYOR_ESTR");
-						strcpy(yylval.cadena, yytext);
-						return COMP_MAYOR_ESTR;
-					}
-
-{COMP_MENOR_ESTR} 	{
-						guardarToken("COMP_MENOR_ESTR");
-						strcpy(yylval.cadena, yytext);
-						return COMP_MENOR_ESTR;
-					}
-
-{COMP_MAYOR_IGUAL} 	{
-						guardarToken("COMP_MAYOR_IGUAL");
-						strcpy(yylval.cadena, yytext);
-						return COMP_MAYOR_IGUAL;
-					}
-
-{COMP_MENOR_IGUAL} 	{
-						guardarToken("COMP_MENOR_IGUAL");
-						strcpy(yylval.cadena, yytext);
-						return COMP_MENOR_IGUAL;
-					}
-
-{COMP_IGUAL} 		{
-						guardarToken("COMP_IGUAL");
-						strcpy(yylval.cadena, yytext);
-						return COMP_IGUAL;
-					}
-
-{COMP_DIST} 		{
-						guardarToken("COMP_DIST");
-						strcpy(yylval.cadena, yytext);
-						return COMP_DIST;
-					}
-
-{DECVAR} 			{
-						guardarToken("DECVAR");
-						return DECVAR;
-					}
-
-{ENDDEC} 			{
-						guardarToken("ENDDEC");
-						return ENDDEC;
-					}
-
-{WHILE} 			{
-						guardarToken("WHILE");
-						return WHILE;
-					}
-
-{ENDWHILE} 			{
-						guardarToken("ENDWHILE");
-						return ENDWHILE;
-					}
-
-{DO} 				{
-						guardarToken("DO");
-						return DO;
-					}
-
-{IF} 				{
-						guardarToken("IF");
-						return IF;
-					}
-
-{ELSE} 				{
-						guardarToken("ELSE");
-						return ELSE;
-					}
-
-{ENDIF} 			{
-						guardarToken("ENDIF");
-						return ENDIF;
-					}
-
-{INTEGER} 			{
-						guardarToken("INTEGER");
-						return INTEGER;
-					}
-
-{FLOAT} 			{
-						guardarToken("FLOAT");
-						return FLOAT;
-					}
-
-{READ} 				{
-						guardarToken("READ");
-						return READ;
-					}
-
-{WRITE} 			{
-						guardarToken("WRITE");
-						return WRITE;
-					}
-
-{BETWEEN} 			{
-						guardarToken("BETWEEN");
-						return BETWEEN;
-					}
-
-{INLIST} 			{
-						guardarToken("INLIST");
-						return INLIST;
-					}
-"\n"
-"\r\n"
-"\t"
-" "
 %%
 
 /* codigo */
-/*
+
 int main(int argc,char *argv[])
 {
 	setlocale(LC_CTYPE,"Spanish");
 
 	return FALSE;
 }
-*/
+
 char * reemplazarCaracter(char const * const original,  char const * const pattern,  char const * const replacement)
 {
 	size_t const replen = strlen(replacement);

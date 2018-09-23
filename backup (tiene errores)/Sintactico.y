@@ -51,7 +51,6 @@
 		ErrorOperacionNoValida,
 		ErrorIdDistintoTipo,
 		ErrorConstanteDistintoTipo,
-		ErrorArrayAsignacionMultiple
 	};
 
 	enum tipoDeError{
@@ -105,12 +104,8 @@
 
 	/* funciones */
 
-	int buscarEnTablaDeSimbolos(enum sectorTabla, char*);
-	void grabarTablaDeSimbolos(int);
-	char* obtenerTipo(enum sectorTabla, enum tipoDato);
-	int yyerrormsj(char *,enum tipoDeError,enum error, const char*);
+	int yyerrormsj(const char *,enum tipoDeError,enum error, const char*);
 	int yyerror();
-	int yylex();
 
 	/* primitivas de pila */
 
@@ -148,73 +143,73 @@
 	int expresionesRestantes;
 	enum tipoCondicion tipoCondicion;
 
-%}
+	%union {
+		int entero;
+		double real;
+		char cadena[50];
+	}
 
-%union {
-	int entero;
-	double real;
-	char cadena[50];
-}
+%}
 
 /* tokens */
 
-%token DIGITO
-%token LETRA
-%token LETRA_MINUS
-%token LETRA_MAYUS
-%token CTE_INT
-%token CTE_FLOAT
-%token CTE_STRING		
-%token ID
-%token CARACTER
-%token INICIO_PROGRAMA
-%token FIN_PROGRAMA
-%token OP_SUM
-%token OP_REST
-%token OP_MULT
-%token OP_DIV
-%token OP_ASIG
-%token OP_DEC
-%token OP_AND
-%token OP_OR
-%token OP_NOT
-%token PARENTESIS_I
-%token PARENTESIS_F
-%token LLAVE_I
-%token LLAVE_F
-%token CORCHETE_I
-%token CORCHETE_F
-%token COMENTARIO_I
-%token COMENTARIO_F
-%token PUNTO_Y_COMA
-%token COMA
-%token COMP_MAYOR_ESTR
-%token COMP_MENOR_ESTR
-%token COMP_MAYOR_IGUAL
-%token COMP_MENOR_IGUAL
-%token COMP_IGUAL
-%token COMP_DIST
-%token DECVAR
-%token ENDDEC
-%token WHILE
-%token ENDWHILE
-%token DO
-%token IF
-%token ELSE
-%token ELSIF
-%token ENDIF
-%token INTEGER
-%token FLOAT
-%token READ
-%token WRITE
-%token BETWEEN
-%token INLIST
+	%token DIGITO
+	%token LETRA
+	%token LETRA_MINUS
+	%token LETRA_MAYUS
+	%token CTE_INT
+	%token CTE_FLOAT
+	%token CTE_STRING		
+	%token ID
+	%token CARACTER
+	%token INICIO_PROGRAMA
+	%token FIN_PROGRAMA
+	%token OP_SUM
+	%token OP_REST
+	%token OP_MULT
+	%token OP_DIV
+	%token OP_ASIG
+	%token OP_DEC
+	%token OP_AND
+	%token OP_OR
+	%token OP_NOT
+	%token PARENTESIS_I
+	%token PARENTESIS_F
+	%token LLAVE_I
+	%token LLAVE_F
+	%token CORCHETE_I
+	%token CORCHETE_F
+	%token COMENTARIO_I
+	%token COMENTARIO_F
+	%token PUNTO_Y_COMA
+	%token COMA
+	%token COMP_MAYOR_ESTR
+	%token COMP_MENOR_ESTR
+	%token COMP_MAYOR_IGUAL
+	%token COMP_MENOR_IGUAL
+	%token COMP_IGUAL
+	%token COMP_DIST
+	%token DECVAR
+	%token ENDDEC
+	%token WHILE
+	%token ENDWHILE
+	%token DO
+	%token IF
+	%token ELSE
+	%token ELSIF
+	%token ENDIF
+	%token INTEGER
+	%token FLOAT
+	%token READ
+	%token WRITE
+	%token BETWEEN
+	%token INLIST
 
-%right OP_ASIG
-%left OP_SUM OP_REST
-%left OP_MULT OP_DIV
+	%right OP_ASIG
+	%left OP_SUM OP_REST
+	%left OP_MULT OP_DIV
 
-%start programa
+	%start programa
 
 /* definicion de reglas */
 
@@ -674,10 +669,12 @@
 
 int main(int argc,char *argv[])
 {
-
 	setlocale(LC_CTYPE,"Spanish");
 
-  	if ((yyin = fopen(argv[1], "rt")) == NULL)
+	crearPila(&pilaWhile);
+	crearPila(&pilaIf);
+
+	if ((yyin = fopen(argv[1], "rt")) == NULL)
 	{
 		printf("\n No se puede abrir el archivo: %s\n", argv[1]);
 	}
@@ -695,15 +692,17 @@ int main(int argc,char *argv[])
 	fclose(yyin);
 
 	grabarTablaDeSimbolos(0);
-
+	vaciarPila(&pilaWhile);
+	vaciarPila(&pilaIf);
+	
 	printf("\n*** COMPILACIÓN EXITOSA ***\n");
 
-  	return 0;
+	return 0;
 }
 
 /* funciones */
 
-int yyerrormsj(char * info,enum tipoDeError tipoDeError ,enum error error, const char *infoAdicional)
+int yyerrormsj(const char * info,enum tipoDeError tipoDeError ,enum error error, const char *infoAdicional)
 {
 	grabarTablaDeSimbolos(1);
 	printf("[Línea %d] ",yylineno);
@@ -739,9 +738,6 @@ int yyerrormsj(char * info,enum tipoDeError tipoDeError ,enum error error, const
 			break;
 		case ErrorConstanteDistintoTipo:
 			printf("Descripción: La constante %s no es de tipo %s\n", info, obtenerTipo(sectorVariables, tipoAsignacion));
-			break;
-		case ErrorArrayAsignacionMultiple:
-			printf("Descripción: El vector %s esperaba %d expresiones, pero se recibieron %d.\n", info,cantidadDeExpresionesEsperadasEnVector,contadorExpresionesVector );
 			break;
     }
 

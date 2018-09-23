@@ -1,0 +1,3 @@
+PROGRAMA
+	WRITE "Hello, world!"
+END_PROGRAMA

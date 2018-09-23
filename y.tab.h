@@ -149,7 +149,22 @@
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+typedef union YYSTYPE
+{
 
+/* Line 1676 of yacc.c  */
+#line 153 "Sintactico.y"
+
+	int entero;
+	double real;
+	char cadena[50];
+
+
+
+/* Line 1676 of yacc.c  */
+#line 166 "y.tab.h"
+} YYSTYPE;
+# define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif

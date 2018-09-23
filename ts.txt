@@ -1,0 +1,5 @@
+NOMBRE                          |	TIPO           |	VALOR                           |	LONGITUD     |	LIMITE       
+
+_ello                           |	sin tipo       |	----------------------------    |	----------   |	----------   
+
+**** TABLA INCOMPLETA (ERROR DE COMPILACIÓN) ****
