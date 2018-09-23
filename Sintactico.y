@@ -522,56 +522,47 @@
 
 	tipodato: 			INTEGER
 						{
-							int i;
-							printf("  Declaradas: ");
-							for(i=0;i<contadorListaVar;i++)
+							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
+							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
+							if(strcmp("sin tipo",obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
-								if(tablaVariables[indicesParaAsignarTipo[i]].tipo==sinTipo)
-								{
-									printf("'%s' ",tablaVariables[indicesParaAsignarTipo[i]].valor);
-									tablaVariables[indicesParaAsignarTipo[i]].tipo=tipoInt;
-								}
-								else
-								{
-									yyerrormsj(tablaVariables[indicesParaAsignarTipo[i]].valor,ErrorSintactico,ErrorIdRepetida,"");
-								}
+								tablaVariables[posicion].tipo=tipoInt;
 							}
-							printf("tipo entero\n");
+							else
+							{
+								yyerrormsj(tablaVariables[posicion].valor,ErrorSintactico,ErrorIdRepetida,"");
+							}										
+							
+							printf("tipo entero\n");							
 						}
 	|					FLOAT
 						{
-							int i;
-							printf("  Declaradas: ");
-							for(i=0;i<contadorListaVar;i++)
+							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
+							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
+							if(strcmp("sin tipo",obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
-								if(tablaVariables[indicesParaAsignarTipo[i]].tipo==sinTipo)
-								{
-									printf("'%s' ",tablaVariables[indicesParaAsignarTipo[i]].valor);
-									tablaVariables[indicesParaAsignarTipo[i]].tipo=tipoFloat;
-								}
-								else
-								{
-									yyerrormsj(tablaVariables[indicesParaAsignarTipo[i]].valor,ErrorSintactico,ErrorIdRepetida,"");
-								}
+								tablaVariables[posicion].tipo=tipoFloat;
 							}
+							else
+							{
+								yyerrormsj(tablaVariables[posicion].valor,ErrorSintactico,ErrorIdRepetida,"");
+							}
+							
 							printf("tipo flotante\n");
 						}
 	|					STRING
-						{
-							int i;
-							printf("  Declaradas: ");
-							for(i=0;i<contadorListaVar;i++)
+						{	
+							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
+							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
+							if(strcmp("sin tipo",obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
-								if(tablaVariables[indicesParaAsignarTipo[i]].tipo==sinTipo)
-								{
-									printf("'%s' ",tablaVariables[indicesParaAsignarTipo[i]].valor);
-									tablaVariables[indicesParaAsignarTipo[i]].tipo=tipoString;
-								}
-								else
-								{
-									yyerrormsj(tablaVariables[indicesParaAsignarTipo[i]].valor,ErrorSintactico,ErrorIdRepetida,"");
-								}
+								tablaVariables[posicion].tipo=tipoString;
 							}
+							else
+							{
+								yyerrormsj(tablaVariables[posicion].valor,ErrorSintactico,ErrorIdRepetida,"");
+							}
+							
 							printf("tipo string\n");
 						}
 	;
@@ -638,9 +629,9 @@
 	                  	ID
 	                  	{
 	                  		printf("id\n");
-	                  		printf("%s\n", yylval);
-	                  		int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
-							indicesParaAsignarTipo[contadorListaVar++]=posicion;
+	                  		printf("%s\n", yylval.cadena);
+	                  		/*int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
+							indicesParaAsignarTipo[contadorListaVar++]=posicion; */
 	                  	}
 	|
 						PARENTESIS_I expresion PARENTESIS_F

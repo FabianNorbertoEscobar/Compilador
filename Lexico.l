@@ -518,7 +518,7 @@ void mostrarTablaDeSimbolos(){
 
 	setlocale(LC_CTYPE,"Spanish");
 	
-	printf("%-32s|\t%-15s|\t%-32s|\t%-13s|\t%-13s\n\n","NOMBRE","TIPO","VALOR","LONGITUD","LÍMITE");
+	printf("%-32s|\t%-15s|\t%-32s|\t%-13s|\t%-13s\n\n","NOMBRE","TIPO","VALOR","LONGITUD","LIMITE");
 	int i;
 	
 	for(i = 0; i<indiceVariable; i++)
