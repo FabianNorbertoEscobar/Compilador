@@ -1,0 +1,84 @@
+﻿PROGRAMA
+	DECVAR
+		a, b , z, x: INTEGER
+		c, d: STRING
+		e: INTEGER
+		g, h: FLOAT
+	ENDDEC
+
+	WRITE "Inicio del programa"
+
+	g=3.5
+	WRITE "g es:"
+	WRITE g
+	
+	a=10
+	WRITE "a es:"
+	WRITE a
+
+	-/PRUEBA: cota numérica/-
+	-/a=1000000000000000000000000000000000000/-
+	b=20
+	WRITE "b es:"
+	WRITE b
+	c="cadena"
+	WRITE "c es:"
+	WRITE c
+
+	-/PRUEBA: expresiones/-
+	a=((10+b)/(10-4))+5*2
+	WRITE "resultado de la expresión es:"
+	WRITE a
+
+	-/PRUEBA: cota para cadenas/-
+	-/c="cadenaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/-
+	d=" de prueba"
+	WRITE "d es:"
+	WRITE d
+	
+	-/PRUEBA: tipo/-
+	-/d=30/-
+	e=2
+	WRITE "e es:"
+	WRITE e
+
+	-/PRUEBA: selecciones y ciclos anidados/-
+	IF(a<b AND b==20) DO
+		-/WRITE a/-
+		WHILE(a!=0) DO
+		e=2
+			WHILE (e>1) DO
+				-/WRITE e/-
+				e=e-1
+			ENDWHILE
+			a=a-1
+		ENDWHILE
+
+		IF(a==0) DO
+			WRITE "a es igual a cero"
+		ELSE
+			WRITE "a es distinto de cero"
+		ENDIF
+	ENDIF
+
+
+	-/PRUEBA: tema especial BETWEEN e INLIST/-
+	h=4.0
+	g=6.0
+	WRITE h
+	WRITE a
+	IF(BETWEEN(h, [2;g*(b+a)])) DO
+		WRITE "h esta entre 2 y g*(b+a)"
+	ELSE
+		WRITE "h no esta entre 2 y g*(b+a)"
+	ENDIF
+
+	IF(INLIST(g; [7.0;8.0;9.0])) DO
+		WRITE "g incluido en [7.0;8.0;9.0]"
+	ELSE
+		WRITE "g incluido en [7.0;8.0;9.0]"
+	ENDIF
+
+	WRITE "Fin del programa"
+
+END_PROGRAMA

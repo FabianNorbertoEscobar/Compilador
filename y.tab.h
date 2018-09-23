@@ -155,7 +155,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 152 "Sintactico.y"
+#line 137 "Sintactico.y"
 
 	int entero;
 	double real;

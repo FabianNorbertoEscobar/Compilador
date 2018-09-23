@@ -2142,15 +2142,6 @@ int main()
 
 /* codigo */
 
-/*
-int main(int argc,char *argv[])
-{
-	setlocale(LC_CTYPE,"Spanish");
-
-	return FALSE;
-}
-*/
-
 char * reemplazarCaracter(char const * const original,  char const * const pattern,  char const * const replacement)
 {
 	size_t const replen = strlen(replacement);

@@ -205,11 +205,6 @@
 
 %%
 
-	start: 				programa
-						{
-							printf("COMPILACION EXITOSA\n");
-						}
-
 	programa:			INICIO_PROGRAMA
 						{
 							printf("inicio del programa\n");
