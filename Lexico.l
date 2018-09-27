@@ -148,21 +148,21 @@ COMENTARIO 				{COMENTARIO_I}({LETRA}|{DIGITO}|.)*{COMENTARIO_F}
 %%
 
 {CTE_INT} 			{
-						guardarToken("CTE_INT");
+						guardarToken("CTE_INT\n");
 						strcpy(yylval.cadena, yytext);
 						insertarEnTablaDeSimbolos(sectorConstantes, tipoInt, yytext);
 						return CTE_INT;
 					}
 
 {CTE_FLOAT}			{
-						guardarToken("CTE_FLOAT");
+						guardarToken("CTE_FLOAT\n");
 						strcpy(yylval.cadena, yytext);
 						insertarEnTablaDeSimbolos(sectorConstantes, tipoFloat, yytext);
 						return CTE_FLOAT;
 					}
 
 {CTE_STRING}		{
-						guardarToken("CTE_STRING");
+						guardarToken("CTE_STRING\n");
 						strcpy(yylval.cadena, yytext);
 						printf("valor cadena: %s\n", yylval.cadena);
 						insertarEnTablaDeSimbolos(sectorConstantes, tipoString, yytext);
@@ -170,7 +170,7 @@ COMENTARIO 				{COMENTARIO_I}({LETRA}|{DIGITO}|.)*{COMENTARIO_F}
 					}
 
 {ID} 				{
-						guardarToken("ID");
+						guardarToken("ID\n");
 						printf("ID: %s\n",yytext);
 						strcpy(yylval.cadena,yytext);
 						insertarEnTablaDeSimbolos(sectorVariables, sinTipo, yytext);
@@ -178,228 +178,228 @@ COMENTARIO 				{COMENTARIO_I}({LETRA}|{DIGITO}|.)*{COMENTARIO_F}
 					}
 
 {INICIO_PROGRAMA} 	{
-						guardarToken("INICIO_PROGRAMA");
+						guardarToken("INICIO_PROGRAMA\n");
 						return INICIO_PROGRAMA;
 					}
 
 {FIN_PROGRAMA} 		{
-						guardarToken("FIN_PROGRAMA");
+						guardarToken("FIN_PROGRAMA\n");
 						return FIN_PROGRAMA;
 					}
 
 {OP_SUM} 			{
-						guardarToken("OP_SUM");
+						guardarToken("OP_SUM\n");
 						return OP_SUM;
 					}
 
 {OP_REST} 			{
-						guardarToken("OP_REST");
+						guardarToken("OP_REST\n");
 						return OP_REST;
 					}
 
 {OP_MULT} 			{	
-						guardarToken("OP_MULT");
+						guardarToken("OP_MULT\n");
 						return OP_MULT;
 					}
 
 {OP_DIV} 			{
-						guardarToken("OP_DIV");
+						guardarToken("OP_DIV\n");
 						return OP_DIV;
 					}
 
 {OP_ASIG} 			{
-						guardarToken("OP_ASIG");
+						guardarToken("OP_ASIG\n");
 						return OP_ASIG;
 					}
 
 {OP_DEC} 			{
-						guardarToken("OP_DEC");
+						guardarToken("OP_DEC\n");
 						return OP_DEC;
 					}
 
 {OP_AND} 			{
-						guardarToken("OP_AND");
+						guardarToken("OP_AND\n");
 						return OP_AND;
 					}
 
 {OP_OR} 			{
-						guardarToken("OP_OR");
+						guardarToken("OP_OR\n");
 						return OP_OR;
 					}
 
 {OP_NOT} 			{
-						guardarToken("OP_NOT");
+						guardarToken("OP_NOT\n");
 						return OP_NOT;
 					}
 
 {PARENTESIS_I} 		{
-						guardarToken("PARENTESIS_I");
+						guardarToken("PARENTESIS_I\n");
 						return PARENTESIS_I;
 					}
 
 {PARENTESIS_F} 		{
-						guardarToken("PARENTESIS_F");
+						guardarToken("PARENTESIS_F\n");
 						return PARENTESIS_F;
 					}
 
 {LLAVE_I} 			{
-						guardarToken("LLAVE_I");
+						guardarToken("LLAVE_I\n");
 						return LLAVE_I;
 					}
 
 {LLAVE_F} 			{
-						guardarToken("LLAVE_F");
+						guardarToken("LLAVE_F\n");
 						return LLAVE_F;
 					}
 
 {CORCHETE_I} 		{
-						guardarToken("CORCHETE_I");
+						guardarToken("CORCHETE_I\n");
 						return CORCHETE_I;
 					}
 
 {CORCHETE_F} 		{
-						guardarToken("CORCHETE_F");
+						guardarToken("CORCHETE_F\n");
 						return CORCHETE_F;
 					}
 
 {COMENTARIO_I} 		{
-						guardarToken("COMENTARIO_I");
+						guardarToken("COMENTARIO_I\n");
 						return COMENTARIO_I;
 					}
 
 {COMENTARIO_F} 		{
-						guardarToken("COMENTARIO_F");
+						guardarToken("COMENTARIO_F\n");
 						return COMENTARIO_F;
 					}
 
 {PUNTO_Y_COMA} 		{
-						guardarToken("PUNTO_Y_COMA");
+						guardarToken("PUNTO_Y_COMA\n");
 						return PUNTO_Y_COMA;
 					}
 
 {COMA} 				{
-						guardarToken("COMA");
+						guardarToken("COMA\n");
 						return COMA;
 					}
 
 {COMP_MAYOR_ESTR} 	{
-						guardarToken("COMP_MAYOR_ESTR");
+						guardarToken("COMP_MAYOR_ESTR\n");
 						strcpy(yylval.cadena, yytext);
 						return COMP_MAYOR_ESTR;
 					}
 
 {COMP_MENOR_ESTR} 	{
-						guardarToken("COMP_MENOR_ESTR");
+						guardarToken("COMP_MENOR_ESTR\n");
 						strcpy(yylval.cadena, yytext);
 						return COMP_MENOR_ESTR;
 					}
 
 {COMP_MAYOR_IGUAL} 	{
-						guardarToken("COMP_MAYOR_IGUAL");
+						guardarToken("COMP_MAYOR_IGUAL\n");
 						strcpy(yylval.cadena, yytext);
 						return COMP_MAYOR_IGUAL;
 					}
 
 {COMP_MENOR_IGUAL} 	{
-						guardarToken("COMP_MENOR_IGUAL");
+						guardarToken("COMP_MENOR_IGUAL\n");
 						strcpy(yylval.cadena, yytext);
 						return COMP_MENOR_IGUAL;
 					}
 
 {COMP_IGUAL} 		{
-						guardarToken("COMP_IGUAL");
+						guardarToken("COMP_IGUAL\n");
 						strcpy(yylval.cadena, yytext);
 						return COMP_IGUAL;
 					}
 
 {COMP_DIST} 		{
-						guardarToken("COMP_DIST");
+						guardarToken("COMP_DIST\n");
 						strcpy(yylval.cadena, yytext);
 						return COMP_DIST;
 					}
 
 {DECVAR} 			{
-						guardarToken("DECVAR");
+						guardarToken("DECVAR\n");
 						return DECVAR;
 					}
 
 {ENDDEC} 			{
-						guardarToken("ENDDEC");
+						guardarToken("ENDDEC\n");
 						return ENDDEC;
 					}
 
 {WHILE} 			{
-						guardarToken("WHILE");
+						guardarToken("WHILE\n");
 						return WHILE;
 					}
 
 {ENDWHILE} 			{
-						guardarToken("ENDWHILE");
+						guardarToken("ENDWHILE\n");
 						return ENDWHILE;
 					}
 
 {DO} 				{
-						guardarToken("DO");
+						guardarToken("DO\n");
 						return DO;
 					}
 
 {IF} 				{
-						guardarToken("IF");
+						guardarToken("IF\n");
 						return IF;
 					}
 
 {ELSE} 				{
-						guardarToken("ELSE");
+						guardarToken("ELSE\n");
 						return ELSE;
 					}
 
 {ELSIF}				{
-						guardarToken("ELSIF");
+						guardarToken("ELSIF\n");
 						return ELSIF;
 					}
 
 {ENDIF} 			{
-						guardarToken("ENDIF");
+						guardarToken("ENDIF\n");
 						return ENDIF;
 					}
 
 {INTEGER} 			{
-						guardarToken("INTEGER");
+						guardarToken("INTEGER\n");
 						return INTEGER;
 					}
 
 {FLOAT} 			{
-						guardarToken("FLOAT");
+						guardarToken("FLOAT\n");
 						return FLOAT;
 					}
 
 {STRING} 			{
-						guardarToken("STRING");
+						guardarToken("STRING\n");
 						return STRING;
 					}
 
 {READ} 				{
-						guardarToken("READ");
+						guardarToken("READ\n");
 						return READ;
 					}
 
 {WRITE} 			{
-						guardarToken("WRITE");
+						guardarToken("WRITE\n");
 						return WRITE;
 					}
 
 {BETWEEN} 			{
-						guardarToken("BETWEEN");
+						guardarToken("BETWEEN\n");
 						return BETWEEN;
 					}
 
 {INLIST} 			{
-						guardarToken("INLIST");
+						guardarToken("INLIST\n");
 						return INLIST;
 					}
 
 {COMENTARIO}		{
-						guardarToken("COMENTARIO");
+						guardarToken("COMENTARIO\n");
 						return COMENTARIO;
 					}
 "\n"

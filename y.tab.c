@@ -687,15 +687,15 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   209,   209,   208,   219,   225,   230,   236,   241,   246,
-     251,   256,   261,   266,   272,   286,   285,   294,   293,   301,
-     307,   311,   306,   320,   324,   319,   333,   332,   341,   346,
-     353,   357,   352,   366,   370,   365,   379,   383,   378,   392,
-     396,   391,   405,   409,   404,   418,   422,   417,   431,   437,
-     441,   436,   450,   454,   459,   449,   469,   468,   475,   480,
-     487,   486,   496,   501,   504,   506,   509,   524,   539,   556,
-     561,   566,   572,   577,   582,   588,   593,   598,   603,   611,
-     614,   617,   623,   626,   632,   634
+       0,   208,   214,   213,   224,   230,   235,   241,   246,   251,
+     256,   261,   266,   271,   277,   291,   290,   299,   298,   306,
+     312,   316,   311,   325,   329,   324,   338,   337,   346,   351,
+     358,   362,   357,   371,   375,   370,   384,   388,   383,   397,
+     401,   396,   410,   414,   409,   423,   427,   422,   436,   442,
+     446,   441,   455,   459,   464,   454,   474,   473,   480,   485,
+     492,   491,   501,   506,   509,   511,   514,   529,   544,   561,
+     566,   571,   577,   582,   587,   593,   604,   615,   626,   634,
+     637,   640,   646,   649,   655,   657
 };
 #endif
 
@@ -1706,7 +1706,7 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 209 "Sintactico.y"
+#line 214 "Sintactico.y"
     {
 							printf("inicio del programa\n");
 						}
@@ -1715,7 +1715,7 @@ yyreduce:
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 214 "Sintactico.y"
+#line 219 "Sintactico.y"
     {
 							printf("fin del programa\n");
 	             		}
@@ -1724,7 +1724,7 @@ yyreduce:
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 220 "Sintactico.y"
+#line 225 "Sintactico.y"
     {
 							printf("bloque\n");
 						}
@@ -1733,7 +1733,7 @@ yyreduce:
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 226 "Sintactico.y"
+#line 231 "Sintactico.y"
     {
 
 						}
@@ -1742,7 +1742,7 @@ yyreduce:
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 231 "Sintactico.y"
+#line 236 "Sintactico.y"
     {
 
 						}
@@ -1751,7 +1751,7 @@ yyreduce:
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 237 "Sintactico.y"
+#line 242 "Sintactico.y"
     {
 							printf("bloque de declaracion\n");
 						}
@@ -1760,7 +1760,7 @@ yyreduce:
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 242 "Sintactico.y"
+#line 247 "Sintactico.y"
     {
 	                 		printf("asignacion\n");
 	                 	}
@@ -1769,7 +1769,7 @@ yyreduce:
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 247 "Sintactico.y"
+#line 252 "Sintactico.y"
     {
 	                 		printf("lectura\n");
 	                 	}
@@ -1778,7 +1778,7 @@ yyreduce:
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 252 "Sintactico.y"
+#line 257 "Sintactico.y"
     {
 							printf("escritura\n");
 						}
@@ -1787,7 +1787,7 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 257 "Sintactico.y"
+#line 262 "Sintactico.y"
     {
 	                 		printf("iteracion\n");
 	                 	}
@@ -1796,7 +1796,7 @@ yyreduce:
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 262 "Sintactico.y"
+#line 267 "Sintactico.y"
     {
 	                 		printf("seleccion\n");
 	                 	}
@@ -1805,7 +1805,7 @@ yyreduce:
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 267 "Sintactico.y"
+#line 272 "Sintactico.y"
     {
 							printf("comentario\n");
 						}
@@ -1814,7 +1814,7 @@ yyreduce:
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 273 "Sintactico.y"
+#line 278 "Sintactico.y"
     {
 							if(tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(1) - (3)].cadena))].tipo==sinTipo)
 							{
@@ -1830,7 +1830,7 @@ yyreduce:
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 286 "Sintactico.y"
+#line 291 "Sintactico.y"
     {
 							printf("while\n");
 						}
@@ -1839,7 +1839,7 @@ yyreduce:
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 294 "Sintactico.y"
+#line 299 "Sintactico.y"
     {
 							printf("if\n");
 						}
@@ -1848,7 +1848,7 @@ yyreduce:
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 302 "Sintactico.y"
+#line 307 "Sintactico.y"
     {
 							printf("comparacion\n");
 						}
@@ -1857,7 +1857,7 @@ yyreduce:
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 307 "Sintactico.y"
+#line 312 "Sintactico.y"
     {
 
 						}
@@ -1866,7 +1866,7 @@ yyreduce:
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 311 "Sintactico.y"
+#line 316 "Sintactico.y"
     {
 	                    	printf("and\n");
 	                    }
@@ -1875,7 +1875,7 @@ yyreduce:
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 315 "Sintactico.y"
+#line 320 "Sintactico.y"
     {
 
 	                  	}
@@ -1884,7 +1884,7 @@ yyreduce:
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 320 "Sintactico.y"
+#line 325 "Sintactico.y"
     {
 
 						}
@@ -1893,7 +1893,7 @@ yyreduce:
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 324 "Sintactico.y"
+#line 329 "Sintactico.y"
     {
 							printf("or\n");	
 						}
@@ -1902,7 +1902,7 @@ yyreduce:
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 328 "Sintactico.y"
+#line 333 "Sintactico.y"
     {
 
 	                  	}
@@ -1911,7 +1911,7 @@ yyreduce:
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 333 "Sintactico.y"
+#line 338 "Sintactico.y"
     {
 							printf("not\n");
 						}
@@ -1920,7 +1920,7 @@ yyreduce:
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 337 "Sintactico.y"
+#line 342 "Sintactico.y"
     {
 
 	                  	}
@@ -1929,7 +1929,7 @@ yyreduce:
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 342 "Sintactico.y"
+#line 347 "Sintactico.y"
     {
 							printf("between\n");
 						}
@@ -1938,7 +1938,7 @@ yyreduce:
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 347 "Sintactico.y"
+#line 352 "Sintactico.y"
     {
 							printf("in list\n");
 						}
@@ -1947,7 +1947,7 @@ yyreduce:
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 353 "Sintactico.y"
+#line 358 "Sintactico.y"
     {
 
 						}
@@ -1956,7 +1956,7 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 357 "Sintactico.y"
+#line 362 "Sintactico.y"
     {
 							printf(">\n");
 						}
@@ -1965,7 +1965,7 @@ yyreduce:
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 361 "Sintactico.y"
+#line 366 "Sintactico.y"
     {
 
 						}
@@ -1974,7 +1974,7 @@ yyreduce:
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 366 "Sintactico.y"
+#line 371 "Sintactico.y"
     {
 
 						}
@@ -1983,7 +1983,7 @@ yyreduce:
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 370 "Sintactico.y"
+#line 375 "Sintactico.y"
     {
 							printf("<\n");
 						}
@@ -1992,7 +1992,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 374 "Sintactico.y"
+#line 379 "Sintactico.y"
     {
 
 						}
@@ -2001,7 +2001,7 @@ yyreduce:
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 379 "Sintactico.y"
+#line 384 "Sintactico.y"
     {
 
 						}
@@ -2010,7 +2010,7 @@ yyreduce:
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 383 "Sintactico.y"
+#line 388 "Sintactico.y"
     {
 							printf(">=\n");
 						}
@@ -2019,7 +2019,7 @@ yyreduce:
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 387 "Sintactico.y"
+#line 392 "Sintactico.y"
     {
 
 						}
@@ -2028,7 +2028,7 @@ yyreduce:
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 392 "Sintactico.y"
+#line 397 "Sintactico.y"
     {
 
 						}
@@ -2037,7 +2037,7 @@ yyreduce:
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 396 "Sintactico.y"
+#line 401 "Sintactico.y"
     {
 							printf("<=\n");
 						}
@@ -2046,7 +2046,7 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 400 "Sintactico.y"
+#line 405 "Sintactico.y"
     {
 
 						}
@@ -2055,7 +2055,7 @@ yyreduce:
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 405 "Sintactico.y"
+#line 410 "Sintactico.y"
     {
 
 						}
@@ -2064,7 +2064,7 @@ yyreduce:
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 409 "Sintactico.y"
+#line 414 "Sintactico.y"
     {
 							printf("==\n");
 						}
@@ -2073,7 +2073,7 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 413 "Sintactico.y"
+#line 418 "Sintactico.y"
     {
 
 						}
@@ -2082,7 +2082,7 @@ yyreduce:
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 418 "Sintactico.y"
+#line 423 "Sintactico.y"
     {
 
 						}
@@ -2091,7 +2091,7 @@ yyreduce:
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 422 "Sintactico.y"
+#line 427 "Sintactico.y"
     {
 							printf("!=\n");
 						}
@@ -2100,7 +2100,7 @@ yyreduce:
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 426 "Sintactico.y"
+#line 431 "Sintactico.y"
     {
 
 						}
@@ -2109,7 +2109,7 @@ yyreduce:
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 432 "Sintactico.y"
+#line 437 "Sintactico.y"
     {
 							printf("if true\n");
 						}
@@ -2118,7 +2118,7 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 437 "Sintactico.y"
+#line 442 "Sintactico.y"
     {
 	                  		printf("if true\n");
 	                  	}
@@ -2127,7 +2127,7 @@ yyreduce:
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 441 "Sintactico.y"
+#line 446 "Sintactico.y"
     {
 	                    	printf("else\n");
 	                    }
@@ -2136,7 +2136,7 @@ yyreduce:
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 445 "Sintactico.y"
+#line 450 "Sintactico.y"
     {
 	                    	printf("if false\n");
 	                    }
@@ -2145,7 +2145,7 @@ yyreduce:
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 450 "Sintactico.y"
+#line 455 "Sintactico.y"
     {
 							printf("if true\n");
 						}
@@ -2154,7 +2154,7 @@ yyreduce:
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 454 "Sintactico.y"
+#line 459 "Sintactico.y"
     {
 							printf("elsif");
 						}
@@ -2163,7 +2163,7 @@ yyreduce:
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 459 "Sintactico.y"
+#line 464 "Sintactico.y"
     {
 							printf("else");
 						}
@@ -2172,7 +2172,7 @@ yyreduce:
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 463 "Sintactico.y"
+#line 468 "Sintactico.y"
     {
 							printf("if false");
 						}
@@ -2181,7 +2181,7 @@ yyreduce:
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 469 "Sintactico.y"
+#line 474 "Sintactico.y"
     {
 	                    	printf("read\n");
 	                    }
@@ -2190,7 +2190,7 @@ yyreduce:
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 476 "Sintactico.y"
+#line 481 "Sintactico.y"
     {
 	                    	printf("write id\n");
 	                    }
@@ -2199,7 +2199,7 @@ yyreduce:
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 481 "Sintactico.y"
+#line 486 "Sintactico.y"
     {
  							printf("write string\n");
  						}
@@ -2208,7 +2208,7 @@ yyreduce:
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 487 "Sintactico.y"
+#line 492 "Sintactico.y"
     {
 							printf("bloque de declaracion\n");
 						}
@@ -2217,7 +2217,7 @@ yyreduce:
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 491 "Sintactico.y"
+#line 496 "Sintactico.y"
     {
 							printf("fin bloque de declaracion\n");
 						}
@@ -2226,7 +2226,7 @@ yyreduce:
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 497 "Sintactico.y"
+#line 502 "Sintactico.y"
     {
 							printf("múltiple\n");
 						}
@@ -2235,7 +2235,7 @@ yyreduce:
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 510 "Sintactico.y"
+#line 515 "Sintactico.y"
     {
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
 							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
@@ -2255,7 +2255,7 @@ yyreduce:
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 525 "Sintactico.y"
+#line 530 "Sintactico.y"
     {
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
 							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
@@ -2275,7 +2275,7 @@ yyreduce:
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 540 "Sintactico.y"
+#line 545 "Sintactico.y"
     {	
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
 							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
@@ -2295,7 +2295,7 @@ yyreduce:
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 557 "Sintactico.y"
+#line 562 "Sintactico.y"
     {
 							printf("+\n");
 						}
@@ -2304,7 +2304,7 @@ yyreduce:
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 562 "Sintactico.y"
+#line 567 "Sintactico.y"
     {
 							printf("-\n");
 						}
@@ -2313,7 +2313,7 @@ yyreduce:
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 567 "Sintactico.y"
+#line 572 "Sintactico.y"
     {
 							printf("termino\n");
 						}
@@ -2322,7 +2322,7 @@ yyreduce:
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 573 "Sintactico.y"
+#line 578 "Sintactico.y"
     {
 	                    	printf("*\n");
 	                    }
@@ -2331,7 +2331,7 @@ yyreduce:
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 578 "Sintactico.y"
+#line 583 "Sintactico.y"
     {
 							printf("/\n");
 	                  	}
@@ -2340,7 +2340,7 @@ yyreduce:
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 583 "Sintactico.y"
+#line 588 "Sintactico.y"
     {
 							printf("factor\n");
 	                    }
@@ -2349,34 +2349,52 @@ yyreduce:
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 589 "Sintactico.y"
+#line 594 "Sintactico.y"
     {
 					    	printf("CTE_INT: %s\n", (yyvsp[(1) - (1)].cadena));
+					    	/*
+				    		if(esAsignacion==1&&tipoAsignacion!=tipoInt)
+				    		{
+				    			yyerrormsj($<cadena>1, ErrorSintactico,ErrorConstanteDistintoTipo,"");
+				    		}
+				    		*/
 					    }
     break;
 
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 594 "Sintactico.y"
+#line 605 "Sintactico.y"
     {
 					    	printf("CTE_FLOAT: %s\n", (yyvsp[(1) - (1)].cadena));
+					    	/*
+					    	if(esAsignacion==1&&tipoAsignacion!=tipoFloat)
+					    	{
+					    		yyerrormsj($<cadena>1, ErrorSintactico,ErrorConstanteDistintoTipo,"");
+					    	}
+					    	*/
 					    }
     break;
 
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 599 "Sintactico.y"
+#line 616 "Sintactico.y"
     {
 							printf("CTE_STRING: %s\n", (yyvsp[(1) - (1)].cadena));
+							/*
+							if(esAsignacion==1&&tipoAsignacion!=tipoString)
+							{
+					    		yyerrormsj($<cadena>1, ErrorSintactico,ErrorConstanteDistintoTipo,"");
+							}
+							*/
 						}
     break;
 
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 604 "Sintactico.y"
+#line 627 "Sintactico.y"
     {
 	                  		printf("id\n");
 	                  		printf("%s\n", yylval.cadena);
@@ -2388,7 +2406,7 @@ yyreduce:
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 618 "Sintactico.y"
+#line 641 "Sintactico.y"
     {
 							printf("rango\n");
 						}
@@ -2397,7 +2415,7 @@ yyreduce:
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 627 "Sintactico.y"
+#line 650 "Sintactico.y"
     {
 							printf("lista de expresiones\n");
 						}
@@ -2406,7 +2424,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2410 "y.tab.c"
+#line 2428 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2618,7 +2636,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 637 "Sintactico.y"
+#line 660 "Sintactico.y"
 
 
 /* codigo */

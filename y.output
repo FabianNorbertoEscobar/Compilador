@@ -1,3 +1,8 @@
+Nonterminals useless in grammar
+
+   start
+
+
 Terminals unused in grammar
 
    DIGITO
@@ -8,6 +13,11 @@ Terminals unused in grammar
    LLAVE_F
    COMENTARIO_I
    COMENTARIO_F
+
+
+Rules useless in grammar
+
+   85 start: programa
 
 
 Gramática

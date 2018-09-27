@@ -832,7 +832,7 @@ case 1:
 YY_RULE_SETUP
 #line 150 "Lexico.l"
 {
-						guardarToken("CTE_INT");
+						guardarToken("CTE_INT\n");
 						strcpy(yylval.cadena, yytext);
 						insertarEnTablaDeSimbolos(sectorConstantes, tipoInt, yytext);
 						return CTE_INT;
@@ -842,7 +842,7 @@ case 2:
 YY_RULE_SETUP
 #line 157 "Lexico.l"
 {
-						guardarToken("CTE_FLOAT");
+						guardarToken("CTE_FLOAT\n");
 						strcpy(yylval.cadena, yytext);
 						insertarEnTablaDeSimbolos(sectorConstantes, tipoFloat, yytext);
 						return CTE_FLOAT;
@@ -852,7 +852,7 @@ case 3:
 YY_RULE_SETUP
 #line 164 "Lexico.l"
 {
-						guardarToken("CTE_STRING");
+						guardarToken("CTE_STRING\n");
 						strcpy(yylval.cadena, yytext);
 						printf("valor cadena: %s\n", yylval.cadena);
 						insertarEnTablaDeSimbolos(sectorConstantes, tipoString, yytext);
@@ -863,7 +863,7 @@ case 4:
 YY_RULE_SETUP
 #line 172 "Lexico.l"
 {
-						guardarToken("ID");
+						guardarToken("ID\n");
 						printf("ID: %s\n",yytext);
 						strcpy(yylval.cadena,yytext);
 						insertarEnTablaDeSimbolos(sectorVariables, sinTipo, yytext);
@@ -874,7 +874,7 @@ case 5:
 YY_RULE_SETUP
 #line 180 "Lexico.l"
 {
-						guardarToken("INICIO_PROGRAMA");
+						guardarToken("INICIO_PROGRAMA\n");
 						return INICIO_PROGRAMA;
 					}
 	YY_BREAK
@@ -882,7 +882,7 @@ case 6:
 YY_RULE_SETUP
 #line 185 "Lexico.l"
 {
-						guardarToken("FIN_PROGRAMA");
+						guardarToken("FIN_PROGRAMA\n");
 						return FIN_PROGRAMA;
 					}
 	YY_BREAK
@@ -890,7 +890,7 @@ case 7:
 YY_RULE_SETUP
 #line 190 "Lexico.l"
 {
-						guardarToken("OP_SUM");
+						guardarToken("OP_SUM\n");
 						return OP_SUM;
 					}
 	YY_BREAK
@@ -898,7 +898,7 @@ case 8:
 YY_RULE_SETUP
 #line 195 "Lexico.l"
 {
-						guardarToken("OP_REST");
+						guardarToken("OP_REST\n");
 						return OP_REST;
 					}
 	YY_BREAK
@@ -906,7 +906,7 @@ case 9:
 YY_RULE_SETUP
 #line 200 "Lexico.l"
 {	
-						guardarToken("OP_MULT");
+						guardarToken("OP_MULT\n");
 						return OP_MULT;
 					}
 	YY_BREAK
@@ -914,7 +914,7 @@ case 10:
 YY_RULE_SETUP
 #line 205 "Lexico.l"
 {
-						guardarToken("OP_DIV");
+						guardarToken("OP_DIV\n");
 						return OP_DIV;
 					}
 	YY_BREAK
@@ -922,7 +922,7 @@ case 11:
 YY_RULE_SETUP
 #line 210 "Lexico.l"
 {
-						guardarToken("OP_ASIG");
+						guardarToken("OP_ASIG\n");
 						return OP_ASIG;
 					}
 	YY_BREAK
@@ -930,7 +930,7 @@ case 12:
 YY_RULE_SETUP
 #line 215 "Lexico.l"
 {
-						guardarToken("OP_DEC");
+						guardarToken("OP_DEC\n");
 						return OP_DEC;
 					}
 	YY_BREAK
@@ -938,7 +938,7 @@ case 13:
 YY_RULE_SETUP
 #line 220 "Lexico.l"
 {
-						guardarToken("OP_AND");
+						guardarToken("OP_AND\n");
 						return OP_AND;
 					}
 	YY_BREAK
@@ -946,7 +946,7 @@ case 14:
 YY_RULE_SETUP
 #line 225 "Lexico.l"
 {
-						guardarToken("OP_OR");
+						guardarToken("OP_OR\n");
 						return OP_OR;
 					}
 	YY_BREAK
@@ -954,7 +954,7 @@ case 15:
 YY_RULE_SETUP
 #line 230 "Lexico.l"
 {
-						guardarToken("OP_NOT");
+						guardarToken("OP_NOT\n");
 						return OP_NOT;
 					}
 	YY_BREAK
@@ -962,7 +962,7 @@ case 16:
 YY_RULE_SETUP
 #line 235 "Lexico.l"
 {
-						guardarToken("PARENTESIS_I");
+						guardarToken("PARENTESIS_I\n");
 						return PARENTESIS_I;
 					}
 	YY_BREAK
@@ -970,7 +970,7 @@ case 17:
 YY_RULE_SETUP
 #line 240 "Lexico.l"
 {
-						guardarToken("PARENTESIS_F");
+						guardarToken("PARENTESIS_F\n");
 						return PARENTESIS_F;
 					}
 	YY_BREAK
@@ -978,7 +978,7 @@ case 18:
 YY_RULE_SETUP
 #line 245 "Lexico.l"
 {
-						guardarToken("LLAVE_I");
+						guardarToken("LLAVE_I\n");
 						return LLAVE_I;
 					}
 	YY_BREAK
@@ -986,7 +986,7 @@ case 19:
 YY_RULE_SETUP
 #line 250 "Lexico.l"
 {
-						guardarToken("LLAVE_F");
+						guardarToken("LLAVE_F\n");
 						return LLAVE_F;
 					}
 	YY_BREAK
@@ -994,7 +994,7 @@ case 20:
 YY_RULE_SETUP
 #line 255 "Lexico.l"
 {
-						guardarToken("CORCHETE_I");
+						guardarToken("CORCHETE_I\n");
 						return CORCHETE_I;
 					}
 	YY_BREAK
@@ -1002,7 +1002,7 @@ case 21:
 YY_RULE_SETUP
 #line 260 "Lexico.l"
 {
-						guardarToken("CORCHETE_F");
+						guardarToken("CORCHETE_F\n");
 						return CORCHETE_F;
 					}
 	YY_BREAK
@@ -1010,7 +1010,7 @@ case 22:
 YY_RULE_SETUP
 #line 265 "Lexico.l"
 {
-						guardarToken("COMENTARIO_I");
+						guardarToken("COMENTARIO_I\n");
 						return COMENTARIO_I;
 					}
 	YY_BREAK
@@ -1018,7 +1018,7 @@ case 23:
 YY_RULE_SETUP
 #line 270 "Lexico.l"
 {
-						guardarToken("COMENTARIO_F");
+						guardarToken("COMENTARIO_F\n");
 						return COMENTARIO_F;
 					}
 	YY_BREAK
@@ -1026,7 +1026,7 @@ case 24:
 YY_RULE_SETUP
 #line 275 "Lexico.l"
 {
-						guardarToken("PUNTO_Y_COMA");
+						guardarToken("PUNTO_Y_COMA\n");
 						return PUNTO_Y_COMA;
 					}
 	YY_BREAK
@@ -1034,7 +1034,7 @@ case 25:
 YY_RULE_SETUP
 #line 280 "Lexico.l"
 {
-						guardarToken("COMA");
+						guardarToken("COMA\n");
 						return COMA;
 					}
 	YY_BREAK
@@ -1042,7 +1042,7 @@ case 26:
 YY_RULE_SETUP
 #line 285 "Lexico.l"
 {
-						guardarToken("COMP_MAYOR_ESTR");
+						guardarToken("COMP_MAYOR_ESTR\n");
 						strcpy(yylval.cadena, yytext);
 						return COMP_MAYOR_ESTR;
 					}
@@ -1051,7 +1051,7 @@ case 27:
 YY_RULE_SETUP
 #line 291 "Lexico.l"
 {
-						guardarToken("COMP_MENOR_ESTR");
+						guardarToken("COMP_MENOR_ESTR\n");
 						strcpy(yylval.cadena, yytext);
 						return COMP_MENOR_ESTR;
 					}
@@ -1060,7 +1060,7 @@ case 28:
 YY_RULE_SETUP
 #line 297 "Lexico.l"
 {
-						guardarToken("COMP_MAYOR_IGUAL");
+						guardarToken("COMP_MAYOR_IGUAL\n");
 						strcpy(yylval.cadena, yytext);
 						return COMP_MAYOR_IGUAL;
 					}
@@ -1069,7 +1069,7 @@ case 29:
 YY_RULE_SETUP
 #line 303 "Lexico.l"
 {
-						guardarToken("COMP_MENOR_IGUAL");
+						guardarToken("COMP_MENOR_IGUAL\n");
 						strcpy(yylval.cadena, yytext);
 						return COMP_MENOR_IGUAL;
 					}
@@ -1078,7 +1078,7 @@ case 30:
 YY_RULE_SETUP
 #line 309 "Lexico.l"
 {
-						guardarToken("COMP_IGUAL");
+						guardarToken("COMP_IGUAL\n");
 						strcpy(yylval.cadena, yytext);
 						return COMP_IGUAL;
 					}
@@ -1087,7 +1087,7 @@ case 31:
 YY_RULE_SETUP
 #line 315 "Lexico.l"
 {
-						guardarToken("COMP_DIST");
+						guardarToken("COMP_DIST\n");
 						strcpy(yylval.cadena, yytext);
 						return COMP_DIST;
 					}
@@ -1096,7 +1096,7 @@ case 32:
 YY_RULE_SETUP
 #line 321 "Lexico.l"
 {
-						guardarToken("DECVAR");
+						guardarToken("DECVAR\n");
 						return DECVAR;
 					}
 	YY_BREAK
@@ -1104,7 +1104,7 @@ case 33:
 YY_RULE_SETUP
 #line 326 "Lexico.l"
 {
-						guardarToken("ENDDEC");
+						guardarToken("ENDDEC\n");
 						return ENDDEC;
 					}
 	YY_BREAK
@@ -1112,7 +1112,7 @@ case 34:
 YY_RULE_SETUP
 #line 331 "Lexico.l"
 {
-						guardarToken("WHILE");
+						guardarToken("WHILE\n");
 						return WHILE;
 					}
 	YY_BREAK
@@ -1120,7 +1120,7 @@ case 35:
 YY_RULE_SETUP
 #line 336 "Lexico.l"
 {
-						guardarToken("ENDWHILE");
+						guardarToken("ENDWHILE\n");
 						return ENDWHILE;
 					}
 	YY_BREAK
@@ -1128,7 +1128,7 @@ case 36:
 YY_RULE_SETUP
 #line 341 "Lexico.l"
 {
-						guardarToken("DO");
+						guardarToken("DO\n");
 						return DO;
 					}
 	YY_BREAK
@@ -1136,7 +1136,7 @@ case 37:
 YY_RULE_SETUP
 #line 346 "Lexico.l"
 {
-						guardarToken("IF");
+						guardarToken("IF\n");
 						return IF;
 					}
 	YY_BREAK
@@ -1144,7 +1144,7 @@ case 38:
 YY_RULE_SETUP
 #line 351 "Lexico.l"
 {
-						guardarToken("ELSE");
+						guardarToken("ELSE\n");
 						return ELSE;
 					}
 	YY_BREAK
@@ -1152,7 +1152,7 @@ case 39:
 YY_RULE_SETUP
 #line 356 "Lexico.l"
 {
-						guardarToken("ELSIF");
+						guardarToken("ELSIF\n");
 						return ELSIF;
 					}
 	YY_BREAK
@@ -1160,7 +1160,7 @@ case 40:
 YY_RULE_SETUP
 #line 361 "Lexico.l"
 {
-						guardarToken("ENDIF");
+						guardarToken("ENDIF\n");
 						return ENDIF;
 					}
 	YY_BREAK
@@ -1168,7 +1168,7 @@ case 41:
 YY_RULE_SETUP
 #line 366 "Lexico.l"
 {
-						guardarToken("INTEGER");
+						guardarToken("INTEGER\n");
 						return INTEGER;
 					}
 	YY_BREAK
@@ -1176,7 +1176,7 @@ case 42:
 YY_RULE_SETUP
 #line 371 "Lexico.l"
 {
-						guardarToken("FLOAT");
+						guardarToken("FLOAT\n");
 						return FLOAT;
 					}
 	YY_BREAK
@@ -1184,7 +1184,7 @@ case 43:
 YY_RULE_SETUP
 #line 376 "Lexico.l"
 {
-						guardarToken("STRING");
+						guardarToken("STRING\n");
 						return STRING;
 					}
 	YY_BREAK
@@ -1192,7 +1192,7 @@ case 44:
 YY_RULE_SETUP
 #line 381 "Lexico.l"
 {
-						guardarToken("READ");
+						guardarToken("READ\n");
 						return READ;
 					}
 	YY_BREAK
@@ -1200,7 +1200,7 @@ case 45:
 YY_RULE_SETUP
 #line 386 "Lexico.l"
 {
-						guardarToken("WRITE");
+						guardarToken("WRITE\n");
 						return WRITE;
 					}
 	YY_BREAK
@@ -1208,7 +1208,7 @@ case 46:
 YY_RULE_SETUP
 #line 391 "Lexico.l"
 {
-						guardarToken("BETWEEN");
+						guardarToken("BETWEEN\n");
 						return BETWEEN;
 					}
 	YY_BREAK
@@ -1216,7 +1216,7 @@ case 47:
 YY_RULE_SETUP
 #line 396 "Lexico.l"
 {
-						guardarToken("INLIST");
+						guardarToken("INLIST\n");
 						return INLIST;
 					}
 	YY_BREAK
@@ -1224,7 +1224,7 @@ case 48:
 YY_RULE_SETUP
 #line 401 "Lexico.l"
 {
-						guardarToken("COMENTARIO");
+						guardarToken("COMENTARIO\n");
 						return COMENTARIO;
 					}
 	YY_BREAK
