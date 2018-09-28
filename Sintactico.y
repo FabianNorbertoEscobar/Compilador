@@ -47,7 +47,7 @@
 		ErrorIdNoDeclarado,
 		ErrorOperacionNoValida,
 		ErrorIdDistintoTipo,
-		ErrorConstanteDistintoTipo,
+		ErrorConstanteDistintoTipo
 	};
 
 	enum tipoDeError{
