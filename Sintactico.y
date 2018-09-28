@@ -576,19 +576,55 @@
 						bloque
 						{
 							printf("if true\n");
+	                  		char aux[10];
+					 		sprintf(aux,"$endif_%d",topeDePila(&pilaIf)->nro);
+					 		ponerEnPolaca(&polaca,aux);
+					 		ponerEnPolaca(&polaca,"BI");
 						}
-						ELSIF PARENTESIS_I condicion PARENTESIS_F
+						ELSIF
 						{
 							printf("elsif");
+							t_info info;
+							info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+							info.nro=contadorIf++;
+							sprintf(info.cadena,"#if_%d",info.nro);
+							ponerEnPolaca(&polaca,info.cadena);
+							ponerEnPila(&pilaIf,&info);
+							tipoCondicion=condicionIf;
+						}
+						PARENTESIS_I condicion PARENTESIS_F
+						{
+							char aux[10];
+					 		sprintf(aux,"#then_if_%d",topeDePila(&pilaIf)->nro);
+					 		ponerEnPolaca(&polaca,aux);
 						}
 	                  	bloque
 						ELSE
 						{
-							printf("else");
+							printf("else\n");
+	                    	char aux[10];
+					 		sprintf(aux,"#else_%d",topeDePila(&pilaIf)->nro);
+					 		ponerEnPolaca(&polaca,aux);
 						}
 						bloque
 						{
-							printf("if false");
+							printf("if false\n");
+					 		char aux[10];
+					 		sprintf(aux,"$else_%d",topeDePila(&pilaIf)->nro);
+					 		if(topeDePila(&pilaIf)->andOr==and)
+					 		{
+					 			ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto2,aux);
+					 		}
+					 		else
+					 		{
+					 			if(topeDePila(&pilaIf)->andOr==or)
+					 			{
+					 				sprintf(aux,"$then_if_%d",topeDePila(&pilaIf)->nro);
+					 				ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto2,aux);
+					 			}
+					 		}
+					 		sprintf(aux,"$else_%d",topeDePila(&pilaIf)->nro);
+					 		ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto1,aux);
 						}
 	;
 
