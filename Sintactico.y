@@ -148,15 +148,21 @@
 	int contadorListaVar=0;
 	int contadorIf=0;
 	int contadorWhile=0;
+	int contadorBetween=0;
+	int contadorInList=0;
 	int contadorPolaca=0;
 	int auxiliaresNecesarios=0;
 	t_polaca polaca;
 	t_pila pilaIf;
 	t_pila pilaWhile;
+	t_pila pilaBetween;
+	t_pila pilaInList;
 	char ultimoComparador[3];
 	char nombreVector[CADENA_MAXIMA];
 	int expresionesRestantes;
 	enum tipoCondicion tipoCondicion;
+	float paramBetween;
+	float paramInList;
 
 %}
 
@@ -492,12 +498,12 @@
 	|
 						between
 						{
-							printf("between\n");
+							printf("condición con between\n");
 						}
 	|
 						inlist
 						{
-							printf("in list\n");
+							printf("condición con in list\n");
 						}
 	;
 
@@ -874,7 +880,28 @@
 						PARENTESIS_I expresion PARENTESIS_F
 	;
 
-	between:			BETWEEN PARENTESIS_I ID COMA rango PARENTESIS_F
+	between:			BETWEEN //id exp1 CMP BLT ___ id exp2 CMP BGT ___ 
+						{
+							printf("between\n");
+							contadorBetween++;
+							t_info info;
+							info.nro = contadorBetween;
+							info.cadena=(char*)malloc(sizeof(char));
+							if(info.cadena==NULL){
+								printf("Error al solicitar memoria\n");
+								exit(1);
+							}
+							info.cantExpresiones=0;
+							ponerEnPila(&pilaBetween,&info);
+						}
+						PARENTESIS_I ID
+						{
+							printf("id paramBetween\n");
+						}
+						COMA rango PARENTESIS_F
+						{
+							
+						}
 	;
 
 	rango:				CORCHETE_I expresion PUNTO_Y_COMA expresion CORCHETE_F
@@ -883,13 +910,39 @@
 						}
 	;
 
-	inlist:				INLIST PARENTESIS_I ID PUNTO_Y_COMA lista_expresiones PARENTESIS_F
+	inlist:				INLIST
+						{
+							printf("in list\n");
+							contadorInList++;
+							t_info info;
+							info.nro = contadorInList;
+							info.cadena=(char*)malloc(sizeof(char));
+							if(info.cadena==NULL){
+								printf("Error al solicitar memoria\n");
+								exit(1);
+							}
+							info.cantExpresiones=0;
+							ponerEnPila(&pilaInList,&info);
+						}
+						PARENTESIS_I ID
+						{
+							printf("id paramInList\n");
+						}
+						PUNTO_Y_COMA lista_expresiones PARENTESIS_F
+						{
+							printf("lista de expresiones\n");
+							printf("Expresiones en InList_%d: %d\n", topeDePila(&pilaInList)->nro,topeDePila(&pilaInList)->cantExpresiones);
+							char aux[50];
+							sprintf(aux,"%d.0",topeDePila(&pilaInList)->cantExpresiones);
+							insertarEnTablaDeSimbolos(sectorConstantes,tipoFloat,aux);
+							sprintf(aux,"%s",tablaConstantes[buscarEnTablaDeSimbolos(sectorConstantes,aux)].nombre);
+							ponerEnPolaca(&polaca,aux);
+							sacarDePila(&pilaInList);
+						}
 	;
 
 	lista_expresiones:	CORCHETE_I expresiones CORCHETE_F
-						{
-							printf("lista de expresiones\n");
-						}
+
 	;
 
 	expresiones: 		expresion
