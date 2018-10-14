@@ -880,17 +880,21 @@
 						PARENTESIS_I expresion PARENTESIS_F
 	;
 
-	between:			BETWEEN //id exp1 CMP BLT ___ id exp2 CMP BGT ___ 
+	between:			BETWEEN //#between_# id exp1 CMP BLT _to_false_ id exp2 CMP BGT _to_false_ TRUE BI _to_final_ FALSE final
 						{
 							printf("between\n");
 							contadorBetween++;
 							t_info info;
 							info.nro = contadorBetween;
-							info.cadena=(char*)malloc(sizeof(char));
+							info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+							sprintf(info.cadena,"#between_%d",info.nro);
+							ponerEnPolaca(&polaca,info.cadena);
 							if(info.cadena==NULL){
 								printf("Error al solicitar memoria\n");
 								exit(1);
 							}
+							sprintf(info.cadena,"#between_%d",info.nro);
+							ponerEnPolaca(&polaca,info.cadena);
 							info.cantExpresiones=0;
 							ponerEnPila(&pilaBetween,&info);
 						}
@@ -900,7 +904,8 @@
 						}
 						COMA rango PARENTESIS_F
 						{
-							
+							printf("rango de expresiones\n");
+							printf("%s\n", );
 						}
 	;
 
@@ -910,17 +915,21 @@
 						}
 	;
 
-	inlist:				INLIST
+	inlist:				INLIST //#inlist_# (id exp# CMP BEQ _to_true_ FALSE)+ TRUE
 						{
 							printf("in list\n");
 							contadorInList++;
 							t_info info;
 							info.nro = contadorInList;
-							info.cadena=(char*)malloc(sizeof(char));
+							info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+							sprintf(info.cadena,"#inlist_%d",info.nro);
+							ponerEnPolaca(&polaca,info.cadena);
 							if(info.cadena==NULL){
 								printf("Error al solicitar memoria\n");
 								exit(1);
 							}
+							sprintf(info.cadena,"#between_%d",info.nro);
+							ponerEnPolaca(&polaca,info.cadena);
 							info.cantExpresiones=0;
 							ponerEnPila(&pilaInList,&info);
 						}
