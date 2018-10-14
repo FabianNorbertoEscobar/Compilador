@@ -402,10 +402,32 @@ COMENTARIO 				{COMENTARIO_I}({LETRA}|{DIGITO}|.)*{COMENTARIO_F}
 						guardarToken("COMENTARIO\n");
 						return COMENTARIO;
 					}
-"\n"
-"\r\n"
-"\t"
-" "
+
+"\n"				{
+						mensajeDeError(errorCaracterInvalido,"\n");
+						exit(1);
+					}
+
+"\r\n" 				{
+						mensajeDeError(errorCaracterInvalido,"\r\n");
+						exit(1);
+					}
+
+"\t"				{
+						mensajeDeError(errorCaracterInvalido,"\t");
+						exit(1);
+					}
+
+" "					{
+						mensajeDeError(errorCaracterInvalido," ");
+						exit(1);
+					}
+
+.    				{
+						mensajeDeError(errorCaracterInvalido,".");
+						exit(1);
+					}
+
 %%
 
 /* codigo */
