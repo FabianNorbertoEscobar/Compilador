@@ -172,6 +172,7 @@
 %token LETRA
 %token LETRA_MINUS
 %token LETRA_MAYUS
+%token CARACTER
 %token CTE_INT
 %token CTE_FLOAT
 %token CTE_STRING		

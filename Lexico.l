@@ -94,9 +94,10 @@ DIGITO					[0-9]
 LETRA_MINUS				[a-z]
 LETRA_MAYUS				[A-Z]
 LETRA					{LETRA_MINUS}|{LETRA_MAYUS}
+CARACTER 				[=|>|<|!|:|+|-|*|/|?|¿|!|¡|@|%|#|&|°|´|^|`|~|/|\\|-|_|.|,|;|¬||]
 CTE_INT					{DIGITO}+
 CTE_FLOAT				{DIGITO}*"."{DIGITO}+
-CTE_STRING				"\""({LETRA}|{DIGITO}|.)*"\""
+CTE_STRING				"\""({LETRA}|{DIGITO}|{CARACTER}|.)*"\""
 ID 						{LETRA_MINUS}({LETRA}|{DIGITO}|_)*
 INICIO_PROGRAMA			"PROGRAMA"
 FIN_PROGRAMA			"END_PROGRAMA"
@@ -141,7 +142,7 @@ READ					"READ"
 WRITE					"WRITE"
 BETWEEN  				"BETWEEN"
 INLIST					"INLIST"
-COMENTARIO 				{COMENTARIO_I}({LETRA}|{DIGITO}|.)*{COMENTARIO_F}
+COMENTARIO 				{COMENTARIO_I}({LETRA}|{DIGITO}|{CARACTER}|.)*{COMENTARIO_F}
 
 /* definicion de reglas */
 
