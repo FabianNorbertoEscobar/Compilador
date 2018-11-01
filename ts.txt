@@ -1,2 +1,4 @@
 NOMBRE                          |	TIPO           |	VALOR                           |	LONGITUD     |	LIMITE       
 
+
+**** TABLA INCOMPLETA (ERROR DE COMPILACION) ****

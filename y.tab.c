@@ -75,7 +75,6 @@
 	#include <stdio.h>
 	#include <conio.h>
 	#include <stdlib.h>
-	#include <locale.h>
 	#include <string.h>
 	#include <float.h>
 	#include "y.tab.h"
@@ -102,7 +101,6 @@
 		tipoInt,
 		tipoFloat,
 		tipoString,
-		tipoArray,
 		sinTipo
 	};
 
@@ -114,9 +112,6 @@
 	enum error{
 		ErrorIdRepetida,
 		ErrorIdNoDeclarado,
-		ErrorArraySinTipo,
-		ErrorArrayFueraDeRango,
-		ErrorLimiteArrayNoPermitido,
 		ErrorOperacionNoValida,
 		ErrorIdDistintoTipo,
 		ErrorConstanteDistintoTipo
@@ -164,14 +159,48 @@
 		enum tipoDato tipo;
 	}t_info;
 
+	typedef struct s_nodoPila{
+    	t_info info;
+    	struct s_nodoPila* psig;
+	}t_nodoPila;
+
+	typedef t_nodoPila *t_pila;
+
+	typedef struct
+	{
+		char cadena[CADENA_MAXIMA];
+		int nro;
+	}t_infoPolaca;
+
+	typedef struct s_nodoPolaca{
+    	t_infoPolaca info;
+    	struct s_nodoPolaca* psig;
+	}t_nodoPolaca;
+
+	typedef t_nodoPolaca *t_polaca;
+
 	/* funciones */
 
-	int buscarEnTablaDeSimbolos(enum sectorTabla, char*);
-	void grabarTablaDeSimbolos(int);
-	char* obtenerTipo(enum sectorTabla, enum tipoDato);
-	int yyerrormsj(char *,enum tipoDeError,enum error, const char*);
+	int yyerrormsj(const char *,enum tipoDeError,enum error, const char*);
 	int yyerror();
-	int yylex();
+
+	void guardarPolaca(t_polaca*);
+	int ponerEnPolacaNro(t_polaca*,int, char *);
+	int ponerEnPolaca(t_polaca*, char *);
+	void crearPolaca(t_polaca*);
+	char* obtenerSalto(enum tipoSalto);
+	char* obtenerSalto2(char*,enum tipoSalto);
+
+	void vaciarPila(t_pila*);
+	t_info* sacarDePila(t_pila*);
+	void crearPila(t_pila*);
+	int ponerEnPila(t_pila*,t_info*);
+	t_info* topeDePila(t_pila*);
+
+	void generar_assembler ();
+	void generar_assembler2 (t_polaca*);
+	char * sacarDePolaca(t_polaca*);
+	int buscarEnTablaDeSimbolosASM(enum sectorTabla, char*);
 
 	/* variables globales */
 
@@ -188,23 +217,29 @@
 	int indicesParaAsignarTipo[TAM];
 	enum tipoDato tipoAsignacion=sinTipo;
 	int esAsignacion=0;
-	int esAsignacionVectorMultiple;
 	int contadorListaVar=0;
-	int contadorExpresionesVector=0;
-	int cantidadDeExpresionesEsperadasEnVector=0;
 	int contadorIf=0;
 	int contadorWhile=0;
+	int contadorBetween=0;
+	int contadorInList=0;
+	int contadorPolaca=0;
 	int auxiliaresNecesarios=0;
+	t_polaca polaca;
+	t_pila pilaIf;
+	t_pila pilaWhile;
+	t_pila pilaBetween;
+	t_pila pilaInList;
+	t_pila pilaASM;
 	char ultimoComparador[3];
-	char nombreVector[CADENA_MAXIMA];
-	int inicioAsignacionMultiple;
 	int expresionesRestantes;
 	enum tipoCondicion tipoCondicion;
+	float paramBetween;
+	float paramInList;
 
 
 
 /* Line 189 of yacc.c  */
-#line 208 "y.tab.c"
+#line 243 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -235,54 +270,56 @@
      LETRA = 259,
      LETRA_MINUS = 260,
      LETRA_MAYUS = 261,
-     CTE_INT = 262,
-     CTE_FLOAT = 263,
-     CTE_STRING = 264,
-     ID = 265,
-     INICIO_PROGRAMA = 266,
-     FIN_PROGRAMA = 267,
-     OP_SUM = 268,
-     OP_REST = 269,
-     OP_MULT = 270,
-     OP_DIV = 271,
-     OP_ASIG = 272,
-     OP_DEC = 273,
-     OP_AND = 274,
-     OP_OR = 275,
-     OP_NOT = 276,
-     PARENTESIS_I = 277,
-     PARENTESIS_F = 278,
-     LLAVE_I = 279,
-     LLAVE_F = 280,
-     CORCHETE_I = 281,
-     CORCHETE_F = 282,
-     COMENTARIO_I = 283,
-     COMENTARIO_F = 284,
-     PUNTO_Y_COMA = 285,
-     COMA = 286,
-     COMP_MAYOR_ESTR = 287,
-     COMP_MENOR_ESTR = 288,
-     COMP_MAYOR_IGUAL = 289,
-     COMP_MENOR_IGUAL = 290,
-     COMP_IGUAL = 291,
-     COMP_DIST = 292,
-     DECVAR = 293,
-     ENDDEC = 294,
-     WHILE = 295,
-     ENDWHILE = 296,
-     DO = 297,
-     IF = 298,
-     ELSE = 299,
-     ELSIF = 300,
-     ENDIF = 301,
-     INTEGER = 302,
-     FLOAT = 303,
-     STRING = 304,
-     READ = 305,
-     WRITE = 306,
-     BETWEEN = 307,
-     INLIST = 308,
-     COMENTARIO = 309
+     CARACTER = 262,
+     CTE_INT = 263,
+     CTE_FLOAT = 264,
+     CTE_STRING = 265,
+     ID = 266,
+     INICIO_PROGRAMA = 267,
+     FIN_PROGRAMA = 268,
+     OP_SUM = 269,
+     OP_REST = 270,
+     OP_MULT = 271,
+     OP_DIV = 272,
+     OP_ASIG = 273,
+     OP_DEC = 274,
+     OP_AND = 275,
+     OP_OR = 276,
+     OP_NOT = 277,
+     COMPARADOR = 278,
+     PARENTESIS_I = 279,
+     PARENTESIS_F = 280,
+     LLAVE_I = 281,
+     LLAVE_F = 282,
+     CORCHETE_I = 283,
+     CORCHETE_F = 284,
+     COMENTARIO_I = 285,
+     COMENTARIO_F = 286,
+     PUNTO_Y_COMA = 287,
+     COMA = 288,
+     COMP_MAYOR_ESTR = 289,
+     COMP_MENOR_ESTR = 290,
+     COMP_MAYOR_IGUAL = 291,
+     COMP_MENOR_IGUAL = 292,
+     COMP_IGUAL = 293,
+     COMP_DIST = 294,
+     DECVAR = 295,
+     ENDDEC = 296,
+     WHILE = 297,
+     ENDWHILE = 298,
+     DO = 299,
+     IF = 300,
+     ELSE = 301,
+     ELSIF = 302,
+     ENDIF = 303,
+     INTEGER = 304,
+     FLOAT = 305,
+     STRING = 306,
+     READ = 307,
+     WRITE = 308,
+     BETWEEN = 309,
+     INLIST = 310,
+     COMENTARIO = 311
    };
 #endif
 /* Tokens.  */
@@ -290,54 +327,56 @@
 #define LETRA 259
 #define LETRA_MINUS 260
 #define LETRA_MAYUS 261
-#define CTE_INT 262
-#define CTE_FLOAT 263
-#define CTE_STRING 264
-#define ID 265
-#define INICIO_PROGRAMA 266
-#define FIN_PROGRAMA 267
-#define OP_SUM 268
-#define OP_REST 269
-#define OP_MULT 270
-#define OP_DIV 271
-#define OP_ASIG 272
-#define OP_DEC 273
-#define OP_AND 274
-#define OP_OR 275
-#define OP_NOT 276
-#define PARENTESIS_I 277
-#define PARENTESIS_F 278
-#define LLAVE_I 279
-#define LLAVE_F 280
-#define CORCHETE_I 281
-#define CORCHETE_F 282
-#define COMENTARIO_I 283
-#define COMENTARIO_F 284
-#define PUNTO_Y_COMA 285
-#define COMA 286
-#define COMP_MAYOR_ESTR 287
-#define COMP_MENOR_ESTR 288
-#define COMP_MAYOR_IGUAL 289
-#define COMP_MENOR_IGUAL 290
-#define COMP_IGUAL 291
-#define COMP_DIST 292
-#define DECVAR 293
-#define ENDDEC 294
-#define WHILE 295
-#define ENDWHILE 296
-#define DO 297
-#define IF 298
-#define ELSE 299
-#define ELSIF 300
-#define ENDIF 301
-#define INTEGER 302
-#define FLOAT 303
-#define STRING 304
-#define READ 305
-#define WRITE 306
-#define BETWEEN 307
-#define INLIST 308
-#define COMENTARIO 309
+#define CARACTER 262
+#define CTE_INT 263
+#define CTE_FLOAT 264
+#define CTE_STRING 265
+#define ID 266
+#define INICIO_PROGRAMA 267
+#define FIN_PROGRAMA 268
+#define OP_SUM 269
+#define OP_REST 270
+#define OP_MULT 271
+#define OP_DIV 272
+#define OP_ASIG 273
+#define OP_DEC 274
+#define OP_AND 275
+#define OP_OR 276
+#define OP_NOT 277
+#define COMPARADOR 278
+#define PARENTESIS_I 279
+#define PARENTESIS_F 280
+#define LLAVE_I 281
+#define LLAVE_F 282
+#define CORCHETE_I 283
+#define CORCHETE_F 284
+#define COMENTARIO_I 285
+#define COMENTARIO_F 286
+#define PUNTO_Y_COMA 287
+#define COMA 288
+#define COMP_MAYOR_ESTR 289
+#define COMP_MENOR_ESTR 290
+#define COMP_MAYOR_IGUAL 291
+#define COMP_MENOR_IGUAL 292
+#define COMP_IGUAL 293
+#define COMP_DIST 294
+#define DECVAR 295
+#define ENDDEC 296
+#define WHILE 297
+#define ENDWHILE 298
+#define DO 299
+#define IF 300
+#define ELSE 301
+#define ELSIF 302
+#define ENDIF 303
+#define INTEGER 304
+#define FLOAT 305
+#define STRING 306
+#define READ 307
+#define WRITE 308
+#define BETWEEN 309
+#define INLIST 310
+#define COMENTARIO 311
 
 
 
@@ -347,7 +386,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 137 "Sintactico.y"
+#line 172 "Sintactico.y"
 
 	int entero;
 	double real;
@@ -356,7 +395,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 360 "y.tab.c"
+#line 399 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -368,7 +407,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 372 "y.tab.c"
+#line 411 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -581,22 +620,22 @@ union yyalloc
 #endif
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  4
+#define YYFINAL  5
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   132
+#define YYLAST   114
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  55
+#define YYNTOKENS  57
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  52
+#define YYNNTS  53
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  85
+#define YYNRULES  83
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  150
+#define YYNSTATES  143
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   309
+#define YYMAXUTOK   311
 
 #define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -634,7 +673,8 @@ static const yytype_uint8 yytranslate[] =
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
-      45,    46,    47,    48,    49,    50,    51,    52,    53,    54
+      45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
+      55,    56
 };
 
 #if YYDEBUG
@@ -642,60 +682,58 @@ static const yytype_uint8 yytranslate[] =
    YYRHS.  */
 static const yytype_uint8 yyprhs[] =
 {
-       0,     0,     3,     4,     9,    11,    13,    16,    18,    20,
-      22,    24,    26,    28,    30,    34,    35,    44,    45,    54,
-      56,    57,    58,    64,    65,    66,    72,    73,    77,    79,
-      81,    82,    83,    89,    90,    91,    97,    98,    99,   105,
-     106,   107,   113,   114,   115,   121,   122,   123,   129,   131,
-     132,   133,   139,   140,   141,   142,   154,   155,   159,   162,
-     165,   166,   171,   174,   176,   180,   184,   186,   188,   190,
-     194,   198,   200,   204,   208,   210,   212,   214,   216,   218,
-     222,   229,   235,   242,   246,   248
+       0,     0,     3,     5,     6,     7,    12,    14,    16,    19,
+      21,    23,    25,    27,    29,    31,    33,    34,    39,    40,
+      41,    42,    53,    54,    55,    65,    67,    68,    73,    76,
+      78,    80,    82,    84,    88,    90,    91,    92,    98,    99,
+     100,   101,   102,   115,   118,   121,   124,   125,   130,   133,
+     135,   139,   143,   145,   146,   147,   154,   156,   158,   160,
+     161,   166,   167,   172,   174,   175,   180,   181,   186,   188,
+     190,   192,   194,   196,   200,   201,   202,   211,   217,   218,
+     219,   228,   232,   234
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-      56,     0,    -1,    -1,    11,    57,    58,    12,    -1,    59,
-      -1,    60,    -1,    59,    60,    -1,    94,    -1,    61,    -1,
-      91,    -1,    93,    -1,    62,    -1,    64,    -1,    54,    -1,
-      10,    17,    99,    -1,    -1,    40,    22,    66,    23,    63,
-      42,    58,    41,    -1,    -1,    43,    22,    66,    23,    65,
-      42,    85,    46,    -1,    72,    -1,    -1,    -1,    72,    67,
-      19,    68,    72,    -1,    -1,    -1,    72,    69,    20,    70,
-      72,    -1,    -1,    21,    71,    72,    -1,   102,    -1,   104,
-      -1,    -1,    -1,    99,    73,    32,    74,    99,    -1,    -1,
-      -1,    99,    75,    33,    76,    99,    -1,    -1,    -1,    99,
-      77,    34,    78,    99,    -1,    -1,    -1,    99,    79,    35,
-      80,    99,    -1,    -1,    -1,    99,    81,    36,    82,    99,
-      -1,    -1,    -1,    99,    83,    37,    84,    99,    -1,    58,
-      -1,    -1,    -1,    58,    86,    44,    87,    58,    -1,    -1,
-      -1,    -1,    58,    88,    45,    22,    66,    23,    89,    58,
-      44,    90,    58,    -1,    -1,    50,    92,    10,    -1,    51,
-      10,    -1,    51,     9,    -1,    -1,    38,    95,    96,    39,
-      -1,    96,    97,    -1,    97,    -1,    10,    31,    97,    -1,
-      10,    18,    98,    -1,    47,    -1,    48,    -1,    49,    -1,
-      99,    13,   100,    -1,    99,    14,   100,    -1,   100,    -1,
-     100,    15,   101,    -1,   100,    16,   101,    -1,   101,    -1,
-       7,    -1,     8,    -1,     9,    -1,    10,    -1,    22,    99,
-      23,    -1,    52,    22,    10,    31,   103,    23,    -1,    26,
-      99,    30,    99,    27,    -1,    53,    22,    10,    30,   105,
-      23,    -1,    26,   106,    27,    -1,    99,    -1,    99,    30,
-     106,    -1
+      58,     0,    -1,    59,    -1,    -1,    -1,    12,    60,    61,
+      13,    -1,    62,    -1,    63,    -1,    62,    63,    -1,    86,
+      -1,    64,    -1,    84,    -1,    85,    -1,    66,    -1,    70,
+      -1,    56,    -1,    -1,    11,    65,    18,    94,    -1,    -1,
+      -1,    -1,    42,    24,    73,    67,    25,    68,    44,    61,
+      69,    43,    -1,    -1,    -1,    45,    71,    24,    73,    25,
+      72,    44,    77,    48,    -1,    76,    -1,    -1,    76,    75,
+      74,    76,    -1,    22,    76,    -1,   101,    -1,   105,    -1,
+      20,    -1,    21,    -1,    94,    23,    94,    -1,    61,    -1,
+      -1,    -1,    61,    78,    46,    79,    61,    -1,    -1,    -1,
+      -1,    -1,    61,    80,    47,    81,    24,    73,    25,    82,
+      61,    46,    83,    61,    -1,    52,    11,    -1,    53,    11,
+      -1,    53,    10,    -1,    -1,    40,    87,    88,    41,    -1,
+      88,    89,    -1,    89,    -1,    90,    33,    89,    -1,    90,
+      19,    93,    -1,    11,    -1,    -1,    -1,    11,    91,    24,
+       8,    92,    25,    -1,    49,    -1,    50,    -1,    51,    -1,
+      -1,    94,    14,    95,    97,    -1,    -1,    94,    15,    96,
+      97,    -1,    97,    -1,    -1,    97,    16,    98,   100,    -1,
+      -1,    97,    17,    99,   100,    -1,   100,    -1,     8,    -1,
+       9,    -1,    10,    -1,    11,    -1,    24,    94,    25,    -1,
+      -1,    -1,    54,   102,    24,    11,   103,    33,   104,    25,
+      -1,    28,    94,    32,    94,    29,    -1,    -1,    -1,    55,
+     106,    24,    11,   107,    32,   108,    25,    -1,    28,   109,
+      29,    -1,    94,    -1,    94,    32,   109,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   208,   214,   213,   224,   230,   235,   241,   246,   251,
-     256,   261,   266,   271,   277,   291,   290,   299,   298,   306,
-     312,   316,   311,   325,   329,   324,   338,   337,   346,   351,
-     358,   362,   357,   371,   375,   370,   384,   388,   383,   397,
-     401,   396,   410,   414,   409,   423,   427,   422,   436,   442,
-     446,   441,   455,   459,   464,   454,   474,   473,   480,   485,
-     492,   491,   501,   506,   509,   511,   514,   529,   544,   561,
-     566,   571,   577,   582,   587,   593,   604,   615,   626,   634,
-     637,   640,   646,   649,   655,   657
+       0,   245,   245,   250,   255,   254,   265,   271,   276,   282,
+     287,   292,   297,   302,   307,   312,   319,   318,   340,   344,
+     348,   339,   366,   377,   365,   392,   419,   417,   482,   507,
+     512,   518,   529,   542,   545,   556,   564,   555,   592,   600,
+     611,   618,   591,   646,   658,   669,   678,   677,   687,   692,
+     695,   697,   703,   710,   715,   709,   725,   740,   755,   773,
+     772,   787,   786,   800,   807,   806,   821,   820,   832,   838,
+     848,   858,   868,   885,   889,   907,   888,   916,   923,   941,
+     922,   957,   961,   963
 };
 #endif
 
@@ -705,23 +743,24 @@ static const yytype_uint16 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "DIGITO", "LETRA", "LETRA_MINUS",
-  "LETRA_MAYUS", "CTE_INT", "CTE_FLOAT", "CTE_STRING", "ID",
+  "LETRA_MAYUS", "CARACTER", "CTE_INT", "CTE_FLOAT", "CTE_STRING", "ID",
   "INICIO_PROGRAMA", "FIN_PROGRAMA", "OP_SUM", "OP_REST", "OP_MULT",
-  "OP_DIV", "OP_ASIG", "OP_DEC", "OP_AND", "OP_OR", "OP_NOT",
+  "OP_DIV", "OP_ASIG", "OP_DEC", "OP_AND", "OP_OR", "OP_NOT", "COMPARADOR",
   "PARENTESIS_I", "PARENTESIS_F", "LLAVE_I", "LLAVE_F", "CORCHETE_I",
   "CORCHETE_F", "COMENTARIO_I", "COMENTARIO_F", "PUNTO_Y_COMA", "COMA",
   "COMP_MAYOR_ESTR", "COMP_MENOR_ESTR", "COMP_MAYOR_IGUAL",
   "COMP_MENOR_IGUAL", "COMP_IGUAL", "COMP_DIST", "DECVAR", "ENDDEC",
   "WHILE", "ENDWHILE", "DO", "IF", "ELSE", "ELSIF", "ENDIF", "INTEGER",
   "FLOAT", "STRING", "READ", "WRITE", "BETWEEN", "INLIST", "COMENTARIO",
-  "$accept", "programa", "$@1", "bloque", "lista_sentencias", "sentencia",
-  "asignacion", "iteracion", "$@2", "seleccion", "$@3", "condicion", "$@4",
-  "$@5", "$@6", "$@7", "$@8", "comparacion", "$@9", "$@10", "$@11", "$@12",
-  "$@13", "$@14", "$@15", "$@16", "$@17", "$@18", "$@19", "$@20", "resto",
-  "$@21", "$@22", "$@23", "$@24", "$@25", "lectura", "$@26", "escritura",
-  "bloque_declaracion", "$@27", "declaraciones", "lista_id_y_tipo",
-  "tipodato", "expresion", "termino", "factor", "between", "rango",
-  "inlist", "lista_expresiones", "expresiones", 0
+  "$accept", "start", "programa", "$@1", "bloque", "lista_sentencias",
+  "sentencia", "asignacion", "$@2", "iteracion", "$@3", "$@4", "$@5",
+  "seleccion", "$@6", "$@7", "condicion", "$@8", "and_or", "comparacion",
+  "resto", "$@9", "$@10", "$@11", "$@12", "$@13", "$@14", "lectura",
+  "escritura", "bloque_declaracion", "$@15", "declaraciones",
+  "lista_id_y_tipo", "var_dec", "$@16", "$@17", "tipodato", "expresion",
+  "$@18", "$@19", "termino", "$@20", "$@21", "factor", "between", "$@22",
+  "$@23", "rango", "inlist", "$@24", "$@25", "lista_expresiones",
+  "expresiones", 0
 };
 #endif
 
@@ -735,36 +774,36 @@ static const yytype_uint16 yytoknum[] =
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
      285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
      295,   296,   297,   298,   299,   300,   301,   302,   303,   304,
-     305,   306,   307,   308,   309
+     305,   306,   307,   308,   309,   310,   311
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    55,    57,    56,    58,    59,    59,    60,    60,    60,
-      60,    60,    60,    60,    61,    63,    62,    65,    64,    66,
-      67,    68,    66,    69,    70,    66,    71,    66,    66,    66,
-      73,    74,    72,    75,    76,    72,    77,    78,    72,    79,
-      80,    72,    81,    82,    72,    83,    84,    72,    85,    86,
-      87,    85,    88,    89,    90,    85,    92,    91,    93,    93,
-      95,    94,    96,    96,    97,    97,    98,    98,    98,    99,
-      99,    99,   100,   100,   100,   101,   101,   101,   101,   101,
-     102,   103,   104,   105,   106,   106
+       0,    57,    58,    58,    60,    59,    61,    62,    62,    63,
+      63,    63,    63,    63,    63,    63,    65,    64,    67,    68,
+      69,    66,    71,    72,    70,    73,    74,    73,    73,    73,
+      73,    75,    75,    76,    77,    78,    79,    77,    80,    81,
+      82,    83,    77,    84,    85,    85,    87,    86,    88,    88,
+      89,    89,    90,    91,    92,    90,    93,    93,    93,    95,
+      94,    96,    94,    94,    98,    97,    99,    97,    97,   100,
+     100,   100,   100,   100,   102,   103,   101,   104,   106,   107,
+     105,   108,   109,   109
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     0,     4,     1,     1,     2,     1,     1,     1,
-       1,     1,     1,     1,     3,     0,     8,     0,     8,     1,
-       0,     0,     5,     0,     0,     5,     0,     3,     1,     1,
-       0,     0,     5,     0,     0,     5,     0,     0,     5,     0,
-       0,     5,     0,     0,     5,     0,     0,     5,     1,     0,
-       0,     5,     0,     0,     0,    11,     0,     3,     2,     2,
-       0,     4,     2,     1,     3,     3,     1,     1,     1,     3,
-       3,     1,     3,     3,     1,     1,     1,     1,     1,     3,
-       6,     5,     6,     3,     1,     3
+       0,     2,     1,     0,     0,     4,     1,     1,     2,     1,
+       1,     1,     1,     1,     1,     1,     0,     4,     0,     0,
+       0,    10,     0,     0,     9,     1,     0,     4,     2,     1,
+       1,     1,     1,     3,     1,     0,     0,     5,     0,     0,
+       0,     0,    12,     2,     2,     2,     0,     4,     2,     1,
+       3,     3,     1,     0,     0,     6,     1,     1,     1,     0,
+       4,     0,     4,     1,     0,     4,     0,     4,     1,     1,
+       1,     1,     1,     3,     0,     0,     8,     5,     0,     0,
+       8,     3,     1,     3
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -772,32 +811,32 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     2,     0,     0,     1,     0,    60,     0,     0,    56,
-       0,    13,     0,     4,     5,     8,    11,    12,     9,    10,
-       7,     0,     0,     0,     0,     0,    59,    58,     3,     6,
-      75,    76,    77,    78,     0,    14,    71,    74,     0,     0,
-      63,    26,     0,     0,     0,    19,    30,    28,    29,     0,
-      57,     0,     0,     0,     0,     0,     0,     0,    61,    62,
-       0,     0,     0,    15,     0,     0,     0,     0,     0,     0,
-       0,     0,    17,    79,    69,    70,    72,    73,    66,    67,
-      68,    65,    64,    27,     0,     0,     0,    21,    24,    31,
-      34,    37,    40,    43,    46,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,    22,    25,    32,    35,    38,    41,    44,
-      47,    48,     0,     0,    80,    84,     0,    82,    16,     0,
-       0,    18,     0,     0,    83,    50,     0,     0,    85,     0,
-       0,    81,    51,     0,    53,     0,     0,    54,     0,    55
+       3,     4,     0,     2,     0,     1,    16,    46,     0,    22,
+       0,     0,    15,     0,     6,     7,    10,    13,    14,    11,
+      12,     9,     0,     0,     0,     0,    43,    45,    44,     5,
+       8,     0,    52,     0,    49,     0,    69,    70,    71,    72,
+       0,     0,    74,    78,    18,    25,     0,    63,    68,    29,
+      30,     0,    17,     0,    47,    48,     0,     0,    28,     0,
+       0,     0,     0,    31,    32,    26,    59,    61,     0,    64,
+      66,     0,     0,    56,    57,    58,    51,    50,    73,     0,
+       0,    19,     0,     0,     0,    33,     0,     0,    23,    54,
+      75,    79,     0,    27,    60,    62,    65,    67,     0,     0,
+       0,     0,     0,     0,    55,     0,     0,    20,    34,     0,
+       0,     0,     0,     0,     0,     0,     0,    24,     0,    76,
+      82,     0,    80,    21,    36,    39,     0,     0,    81,     0,
+       0,     0,    83,    37,     0,    77,     0,    40,     0,     0,
+      41,     0,    42
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int16 yydefgoto[] =
 {
-      -1,     2,     3,    12,    13,    14,    15,    16,    86,    17,
-      95,    44,    64,    99,    65,   100,    60,    45,    66,   101,
-      67,   102,    68,   103,    69,   104,    70,   105,    71,   106,
-     122,   129,   139,   130,   145,   148,    18,    25,    19,    20,
-      22,    39,    40,    81,    46,    36,    37,    47,   109,    48,
-     111,   126
+      -1,     2,     3,     4,    13,    14,    15,    16,    22,    17,
+      62,    92,   114,    18,    25,    98,    44,    82,    65,    45,
+     109,   115,   129,   116,   130,   138,   141,    19,    20,    21,
+      23,    33,    34,    35,    53,    99,    76,    46,    83,    84,
+      47,    86,    87,    48,    49,    60,   100,   111,    50,    61,
+     101,   113,   121
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
@@ -805,94 +844,90 @@ static const yytype_int16 yydefgoto[] =
 #define YYPACT_NINF -97
 static const yytype_int8 yypact[] =
 {
-       1,   -97,    10,    -6,   -97,    14,   -97,    -4,    13,   -97,
-      48,   -97,    41,    -6,   -97,   -97,   -97,   -97,   -97,   -97,
-     -97,    20,    59,    -2,    -2,    68,   -97,   -97,   -97,   -97,
-     -97,   -97,   -97,   -97,    20,    54,    55,   -97,    -5,    -1,
-     -97,   -97,    65,    67,    69,    53,    26,   -97,   -97,    70,
-     -97,    33,    20,    20,    20,    20,    17,    59,   -97,   -97,
-      20,    81,    84,   -97,    76,    77,    64,    66,    71,    63,
-      72,    73,   -97,   -97,    55,    55,   -97,   -97,   -97,   -97,
-     -97,   -97,   -97,   -97,    75,    74,    58,   -97,   -97,   -97,
-     -97,   -97,   -97,   -97,   -97,    60,    83,    85,    -6,    20,
-      20,    20,    20,    20,    20,    20,    20,    -6,    20,    78,
-      20,    80,    79,   -97,   -97,    54,    54,    54,    54,    54,
-      54,    30,    61,     3,   -97,    11,    87,   -97,   -97,    82,
-      86,   -97,    20,    20,   -97,   -97,    93,     9,   -97,    -6,
-      -2,   -97,   -97,    94,   -97,    -6,    88,   -97,    -6,   -97
+       1,   -97,    15,   -97,    -2,   -97,   -97,   -97,    28,   -97,
+       6,    20,   -97,    12,    -2,   -97,   -97,   -97,   -97,   -97,
+     -97,   -97,    29,    65,    -6,    39,   -97,   -97,   -97,   -97,
+     -97,    47,    53,     3,   -97,    -7,   -97,   -97,   -97,   -97,
+      47,    47,   -97,   -97,   -97,    41,    45,    48,   -97,   -97,
+     -97,    -6,    52,    54,   -97,   -97,   -22,    65,   -97,    21,
+      56,    58,    60,   -97,   -97,   -97,   -97,   -97,    47,   -97,
+     -97,    61,    75,   -97,   -97,   -97,   -97,   -97,   -97,    76,
+      77,   -97,    47,    47,    47,    52,    47,    47,   -97,   -97,
+     -97,   -97,    46,   -97,    48,    48,   -97,   -97,    49,    64,
+      59,    62,    -2,    -2,   -97,    63,    69,   -97,    23,    50,
+      47,    74,    47,    78,    57,    55,    66,   -97,     7,   -97,
+       9,    73,   -97,   -97,   -97,   -97,    47,    47,   -97,    -2,
+      80,     5,   -97,   -97,    -6,   -97,    81,   -97,    -2,    68,
+     -97,    -2,   -97
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -97,   -97,   -97,   -96,   -97,   105,   -97,   -97,   -97,   -97,
-     -97,   -24,   -97,   -97,   -97,   -97,   -97,   -45,   -97,   -97,
+     -97,   -97,   -97,   -97,   -96,   -97,    91,   -97,   -97,   -97,
+     -97,   -97,   -97,   -97,   -97,   -97,   -50,   -97,   -97,   -29,
      -97,   -97,   -97,   -97,   -97,   -97,   -97,   -97,   -97,   -97,
-     -97,   -97,   -97,   -97,   -97,   -97,   -97,   -97,   -97,   -97,
-     -97,   -97,   -36,   -97,   -20,    24,    25,   -97,   -97,   -97,
-     -97,   -14
+     -97,   -97,   -25,   -97,   -97,   -97,   -97,   -31,   -97,   -97,
+     -11,   -97,   -97,   -12,   -97,   -97,   -97,   -97,   -97,   -97,
+     -97,   -97,   -20
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule which
    number is the opposite.  If zero, do what YYDEFACT says.
    If YYTABLE_NINF, syntax error.  */
-#define YYTABLE_NINF -53
+#define YYTABLE_NINF -54
 static const yytype_int16 yytable[] =
 {
-      49,    35,   112,    59,     5,    30,    31,    32,    33,    38,
-       4,   121,     1,    56,    51,    83,    52,    53,    23,    41,
-      34,    82,    52,    53,    52,    53,    57,    30,    31,    32,
-      33,    21,     6,   132,     7,    24,   141,     8,    58,    52,
-      53,   133,    34,   142,     9,    10,    52,    53,    11,   146,
-      42,    43,   149,    28,   113,   114,    73,    26,    27,   -33,
-     -36,   -39,   -42,   -45,    78,    79,    80,    52,    53,    38,
-      54,    55,   -20,   -23,   -49,   -52,    74,    75,    50,    76,
-      77,   115,   116,   117,   118,   119,   120,    61,   123,    62,
-     125,    84,    63,    72,    85,    87,    89,    88,    92,    90,
-      98,   124,   107,   127,    97,    91,    96,   131,    93,   108,
-      94,   110,   137,   125,   134,   140,   143,   144,    29,   138,
-     128,     0,     0,     0,     0,     0,   135,     0,     0,     0,
-       0,   136,   147
+      52,    71,    36,    37,    38,    39,   107,   108,    55,     6,
+      59,    58,    56,     1,    32,     5,    40,    26,    41,    66,
+      67,    66,    67,    66,    67,    29,    57,    73,    74,    75,
+      27,    28,    77,   133,   135,    66,    67,    85,     7,   126,
+       8,   127,   139,     9,    54,   142,    78,    31,    42,    43,
+      10,    11,    24,    93,    12,    36,    37,    38,    39,    66,
+      67,    63,    64,    51,    69,    70,    66,    67,    68,   -35,
+     -38,    41,    94,    95,    96,    97,    32,   -53,    72,   118,
+      79,   120,    80,    89,   136,    81,    88,    90,    91,   104,
+     102,   110,   105,   103,   106,   131,   120,   112,   117,   119,
+     123,   124,   128,   122,   134,    30,   137,   132,     0,     0,
+       0,     0,     0,   125,   140
 };
 
 static const yytype_int16 yycheck[] =
 {
-      24,    21,    98,    39,    10,     7,     8,     9,    10,    10,
-       0,   107,    11,    18,    34,    60,    13,    14,    22,    21,
-      22,    57,    13,    14,    13,    14,    31,     7,     8,     9,
-      10,    17,    38,    30,    40,    22,    27,    43,    39,    13,
-      14,    30,    22,   139,    50,    51,    13,    14,    54,   145,
-      52,    53,   148,    12,    99,   100,    23,     9,    10,    33,
-      34,    35,    36,    37,    47,    48,    49,    13,    14,    10,
-      15,    16,    19,    20,    44,    45,    52,    53,    10,    54,
-      55,   101,   102,   103,   104,   105,   106,    22,   108,    22,
-     110,    10,    23,    23,    10,    19,    32,    20,    35,    33,
-      42,    23,    42,    23,    30,    34,    31,    46,    36,    26,
-      37,    26,   132,   133,    27,    22,   140,    23,    13,   133,
-      41,    -1,    -1,    -1,    -1,    -1,    44,    -1,    -1,    -1,
-      -1,    45,    44
+      31,    51,     8,     9,    10,    11,   102,   103,    33,    11,
+      41,    40,    19,    12,    11,     0,    22,    11,    24,    14,
+      15,    14,    15,    14,    15,    13,    33,    49,    50,    51,
+      10,    11,    57,   129,    29,    14,    15,    68,    40,    32,
+      42,    32,   138,    45,    41,   141,    25,    18,    54,    55,
+      52,    53,    24,    82,    56,     8,     9,    10,    11,    14,
+      15,    20,    21,    24,    16,    17,    14,    15,    23,    46,
+      47,    24,    83,    84,    86,    87,    11,    24,    24,   110,
+      24,   112,    24,     8,   134,    25,    25,    11,    11,    25,
+      44,    28,    33,    44,    32,   126,   127,    28,    48,    25,
+      43,    46,    29,    25,    24,    14,    25,   127,    -1,    -1,
+      -1,    -1,    -1,    47,    46
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    11,    56,    57,     0,    10,    38,    40,    43,    50,
-      51,    54,    58,    59,    60,    61,    62,    64,    91,    93,
-      94,    17,    95,    22,    22,    92,     9,    10,    12,    60,
-       7,     8,     9,    10,    22,    99,   100,   101,    10,    96,
-      97,    21,    52,    53,    66,    72,    99,   102,   104,    66,
-      10,    99,    13,    14,    15,    16,    18,    31,    39,    97,
-      71,    22,    22,    23,    67,    69,    73,    75,    77,    79,
-      81,    83,    23,    23,   100,   100,   101,   101,    47,    48,
-      49,    98,    97,    72,    10,    10,    63,    19,    20,    32,
-      33,    34,    35,    36,    37,    65,    31,    30,    42,    68,
-      70,    74,    76,    78,    80,    82,    84,    42,    26,   103,
-      26,   105,    58,    72,    72,    99,    99,    99,    99,    99,
-      99,    58,    85,    99,    23,    99,   106,    23,    41,    86,
-      88,    46,    30,    30,    27,    44,    45,    99,   106,    87,
-      22,    27,    58,    66,    23,    89,    58,    44,    90,    58
+       0,    12,    58,    59,    60,     0,    11,    40,    42,    45,
+      52,    53,    56,    61,    62,    63,    64,    66,    70,    84,
+      85,    86,    65,    87,    24,    71,    11,    10,    11,    13,
+      63,    18,    11,    88,    89,    90,     8,     9,    10,    11,
+      22,    24,    54,    55,    73,    76,    94,    97,   100,   101,
+     105,    24,    94,    91,    41,    89,    19,    33,    76,    94,
+     102,   106,    67,    20,    21,    75,    14,    15,    23,    16,
+      17,    73,    24,    49,    50,    51,    93,    89,    25,    24,
+      24,    25,    74,    95,    96,    94,    98,    99,    25,     8,
+      11,    11,    68,    76,    97,    97,   100,   100,    72,    92,
+     103,   107,    44,    44,    25,    33,    32,    61,    61,    77,
+      28,   104,    28,   108,    69,    78,    80,    48,    94,    25,
+      94,   109,    25,    43,    46,    47,    32,    32,    29,    79,
+      81,    94,   109,    61,    24,    29,    73,    25,    82,    61,
+      46,    83,    61
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1706,540 +1741,688 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 214 "Sintactico.y"
+#line 246 "Sintactico.y"
     {
-							printf("inicio del programa\n");
+							printf("COMPILACION EXITOSA\n");
 						}
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 219 "Sintactico.y"
+#line 250 "Sintactico.y"
     {
-							printf("fin del programa\n");
-	             		}
+							printf("No hay programa\n");
+						}
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 225 "Sintactico.y"
+#line 255 "Sintactico.y"
     {
-							printf("bloque\n");
+							printf("inicio del programa\n");
 						}
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 231 "Sintactico.y"
+#line 260 "Sintactico.y"
     {
-
-						}
+							printf("fin del programa\n");
+	             		}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 236 "Sintactico.y"
+#line 266 "Sintactico.y"
     {
-
+							printf("bloque\n");
 						}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 242 "Sintactico.y"
+#line 272 "Sintactico.y"
     {
-							printf("bloque de declaracion\n");
+
 						}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 247 "Sintactico.y"
+#line 277 "Sintactico.y"
     {
-	                 		printf("asignacion\n");
-	                 	}
+
+						}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 252 "Sintactico.y"
+#line 283 "Sintactico.y"
     {
-	                 		printf("lectura\n");
-	                 	}
+							printf("bloque de declaracion\n");
+						}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 257 "Sintactico.y"
+#line 288 "Sintactico.y"
     {
-							printf("escritura\n");
-						}
+	                 		printf("asignacion\n");
+	                 	}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 262 "Sintactico.y"
+#line 293 "Sintactico.y"
     {
-	                 		printf("iteracion\n");
+	                 		printf("lectura\n");
 	                 	}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 267 "Sintactico.y"
+#line 298 "Sintactico.y"
     {
-	                 		printf("seleccion\n");
-	                 	}
+							printf("escritura\n");
+						}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 272 "Sintactico.y"
+#line 303 "Sintactico.y"
     {
-							printf("comentario\n");
-						}
+	                 		printf("iteracion\n");
+	                 	}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 278 "Sintactico.y"
+#line 308 "Sintactico.y"
     {
-							if(tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(1) - (3)].cadena))].tipo==sinTipo)
-							{
-								yyerrormsj((yyvsp[(1) - (3)].cadena),ErrorSintactico,ErrorIdNoDeclarado,"");
-							}
-							esAsignacion=1;
-							printf("asignacion: %s\t", (yyvsp[(1) - (3)].cadena));
-							tipoAsignacion=tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(1) - (3)].cadena))].tipo;
-							printf("(tipo: %s)\n",obtenerTipo(sectorVariables,tipoAsignacion));
-						}
+	                 		printf("seleccion\n");
+	                 	}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 291 "Sintactico.y"
+#line 313 "Sintactico.y"
     {
-							printf("while\n");
+							printf("comentario\n");
+						}
+    break;
+
+  case 16:
+
+/* Line 1455 of yacc.c  */
+#line 319 "Sintactico.y"
+    {
+							if(tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(1) - (1)].cadena))].tipo==sinTipo)
+							{
+								yyerrormsj((yyvsp[(1) - (1)].cadena),ErrorSintactico,ErrorIdNoDeclarado,"");
+							}
+							esAsignacion=1;
+							printf("asignacion: %s\t", (yyvsp[(1) - (1)].cadena));
+							tipoAsignacion=tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(1) - (1)].cadena))].tipo;
+							ponerEnPolaca(&polaca,tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(1) - (1)].cadena))].nombre);
+							printf("(tipo: %s)\n",obtenerTipo(sectorVariables,tipoAsignacion));
 						}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 299 "Sintactico.y"
+#line 331 "Sintactico.y"
     {
-							printf("if\n");
+							esAsignacion=0;
+							tipoAsignacion=sinTipo;
+							ponerEnPolaca(&polaca,"=");
+							printf("fin asignacion\n");
+						}
+    break;
+
+  case 18:
+
+/* Line 1455 of yacc.c  */
+#line 340 "Sintactico.y"
+    {
+							tipoCondicion=condicionWhile;
 						}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 307 "Sintactico.y"
+#line 344 "Sintactico.y"
     {
-							printf("comparacion\n");
+							printf("while\n");
 						}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 312 "Sintactico.y"
+#line 348 "Sintactico.y"
     {
-
+							printf("inicio while\n");
+							t_info info;
+							info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+							info.nro=contadorWhile++;
+							sprintf(info.cadena,"#repeat_%d",info.nro);
+							ponerEnPolaca(&polaca,info.cadena);
+							sprintf(info.cadena,"$repeat_%d",info.nro);
+							ponerEnPila(&pilaWhile,&info);
 						}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 316 "Sintactico.y"
+#line 359 "Sintactico.y"
     {
-	                    	printf("and\n");
-	                    }
+							printf("fin while\n");
+							sacarDePila(&pilaWhile);
+						}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 320 "Sintactico.y"
+#line 366 "Sintactico.y"
     {
-
-	                  	}
+							printf("if\n");
+							t_info info;
+							info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+							info.nro=contadorIf++;
+							sprintf(info.cadena,"#if_%d",info.nro);
+							ponerEnPolaca(&polaca,info.cadena);
+							ponerEnPila(&pilaIf,&info);
+							tipoCondicion=condicionIf;
+						}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 325 "Sintactico.y"
+#line 377 "Sintactico.y"
     {
-
+							char aux[10];
+					 		sprintf(aux,"#then_if_%d",topeDePila(&pilaIf)->nro);
+					 		ponerEnPolaca(&polaca,aux);
 						}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 329 "Sintactico.y"
+#line 384 "Sintactico.y"
     {
-							printf("or\n");	
+							printf("endif\n");
+							char aux[20];
+							sprintf(aux,"#endif_%d",sacarDePila(&pilaIf)->nro);
+							ponerEnPolaca(&polaca,aux);
 						}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 333 "Sintactico.y"
+#line 393 "Sintactico.y"
     {
+							printf("comparacion\n");
+							switch(tipoCondicion)
+							{
+								case condicionIf:
+									topeDePila(&pilaIf)->andOr=condicionSimple;
+									topeDePila(&pilaIf)->salto1=contadorPolaca+1;
+									ponerEnPolaca(&polaca,"CMP");
+									ponerEnPolaca(&polaca,"");
+									ponerEnPolaca(&polaca,obtenerSalto(inverso));
+									break;
 
-	                  	}
+								case condicionWhile:
+									topeDePila(&pilaWhile)->andOr=condicionSimple;
+									ponerEnPolaca(&polaca,"CMP");
+							 		ponerEnPolaca(&polaca,topeDePila(&pilaWhile)->cadena);
+									ponerEnPolaca(&polaca,obtenerSalto(normal));
+									char aux[20];
+									sprintf(aux,"#end_repeat_%d",topeDePila(&pilaWhile)->nro);
+									ponerEnPolaca(&polaca,aux);
+									break;
+							}
+						}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 338 "Sintactico.y"
+#line 419 "Sintactico.y"
     {
-							printf("not\n");
+							printf("and_or\n");	
+							switch(tipoCondicion)
+							{
+								case condicionIf:
+									switch(topeDePila(&pilaIf)->andOr){
+										case and:
+											topeDePila(&pilaIf)->salto2=contadorPolaca+1;
+											ponerEnPolaca(&polaca,"CMP");
+											ponerEnPolaca(&polaca,"");
+											ponerEnPolaca(&polaca,obtenerSalto(inverso));
+											break;
+
+										case or:
+											topeDePila(&pilaIf)->salto2=contadorPolaca+1;
+											ponerEnPolaca(&polaca,"CMP");
+											ponerEnPolaca(&polaca,"");
+											ponerEnPolaca(&polaca,obtenerSalto(normal));
+											break;
+									}
+									break;
+
+								case condicionWhile:
+									switch(topeDePila(&pilaWhile)->andOr){
+										case and:
+											ponerEnPolaca(&polaca,"CMP");
+									 		char aux[20];
+											sprintf(aux,"$end_repeat_%d",topeDePila(&pilaWhile)->nro);
+											ponerEnPolaca(&polaca,aux);
+											ponerEnPolaca(&polaca,obtenerSalto(inverso));
+											break;
+
+										case or:
+											ponerEnPolaca(&polaca,"CMP");
+									 		ponerEnPolaca(&polaca,topeDePila(&pilaWhile)->cadena);
+											ponerEnPolaca(&polaca,obtenerSalto(normal));
+											break;
+									}
+									break;
+							}
 						}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 342 "Sintactico.y"
+#line 461 "Sintactico.y"
     {
+	                  		switch(tipoCondicion)
+	                  		{
+								case condicionIf:
+									topeDePila(&pilaIf)->salto1=contadorPolaca+1;
+									ponerEnPolaca(&polaca,"CMP");
+									ponerEnPolaca(&polaca,"");
+									ponerEnPolaca(&polaca,obtenerSalto(inverso));
+									break;
 
+								case condicionWhile:
+									ponerEnPolaca(&polaca,"CMP");
+							 		ponerEnPolaca(&polaca,topeDePila(&pilaWhile)->cadena);
+									ponerEnPolaca(&polaca,obtenerSalto(normal));
+									char aux[20];
+									sprintf(aux,"#end_repeat_%d",topeDePila(&pilaWhile)->nro);
+									ponerEnPolaca(&polaca,aux);
+									break;
+							}
 	                  	}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 347 "Sintactico.y"
+#line 483 "Sintactico.y"
     {
-							printf("between\n");
-						}
+							printf("not\n");
+							switch(tipoCondicion)
+							{
+								case condicionIf:
+									topeDePila(&pilaIf)->andOr=condicionSimple;
+									topeDePila(&pilaIf)->salto1=contadorPolaca+1;
+									ponerEnPolaca(&polaca,"CMP");
+									ponerEnPolaca(&polaca,"");
+									ponerEnPolaca(&polaca,obtenerSalto(normal));
+									break;
+
+								case condicionWhile:
+									topeDePila(&pilaWhile)->andOr=condicionSimple;
+									ponerEnPolaca(&polaca,"CMP");
+							 		ponerEnPolaca(&polaca,topeDePila(&pilaWhile)->cadena);
+									ponerEnPolaca(&polaca,obtenerSalto(inverso));
+									char aux[20];
+									sprintf(aux,"#end_repeat_%d",topeDePila(&pilaWhile)->nro);
+									ponerEnPolaca(&polaca,aux);
+									break;
+							}
+	                  	}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 352 "Sintactico.y"
+#line 508 "Sintactico.y"
     {
-							printf("in list\n");
+							printf("condición con between\n");
 						}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 358 "Sintactico.y"
+#line 513 "Sintactico.y"
     {
-
+							printf("condición con in list\n");
 						}
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 362 "Sintactico.y"
+#line 519 "Sintactico.y"
     {
-							printf(">\n");
+							if(tipoCondicion==condicionIf)
+							{
+								topeDePila(&pilaIf)->andOr=and;
+							}
+							else
+							{
+								topeDePila(&pilaWhile)->andOr=and;
+							}
 						}
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 366 "Sintactico.y"
+#line 530 "Sintactico.y"
     {
-
+							if(tipoCondicion==condicionIf)
+							{
+								topeDePila(&pilaIf)->andOr=or;
+							}
+							else
+							{
+								topeDePila(&pilaWhile)->andOr=or;
+							}
 						}
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 371 "Sintactico.y"
-    {
-
-						}
+#line 542 "Sintactico.y"
+    {strcpy(ultimoComparador,(yyvsp[(2) - (3)].cadena));}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 375 "Sintactico.y"
+#line 546 "Sintactico.y"
     {
-							printf("<\n");
+							printf("if true\n");
+							char aux[10];
+					 		sprintf(aux,"$endif_%d",topeDePila(&pilaIf)->nro);
+					 		if(topeDePila(&pilaIf)->andOr==and||topeDePila(&pilaIf)->andOr==or)
+					 			ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto2,aux);
+					 		ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto1,aux);
 						}
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 379 "Sintactico.y"
+#line 556 "Sintactico.y"
     {
-
-						}
+	                  		printf("if true\n");
+	                  		char aux[10];
+					 		sprintf(aux,"$endif_%d",topeDePila(&pilaIf)->nro);
+					 		ponerEnPolaca(&polaca,aux);
+					 		ponerEnPolaca(&polaca,"BI");
+	                  	}
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 384 "Sintactico.y"
+#line 564 "Sintactico.y"
     {
-
-						}
+	                    	printf("else\n");
+	                    	char aux[10];
+					 		sprintf(aux,"#else_%d",topeDePila(&pilaIf)->nro);
+					 		ponerEnPolaca(&polaca,aux);
+	                    }
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 388 "Sintactico.y"
+#line 571 "Sintactico.y"
     {
-							printf(">=\n");
-						}
+	                    	printf("if false\n");
+					 		char aux[10];
+					 		sprintf(aux,"$else_%d",topeDePila(&pilaIf)->nro);
+					 		if(topeDePila(&pilaIf)->andOr==and)
+					 		{
+					 			ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto2,aux);
+					 		}
+					 		else
+					 		{
+					 			if(topeDePila(&pilaIf)->andOr==or)
+					 			{
+					 				sprintf(aux,"$then_if_%d",topeDePila(&pilaIf)->nro);
+					 				ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto2,aux);
+					 			}
+					 		}
+					 		sprintf(aux,"$else_%d",topeDePila(&pilaIf)->nro);
+					 		ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto1,aux);
+	                    }
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 392 "Sintactico.y"
+#line 592 "Sintactico.y"
     {
-
+							printf("if true\n");
+	                  		char aux[10];
+					 		sprintf(aux,"$endif_%d",topeDePila(&pilaIf)->nro);
+					 		ponerEnPolaca(&polaca,aux);
+					 		ponerEnPolaca(&polaca,"BI");
 						}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 397 "Sintactico.y"
+#line 600 "Sintactico.y"
     {
-
+							printf("elsif");
+							t_info info;
+							info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+							info.nro=contadorIf++;
+							sprintf(info.cadena,"#if_%d",info.nro);
+							ponerEnPolaca(&polaca,info.cadena);
+							ponerEnPila(&pilaIf,&info);
+							tipoCondicion=condicionIf;
 						}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 401 "Sintactico.y"
+#line 611 "Sintactico.y"
     {
-							printf("<=\n");
+							char aux[10];
+					 		sprintf(aux,"#then_if_%d",topeDePila(&pilaIf)->nro);
+					 		ponerEnPolaca(&polaca,aux);
 						}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 405 "Sintactico.y"
+#line 618 "Sintactico.y"
     {
-
+							printf("else\n");
+	                    	char aux[10];
+					 		sprintf(aux,"#else_%d",topeDePila(&pilaIf)->nro);
+					 		ponerEnPolaca(&polaca,aux);
 						}
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 410 "Sintactico.y"
+#line 625 "Sintactico.y"
     {
-
+							printf("if false\n");
+					 		char aux[10];
+					 		sprintf(aux,"$else_%d",topeDePila(&pilaIf)->nro);
+					 		if(topeDePila(&pilaIf)->andOr==and)
+					 		{
+					 			ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto2,aux);
+					 		}
+					 		else
+					 		{
+					 			if(topeDePila(&pilaIf)->andOr==or)
+					 			{
+					 				sprintf(aux,"$then_if_%d",topeDePila(&pilaIf)->nro);
+					 				ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto2,aux);
+					 			}
+					 		}
+					 		sprintf(aux,"$else_%d",topeDePila(&pilaIf)->nro);
+					 		ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto1,aux);
 						}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 414 "Sintactico.y"
+#line 647 "Sintactico.y"
     {
-							printf("==\n");
+							printf("read id\n");
+							if(tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(1) - (2)].cadena))].tipo==sinTipo)
+							{
+								yyerrormsj((yyvsp[(1) - (2)].cadena),ErrorSintactico,ErrorIdNoDeclarado,"");
+							}
+							ponerEnPolaca(&polaca,tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(2) - (2)].cadena))].nombre);
+							ponerEnPolaca(&polaca,"READ");
 						}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 418 "Sintactico.y"
+#line 659 "Sintactico.y"
     {
-
-						}
+	                    	printf("write id\n");
+	                    	if(tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(1) - (2)].cadena))].tipo==sinTipo)
+	                    	{
+								yyerrormsj((yyvsp[(1) - (2)].cadena),ErrorSintactico,ErrorIdNoDeclarado,"");
+	                    	}
+							ponerEnPolaca(&polaca,tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(2) - (2)].cadena))].nombre);
+							ponerEnPolaca(&polaca,"WRITE");
+	                    }
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 423 "Sintactico.y"
+#line 670 "Sintactico.y"
     {
-
-						}
+ 							printf("write string\n");
+							ponerEnPolaca(&polaca,tablaConstantes[buscarEnTablaDeSimbolos(sectorConstantes,(yyvsp[(2) - (2)].cadena))].nombre);
+							ponerEnPolaca(&polaca,"WRITE");
+ 						}
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 427 "Sintactico.y"
+#line 678 "Sintactico.y"
     {
-							printf("!=\n");
+							printf("bloque de declaracion\n");
 						}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 431 "Sintactico.y"
+#line 682 "Sintactico.y"
     {
-
+							printf("fin bloque de declaracion\n");
 						}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 437 "Sintactico.y"
+#line 688 "Sintactico.y"
     {
-							printf("if true\n");
+							printf("múltiple\n");
 						}
-    break;
-
-  case 49:
-
-/* Line 1455 of yacc.c  */
-#line 442 "Sintactico.y"
-    {
-	                  		printf("if true\n");
-	                  	}
-    break;
-
-  case 50:
-
-/* Line 1455 of yacc.c  */
-#line 446 "Sintactico.y"
-    {
-	                    	printf("else\n");
-	                    }
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 450 "Sintactico.y"
+#line 698 "Sintactico.y"
     {
-	                    	printf("if false\n");
-	                    }
+							contadorListaVar=0;
+						}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 455 "Sintactico.y"
+#line 704 "Sintactico.y"
     {
-							printf("if true\n");
+							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
+							indicesParaAsignarTipo[contadorListaVar++]=posicion;
 						}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 459 "Sintactico.y"
+#line 710 "Sintactico.y"
     {
-							printf("elsif");
+							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
+							indicesParaAsignarTipo[contadorListaVar++]=posicion;
 						}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 464 "Sintactico.y"
+#line 715 "Sintactico.y"
     {
-							printf("else");
-						}
-    break;
-
-  case 55:
-
-/* Line 1455 of yacc.c  */
-#line 468 "Sintactico.y"
-    {
-							printf("if false");
+							if(atoi((yyvsp[(4) - (4)].cadena))<=0)
+							{
+								yyerrormsj((yyvsp[(3) - (4)].cadena),ErrorSintactico,ErrorOperacionNoValida,(yyvsp[(4) - (4)].cadena));
+							}
+							tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(3) - (4)].cadena))].limite=atoi((yyvsp[(4) - (4)].cadena));
 						}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 474 "Sintactico.y"
-    {
-	                    	printf("read\n");
-	                    }
-    break;
-
-  case 58:
-
-/* Line 1455 of yacc.c  */
-#line 481 "Sintactico.y"
-    {
-	                    	printf("write id\n");
-	                    }
-    break;
-
-  case 59:
-
-/* Line 1455 of yacc.c  */
-#line 486 "Sintactico.y"
-    {
- 							printf("write string\n");
- 						}
-    break;
-
-  case 60:
-
-/* Line 1455 of yacc.c  */
-#line 492 "Sintactico.y"
-    {
-							printf("bloque de declaracion\n");
-						}
-    break;
-
-  case 61:
-
-/* Line 1455 of yacc.c  */
-#line 496 "Sintactico.y"
-    {
-							printf("fin bloque de declaracion\n");
-						}
-    break;
-
-  case 62:
-
-/* Line 1455 of yacc.c  */
-#line 502 "Sintactico.y"
-    {
-							printf("múltiple\n");
-						}
-    break;
-
-  case 66:
-
-/* Line 1455 of yacc.c  */
-#line 515 "Sintactico.y"
+#line 726 "Sintactico.y"
     {
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
 							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
-							if(strcmp("sin tipo",obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
+							if(strcmp("sin tipo",(const char*)obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
 								tablaVariables[posicion].tipo=tipoInt;
 							}
@@ -2252,14 +2435,14 @@ yyreduce:
 						}
     break;
 
-  case 67:
+  case 57:
 
 /* Line 1455 of yacc.c  */
-#line 530 "Sintactico.y"
+#line 741 "Sintactico.y"
     {
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
 							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
-							if(strcmp("sin tipo",obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
+							if(strcmp("sin tipo",(const char*)obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
 								tablaVariables[posicion].tipo=tipoFloat;
 							}
@@ -2272,14 +2455,14 @@ yyreduce:
 						}
     break;
 
-  case 68:
+  case 58:
 
 /* Line 1455 of yacc.c  */
-#line 545 "Sintactico.y"
+#line 756 "Sintactico.y"
     {	
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
 							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
-							if(strcmp("sin tipo",obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
+							if(strcmp("sin tipo",(const char*)obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
 								tablaVariables[posicion].tipo=tipoString;
 							}
@@ -2292,139 +2475,279 @@ yyreduce:
 						}
     break;
 
+  case 59:
+
+/* Line 1455 of yacc.c  */
+#line 773 "Sintactico.y"
+    {
+							printf("+\n");
+							auxiliaresNecesarios++;
+					    	if(esAsignacion==1&&tipoAsignacion==tipoString)
+					    	{
+								yyerrormsj("suma", ErrorSintactico,ErrorOperacionNoValida,"");
+					    	}
+						}
+    break;
+
+  case 60:
+
+/* Line 1455 of yacc.c  */
+#line 782 "Sintactico.y"
+    {
+							ponerEnPolaca(&polaca,"+");
+						}
+    break;
+
+  case 61:
+
+/* Line 1455 of yacc.c  */
+#line 787 "Sintactico.y"
+    {
+							printf("-\n");
+							auxiliaresNecesarios++;
+							if(esAsignacion==1&&tipoAsignacion==tipoString)
+							{
+								yyerrormsj("resta", ErrorSintactico,ErrorOperacionNoValida,"");
+							}
+						}
+    break;
+
+  case 62:
+
+/* Line 1455 of yacc.c  */
+#line 796 "Sintactico.y"
+    {
+							ponerEnPolaca(&polaca,"-");
+						}
+    break;
+
+  case 63:
+
+/* Line 1455 of yacc.c  */
+#line 801 "Sintactico.y"
+    {
+							printf("termino\n");
+						}
+    break;
+
+  case 64:
+
+/* Line 1455 of yacc.c  */
+#line 807 "Sintactico.y"
+    {
+							printf("*\n");
+							auxiliaresNecesarios++;
+					    	if(esAsignacion==1&&tipoAsignacion==tipoString)
+					    	{
+								yyerrormsj("multiplicacion", ErrorSintactico,ErrorOperacionNoValida,"");
+					    	}
+						}
+    break;
+
+  case 65:
+
+/* Line 1455 of yacc.c  */
+#line 816 "Sintactico.y"
+    {
+	                    	ponerEnPolaca(&polaca,"*");
+	                    }
+    break;
+
+  case 66:
+
+/* Line 1455 of yacc.c  */
+#line 821 "Sintactico.y"
+    {
+							printf("/\n");
+							auxiliaresNecesarios++;
+					    	if(esAsignacion==1&&tipoAsignacion==tipoString)
+								yyerrormsj("division", ErrorSintactico,ErrorOperacionNoValida,"");
+	                  	}
+    break;
+
+  case 67:
+
+/* Line 1455 of yacc.c  */
+#line 828 "Sintactico.y"
+    {
+	                  		ponerEnPolaca(&polaca,"/");
+	                  	}
+    break;
+
+  case 68:
+
+/* Line 1455 of yacc.c  */
+#line 833 "Sintactico.y"
+    {
+							printf("factor\n");
+	                    }
+    break;
+
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 562 "Sintactico.y"
+#line 839 "Sintactico.y"
     {
-							printf("+\n");
-						}
+					    	printf("CTE_INT: %s\n", (yyvsp[(1) - (1)].cadena));
+				    		if(esAsignacion==1&&tipoAsignacion!=tipoInt)
+				    		{
+				    			yyerrormsj((yyvsp[(1) - (1)].cadena), ErrorSintactico,ErrorConstanteDistintoTipo,"");
+				    		}
+							ponerEnPolaca(&polaca,tablaConstantes[buscarEnTablaDeSimbolos(sectorConstantes,(yyvsp[(1) - (1)].cadena))].nombre);
+					    }
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 567 "Sintactico.y"
+#line 849 "Sintactico.y"
     {
-							printf("-\n");
-						}
+					    	printf("CTE_FLOAT: %s\n", (yyvsp[(1) - (1)].cadena));
+					    	if(esAsignacion==1&&tipoAsignacion!=tipoFloat)
+					    	{
+					    		yyerrormsj((yyvsp[(1) - (1)].cadena), ErrorSintactico,ErrorConstanteDistintoTipo,"");
+					    	}
+							ponerEnPolaca(&polaca,tablaConstantes[buscarEnTablaDeSimbolos(sectorConstantes,(yyvsp[(1) - (1)].cadena))].nombre);
+					    }
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 572 "Sintactico.y"
+#line 859 "Sintactico.y"
     {
-							printf("termino\n");
+							printf("CTE_STRING: %s\n", (yyvsp[(1) - (1)].cadena));
+							if(esAsignacion==1&&tipoAsignacion!=tipoString)
+							{
+					    		yyerrormsj((yyvsp[(1) - (1)].cadena), ErrorSintactico,ErrorConstanteDistintoTipo,"");
+							}
+							ponerEnPolaca(&polaca,tablaConstantes[buscarEnTablaDeSimbolos(sectorConstantes,(yyvsp[(1) - (1)].cadena))].nombre);
 						}
     break;
 
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 578 "Sintactico.y"
+#line 869 "Sintactico.y"
     {
-	                    	printf("*\n");
-	                    }
-    break;
-
-  case 73:
-
-/* Line 1455 of yacc.c  */
-#line 583 "Sintactico.y"
-    {
-							printf("/\n");
+	                  		printf("id\n");
+	                  		printf("%s\n", yylval.cadena);
+	                  		int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
+							indicesParaAsignarTipo[contadorListaVar++]=posicion;
+					    	if(tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(1) - (1)].cadena))].tipo==sinTipo)
+					    	{
+								yyerrormsj((yyvsp[(1) - (1)].cadena),ErrorSintactico,ErrorIdNoDeclarado,"");
+					    	}
+				    		if(esAsignacion==1&& tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(1) - (1)].cadena))].tipo!=tipoAsignacion)
+				    		{
+								yyerrormsj((yyvsp[(1) - (1)].cadena), ErrorSintactico,ErrorIdDistintoTipo,"");
+				    		}
+							ponerEnPolaca(&polaca,tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,(yyvsp[(1) - (1)].cadena))].nombre);
 	                  	}
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 588 "Sintactico.y"
+#line 889 "Sintactico.y"
     {
-							printf("factor\n");
-	                    }
+							printf("between\n");
+							contadorBetween++;
+							t_info info;
+							info.nro = contadorBetween;
+							info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+							sprintf(info.cadena,"#between_%d",info.nro);
+							ponerEnPolaca(&polaca,info.cadena);
+							if(info.cadena==NULL){
+								printf("Error al solicitar memoria\n");
+								exit(1);
+							}
+							sprintf(info.cadena,"#between_%d",info.nro);
+							ponerEnPolaca(&polaca,info.cadena);
+							info.cantExpresiones=0;
+							ponerEnPila(&pilaBetween,&info);
+						}
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 594 "Sintactico.y"
+#line 907 "Sintactico.y"
     {
-					    	printf("CTE_INT: %s\n", (yyvsp[(1) - (1)].cadena));
-					    	/*
-				    		if(esAsignacion==1&&tipoAsignacion!=tipoInt)
-				    		{
-				    			yyerrormsj($<cadena>1, ErrorSintactico,ErrorConstanteDistintoTipo,"");
-				    		}
-				    		*/
-					    }
+							printf("id paramBetween\n");
+						}
     break;
 
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 605 "Sintactico.y"
+#line 911 "Sintactico.y"
     {
-					    	printf("CTE_FLOAT: %s\n", (yyvsp[(1) - (1)].cadena));
-					    	/*
-					    	if(esAsignacion==1&&tipoAsignacion!=tipoFloat)
-					    	{
-					    		yyerrormsj($<cadena>1, ErrorSintactico,ErrorConstanteDistintoTipo,"");
-					    	}
-					    	*/
-					    }
+							printf("rango de expresiones\n");
+						}
     break;
 
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 616 "Sintactico.y"
+#line 917 "Sintactico.y"
     {
-							printf("CTE_STRING: %s\n", (yyvsp[(1) - (1)].cadena));
-							/*
-							if(esAsignacion==1&&tipoAsignacion!=tipoString)
-							{
-					    		yyerrormsj($<cadena>1, ErrorSintactico,ErrorConstanteDistintoTipo,"");
-							}
-							*/
+							printf("rango\n");
 						}
     break;
 
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 627 "Sintactico.y"
+#line 923 "Sintactico.y"
     {
-	                  		printf("id\n");
-	                  		printf("%s\n", yylval.cadena);
-	                  		int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
-							indicesParaAsignarTipo[contadorListaVar++]=posicion;
-	                  	}
-    break;
-
-  case 81:
-
-/* Line 1455 of yacc.c  */
-#line 641 "Sintactico.y"
-    {
-							printf("rango\n");
+							printf("in list\n");
+							contadorInList++;
+							t_info info;
+							info.nro = contadorInList;
+							info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+							sprintf(info.cadena,"#inlist_%d",info.nro);
+							ponerEnPolaca(&polaca,info.cadena);
+							if(info.cadena==NULL){
+								printf("Error al solicitar memoria\n");
+								exit(1);
+							}
+							sprintf(info.cadena,"#between_%d",info.nro);
+							ponerEnPolaca(&polaca,info.cadena);
+							info.cantExpresiones=0;
+							ponerEnPila(&pilaInList,&info);
 						}
     break;
 
-  case 83:
+  case 79:
 
 /* Line 1455 of yacc.c  */
-#line 650 "Sintactico.y"
+#line 941 "Sintactico.y"
+    {
+							printf("id paramInList\n");
+						}
+    break;
+
+  case 80:
+
+/* Line 1455 of yacc.c  */
+#line 945 "Sintactico.y"
     {
 							printf("lista de expresiones\n");
+							printf("Expresiones en InList_%d: %d\n", topeDePila(&pilaInList)->nro,topeDePila(&pilaInList)->cantExpresiones);
+							char aux[50];
+							sprintf(aux,"%d.0",topeDePila(&pilaInList)->cantExpresiones);
+							insertarEnTablaDeSimbolos(sectorConstantes,tipoFloat,aux);
+							sprintf(aux,"%s",tablaConstantes[buscarEnTablaDeSimbolos(sectorConstantes,aux)].nombre);
+							ponerEnPolaca(&polaca,aux);
+							sacarDePila(&pilaInList);
 						}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2428 "y.tab.c"
+#line 2751 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2636,15 +2959,16 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 660 "Sintactico.y"
+#line 966 "Sintactico.y"
 
 
 /* codigo */
 
 int main(int argc,char *argv[])
 {
-
-	setlocale(LC_CTYPE,"Spanish");
+	crearPila(&pilaIf);
+	crearPila(&pilaWhile);
+	crearPolaca(&polaca);
 
   	if ((yyin = fopen(argv[1], "rt")) == NULL)
 	{
@@ -2665,6 +2989,11 @@ int main(int argc,char *argv[])
 
 	grabarTablaDeSimbolos(0);
 
+	vaciarPila(&pilaIf);
+	vaciarPila(&pilaWhile);
+
+	guardarPolaca(&polaca);
+
 	printf("\n*** COMPILACION EXITOSA ***\n");
 
   	return 0;
@@ -2672,14 +3001,13 @@ int main(int argc,char *argv[])
 
 /* funciones */
 
-int yyerrormsj(char * info,enum tipoDeError tipoDeError ,enum error error, const char *infoAdicional)
+int yyerrormsj(const char * info,enum tipoDeError tipoDeError ,enum error error, const char *infoAdicional)
 {
-	setlocale(LC_CTYPE,"Spanish");
 	grabarTablaDeSimbolos(1);
-	printf("[Línea %d] ",yylineno);
+	printf("[Linea %d] ",yylineno);
   	switch(tipoDeError){
         case ErrorSintactico:
-            printf("Error sintáctico. ");
+            printf("Error sintactico. ");
             break;
         case ErrorLexico:
             printf("Error lexico. ");
@@ -2691,15 +3019,6 @@ int yyerrormsj(char * info,enum tipoDeError tipoDeError ,enum error error, const
 			break;
 		case ErrorIdNoDeclarado:
 			printf("Descripcion: el id '%s' no ha sido declarado\n",info);
-			break;
-		case ErrorArraySinTipo:
-			printf("Descripcion: el id '%s' NO tiene un tipo asignado\n",info);
-			break;
-		case ErrorArrayFueraDeRango:
-			printf("Descripcion: vector '%s(0..%d)' fuera de rango. Se intenta acceder a '%s[%s]'\n",info,(tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,info)].limite),info,infoAdicional);
-			break;
-		case ErrorLimiteArrayNoPermitido:
-			printf("Descripcion: el vector %s (%s) no tiene un límite válido, debe ser mayor a 0\n",info, infoAdicional);
 			break;
 		case ErrorOperacionNoValida:
 			printf("Descripcion: La operacion %s no es válida para variables de tipo %s\n",info, obtenerTipo(sectorVariables, tipoAsignacion));
@@ -2718,9 +3037,701 @@ int yyerrormsj(char * info,enum tipoDeError tipoDeError ,enum error error, const
 
 int yyerror()
 {
-	setlocale(LC_CTYPE,"Spanish");
 	grabarTablaDeSimbolos(1);
-	printf("Error sintáctico \n");
+	printf("Error sintactico \n");
 	system ("Pause");
 	exit (1);
 }
+
+/* primitivas de pila */
+
+void crearPila(t_pila* pp)
+{
+    *pp=NULL;
+}
+
+int ponerEnPila(t_pila* pp,t_info* info)
+{
+    t_nodoPila* pn=(t_nodoPila*)malloc(sizeof(t_nodoPila));
+    if(!pn)
+        return 0;
+    pn->info=*info;
+    pn->psig=*pp;
+    *pp=pn;
+    return 1;
+}
+
+t_info * sacarDePila(t_pila* pp)
+{
+	t_info* info = (t_info *) malloc(sizeof(t_info));
+    if(!*pp){
+    	return NULL;
+    }
+    *info=(*pp)->info;
+    *pp=(*pp)->psig;
+    return info;
+
+}
+
+void vaciarPila(t_pila* pp)
+{
+    t_nodoPila* pn;
+    while(*pp)
+    {
+        pn=*pp;
+        *pp=(*pp)->psig;
+        free(pn);
+    }
+}
+
+t_info* topeDePila(t_pila* pila)
+{
+	return &((*pila)->info);
+}
+
+/* primitivas de polaca */
+
+void crearPolaca(t_polaca* pp)
+{
+    *pp=NULL;
+}
+
+char * sacarDePolaca(t_polaca * pp)
+{
+	t_nodoPolaca* nodo;
+	t_nodoPolaca* anterior;
+	char * cadena = (char*)malloc(sizeof(char)*CADENA_MAXIMA);;
+	nodo = *pp;
+
+	while(nodo->psig)
+	{
+		anterior = nodo;
+		nodo = nodo->psig;
+	}
+
+	anterior->psig=NULL;
+	strcpy(cadena, nodo->info.cadena);
+	free(nodo);
+	return cadena;
+}
+
+int ponerEnPolaca(t_polaca* pp, char *cadena)
+{
+    t_nodoPolaca* pn = (t_nodoPolaca*)malloc(sizeof(t_nodoPolaca));
+    if(!pn)
+    {
+    	printf("ponerEnPolaca: Error al solicitar memoria\n");
+        return ERROR;
+    }
+    t_nodoPolaca* aux;
+    strcpy(pn->info.cadena,cadena);
+    pn->info.nro=contadorPolaca++;
+    pn->psig=NULL;
+    if(!*pp)
+    {
+    	*pp=pn;
+    	return OK;
+    }
+    else
+    {
+    	aux=*pp;
+    	while(aux->psig)
+        	aux=aux->psig;
+        aux->psig=pn;
+    	return OK;
+    }
+}
+
+int ponerEnPolacaNro(t_polaca* pp,int pos, char *cadena)
+{
+	t_nodoPolaca* aux;
+	aux=*pp;
+    while(aux!=NULL && aux->info.nro<pos)
+    {
+    	aux=aux->psig;
+    }
+    if(aux->info.nro==pos)
+    {
+    	strcpy(aux->info.cadena,cadena);
+    	return OK;
+    }
+    else
+    {
+    	printf("NO ENCONTRADO\n");
+    	return ERROR;
+    }
+    return ERROR;
+}
+
+void guardarPolaca(t_polaca *pp)
+{
+	FILE*pt=fopen("intermedia.txt","w+");
+	t_nodoPolaca* pn;
+	if(!pt)
+	{
+		printf("Error al crear la tabla de simbolos\n");
+		return;
+	}
+	while(*pp)
+    {
+        pn=*pp;
+        fprintf(pt, "%s\n",pn->info.cadena);
+        *pp=(*pp)->psig;
+        free(pn);
+    }
+	fclose(pt);
+}
+
+char* obtenerSalto(enum tipoSalto tipo)
+{
+	switch(tipo)
+	{
+		case normal:
+			if(strcmp(ultimoComparador,"==")==0)
+				return("BEQ");
+			if(strcmp(ultimoComparador,">")==0)
+				return("BGT");
+			if(strcmp(ultimoComparador,"<")==0)
+				return("BLT");
+			if(strcmp(ultimoComparador,">=")==0)
+				return("BGE");
+			if(strcmp(ultimoComparador,"<=")==0)
+				return("BLE");
+			if(strcmp(ultimoComparador,"!=")==0)
+				return("BNE");
+			break;
+
+		case inverso:
+			if(strcmp(ultimoComparador,"==")==0)
+				return("BNE");
+			if(strcmp(ultimoComparador,">")==0)
+				return("BLE");
+			if(strcmp(ultimoComparador,"<")==0)
+				return("BGE");
+			if(strcmp(ultimoComparador,">=")==0)
+				return("BLT");
+			if(strcmp(ultimoComparador,"<=")==0)
+				return("BGT");
+			if(strcmp(ultimoComparador,"!=")==0)
+				return("BEQ");
+			break;
+	}
+}
+
+char* obtenerSalto2(char* comparador,enum tipoSalto tipo)
+{
+	switch(tipo)
+	{
+		case normal:
+			if(strcmp(comparador,"==")==0)
+				return("BEQ");
+			if(strcmp(comparador,">")==0)
+				return("BGT");
+			if(strcmp(comparador,"<")==0)
+				return("BLT");
+			if(strcmp(comparador,">=")==0)
+				return("BGE");
+			if(strcmp(comparador,"<=")==0)
+				return("BLE");
+			if(strcmp(comparador,"!=")==0)
+				return("BNE");
+			break;
+
+		case inverso:
+			if(strcmp(comparador,"==")==0)
+				return("BNE");
+			if(strcmp(comparador,">")==0)
+				return("BLE");
+			if(strcmp(comparador,"<")==0)
+				return("BGE");
+			if(strcmp(comparador,">=")==0)
+				return("BLT");
+			if(strcmp(comparador,"<=")==0)
+				return("BGT");
+			if(strcmp(comparador,"!=")==0)
+				return("BEQ");
+			break;
+	}
+}
+
+/* assembler */
+
+void generar_assembler2(t_polaca *pp)
+{
+		t_nodoPolaca* aux;
+		aux=*pp;
+		int i;
+		int nroAuxReal=0;
+		int nroAuxEntero=0;
+		char aux1[50]="aux\0";
+		char aux2[10];
+		enum tipoDato ultimoTipo=sinTipo;
+		char ultimaCadena[CADENA_MAXIMA];
+		int huboAsignacion=TRUE;
+		FILE* pf=fopen("final.asm","w+");
+		if(!pf)
+		{
+			printf("Error al guardar el archivo assembler.\n");
+			exit(1);
+		}
+		
+		// cabecera de assembler
+		fprintf(pf,"include macros2.asm\n");
+		fprintf(pf,"include number.asm\n\n");
+		fprintf(pf,"include numbers.asm\n\n");
+		fprintf(pf,".MODEL LARGE\n.STACK 200h\n.386\n.387\n.DATA\n\n\tMAXTEXTSIZE equ 50\n");
+		
+		// declaración de variables
+		for(i = 0; i<indiceVariable; i++)
+		{
+			fprintf(pf,"\t@%s ",tablaVariables[i].nombre);
+			switch(tablaVariables[i].tipo){
+				case tipoInt:
+					fprintf(pf,"\tDD 0.0\n");
+					break;
+				case tipoFloat:
+					fprintf(pf,"\tDD 0.0\n");
+					break;
+				case tipoString:
+					fprintf(pf,"\tDB MAXTEXTSIZE dup (?),'$'\n");
+					break;
+			}
+		}
+
+		// declaración de constantes
+		for(i = 0; i<indiceConstante; i++)
+		{
+			switch(tablaConstantes[i].tipo)
+			{
+				case tipoInt:
+					fprintf(pf,"\t@%s \tDW %d\n",tablaConstantes[i].nombre,atoi(tablaConstantes[i].valor));
+					break;
+				case tipoFloat:
+					fprintf(pf,"\t@%s \tDD %s\n",tablaConstantes[i].nombre,tablaConstantes[i].valor);
+					break;
+				case tipoString:
+					fprintf(pf,"\t@%s \tDB \"%s\",'$',%d dup(?)\n",tablaConstantes[i].nombre,tablaConstantes[i].valor,50-strlen(tablaConstantes[i].valor));
+					break;
+
+			}
+		}
+
+		// declaración de auxiliares
+		for(i=0;i<auxiliaresNecesarios;i++)
+		{
+			fprintf(pf,"\t@_auxR%d \tDD 0.0\n",i);
+		}
+		for(i=0;i<auxiliaresNecesarios;i++)
+		{
+			fprintf(pf,"\t@_auxE%d \tDW 0\n",i);
+		}
+
+		// zona de código
+		fprintf(pf,"\n.CODE\n.startup\n\tmov AX,@DATA\n\tmov DS,AX\n\n\tFINIT\n\n");
+
+		// generación de assembler recorriendo la polaca
+	    while(aux!=NULL)
+	    {
+	    	char linea[CADENA_MAXIMA];
+	    	int pos;
+	    	strcpy(linea,aux->info.cadena);
+
+	    	// para variables
+	    	if((pos=buscarEnTablaDeSimbolosASM(sectorVariables,linea))!=NO_ENCONTRADO)
+	    	{
+	    		t_info info;
+	    		info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+	    		strcpy(info.cadena,linea);
+	    		info.tipo=tablaVariables[pos].tipo;
+	    		if(pilaASM!=NULL||huboAsignacion==FALSE)
+	    		{
+	    			huboAsignacion=TRUE;
+	    		}
+	    		else
+	    		{
+	    			huboAsignacion=FALSE;
+	    		}
+	    		ponerEnPila(&pilaASM,&info);
+	    		ultimoTipo=info.tipo;
+		    }
+
+	    	// para constantes
+	    	if((pos=buscarEnTablaDeSimbolosASM(sectorConstantes,linea))!=NO_ENCONTRADO)
+	    	{
+	    		t_info info2;
+	    		info2.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+	    		strcpy(info2.cadena,linea);
+	    		info2.tipo=tablaConstantes[pos].tipo;
+	    		ponerEnPila(&pilaASM,&info2);
+	    		if(info2.tipo!=tipoString)
+	    		{
+		    		if(pilaASM==NULL)
+		    		{
+		    			huboAsignacion=FALSE;
+		    		}
+		    		ultimoTipo=info2.tipo;	
+		    	}
+		    	else
+		    	{
+		    		ultimoTipo=info2.tipo;
+		    	}
+		    }
+
+		    // operadores aritméticos
+		    if(strcmp(linea,"*")==0)
+		    {
+				t_info *op1=sacarDePila(&pilaASM);
+				t_info *op2;
+				t_info info;
+				switch(op1->tipo)
+				{
+					case tipoInt:
+							fprintf(pf,";MULTIPLICACION DE ENTEROS\n");
+							op2=sacarDePila(&pilaASM);
+							fprintf(pf,"\tfild \t@%s\n", op1->cadena);
+							fprintf(pf,"\tfimul \t@%s\n", op2->cadena); 
+							strcpy(aux1,"_auxE");
+							itoa(nroAuxEntero,aux2,10);
+				   			strcat(aux1,aux2);
+							fprintf(pf,"\tfistp \t@%s\n", aux1);
+							info.tipo=tipoInt;
+							info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+				    		strcpy(info.cadena,aux1);
+				    		ponerEnPila(&pilaASM,&info);
+							nroAuxEntero++;
+						break;
+
+					case tipoFloat:
+						fprintf(pf,";MULTIPLICACION DE REALES\n");
+						op2=sacarDePila(&pilaASM);
+						fprintf(pf,"\tfld \t@%s\n", op1->cadena);
+						fprintf(pf,"\tfld \t@%s\n", op2->cadena);
+						fprintf(pf,"\tfmul\n");
+						strcpy(aux1,"_auxR");
+						itoa(nroAuxReal,aux2,10);
+			   			strcat(aux1,aux2);
+						fprintf(pf,"\tfstp \t@%s\n", aux1);
+						info.tipo=tipoFloat;
+						info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+				    	strcpy(info.cadena,aux1);
+				    	ponerEnPila(&pilaASM,&info);
+						nroAuxReal++;
+						break;
+				}
+			}
+
+			if(strcmp(linea,"+")==0)
+			{
+				t_info *op1=sacarDePila(&pilaASM);
+				t_info *op2;
+				t_info info;
+				switch(op1->tipo)
+				{
+					case tipoInt:
+							fprintf(pf,";SUMA DE ENTEROS\n");
+							op2=sacarDePila(&pilaASM);
+							fprintf(pf,"\tfild \t@%s\n", op1->cadena);
+							fprintf(pf,"\tfiadd \t@%s\n", op2->cadena); 
+							strcpy(aux1,"_auxE");
+							itoa(nroAuxEntero,aux2,10);
+				   			strcat(aux1,aux2);
+							fprintf(pf,"\tfistp \t@%s\n", aux1);
+							info.tipo=tipoInt;
+							info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+				    		strcpy(info.cadena,aux1);
+				    		ponerEnPila(&pilaASM,&info);
+							nroAuxEntero++;
+						break;
+
+					case tipoFloat:
+						fprintf(pf,";SUMA DE REALES\n");
+						op2=sacarDePila(&pilaASM);
+						fprintf(pf,"\tfld \t@%s\n", op1->cadena);
+						fprintf(pf,"\tfld \t@%s\n", op2->cadena);
+						fprintf(pf,"\tfadd\n");
+						strcpy(aux1,"_auxR");
+						itoa(nroAuxReal,aux2,10);
+			   			strcat(aux1,aux2);
+						fprintf(pf,"\tfstp \t@%s\n", aux1);
+						info.tipo=tipoFloat;
+						info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+				    	strcpy(info.cadena,aux1);
+				    	ponerEnPila(&pilaASM,&info);
+						nroAuxReal++;
+						break;
+				}
+			}
+
+			if(strcmp(linea,"/")==0)
+			{
+				t_info *op1=sacarDePila(&pilaASM);
+				t_info *op2=sacarDePila(&pilaASM);;
+				t_info info;
+				switch(op2->tipo)
+				{
+					case tipoInt:
+							fprintf(pf,";DIVISION DE ENTEROS\n");
+							fprintf(pf,"\tfild \t@%s\n", op1->cadena);
+							fprintf(pf,"\tfidivr \t@%s\n", op2->cadena); 
+							strcpy(aux1,"_auxE");
+							itoa(nroAuxEntero,aux2,10);
+				   			strcat(aux1,aux2);
+							fprintf(pf,"\tfistp \t@%s\n", aux1);
+							info.tipo=tipoInt;
+							info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+				    		strcpy(info.cadena,aux1);
+				    		ponerEnPila(&pilaASM,&info);
+							nroAuxEntero++;
+						break;
+
+					case tipoFloat:
+						fprintf(pf,";DIVISION DE REALES\n");
+						fprintf(pf,"\tfld \t@%s\n", op1->cadena);
+						fprintf(pf,"\tfld \t@%s\n", op2->cadena);
+						fprintf(pf,"\tfdivr\n");
+						strcpy(aux1,"_auxR");
+						itoa(nroAuxReal,aux2,10);
+			   			strcat(aux1,aux2);
+						fprintf(pf,"\tfstp \t@%s\n", aux1);
+						info.tipo=tipoFloat;
+						info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+				    	strcpy(info.cadena,aux1);
+				    	ponerEnPila(&pilaASM,&info);
+						nroAuxReal++;
+						break;
+				}
+			}
+
+			if(strcmp(linea,"-")==0)
+			{
+				t_info *op1=sacarDePila(&pilaASM);
+				t_info *op2;
+				t_info info;
+				switch(op1->tipo)
+				{
+					case tipoInt:
+							fprintf(pf,";RESTA DE ENTEROS\n");
+							op2=sacarDePila(&pilaASM);
+							fprintf(pf,"\tfild \t@%s\n", op1->cadena);
+							fprintf(pf,"\tfisubr \t@%s\n", op2->cadena); 
+							strcpy(aux1,"_auxE");
+							itoa(nroAuxEntero,aux2,10);
+				   			strcat(aux1,aux2);
+							fprintf(pf,"\tfistp \t@%s\n", aux1);
+							info.tipo=tipoInt;
+							info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+				    		strcpy(info.cadena,aux1);
+				    		ponerEnPila(&pilaASM,&info);
+							nroAuxEntero++;
+						break;
+
+					case tipoFloat:
+						fprintf(pf,";RESTA DE REALES\n");
+						op2=sacarDePila(&pilaASM);
+						fprintf(pf,"\tfld \t@%s\n", op1->cadena);
+						fprintf(pf,"\tfld \t@%s\n", op2->cadena);
+						fprintf(pf,"\tfsubr\n");
+						strcpy(aux1,"_auxR");
+						itoa(nroAuxReal,aux2,10);
+			   			strcat(aux1,aux2);
+						fprintf(pf,"\tfstp \t@%s\n", aux1);
+						info.tipo=tipoFloat;
+						info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+				    	strcpy(info.cadena,aux1);
+				    	ponerEnPila(&pilaASM,&info);
+						nroAuxReal++;
+						break;
+				}
+			}
+
+			// comparadores
+			if(strcmp(linea,"CMP")==0)
+			{
+				t_info *op1= sacarDePila(&pilaASM);
+				t_info *op2= sacarDePila(&pilaASM);
+				if(op1->tipo==tipoFloat)
+				{
+					fprintf(pf,"\tfld \t@%s\n", op1->cadena);
+					fprintf(pf,"\tfld \t@%s\n", op2->cadena);
+				}
+				else
+				{
+					fprintf(pf,"\tfild \t@%s\n", op1->cadena);
+					fprintf(pf,"\tfild \t@%s\n", op2->cadena);
+				}
+			}
+
+			//>
+			if(strcmp(linea,"BLE")==0)
+			{
+				fprintf(pf,"\tfcomp\n\tfstsw\tax\n\tfwait\n\tsahf\n\tjbe\t\t%s\n",sacarDePila(&pilaASM)->cadena);
+			}
+
+			//<
+			if(strcmp(linea,"BGE")==0)
+			{
+				fprintf(pf,"\tfcomp\n\tfstsw\tax\n\tfwait\n\tsahf\n\tjae\t\t%s\n",sacarDePila(&pilaASM)->cadena);
+			}
+
+			//!=
+			if(strcmp(linea,"BEQ")==0)
+			{
+				fprintf(pf,"\tfcomp\n\tfstsw\tax\n\tfwait\n\tsahf\n\tje\t\t%s\n",sacarDePila(&pilaASM)->cadena);
+			}
+
+			//==
+			if(strcmp(linea,"BNE")==0)
+			{
+				fprintf(pf,"\tfcomp\n\tfstsw\tax\n\tfwait\n\tsahf\n\tjne\t\t%s\n",sacarDePila(&pilaASM)->cadena);
+			}
+
+			//>=
+			if(strcmp(linea,"BLT")==0)
+			{
+				fprintf(pf,"\tfcomp\n\tfstsw\tax\n\tfwait\n\tsahf\n\tjb\t\t%s\n",sacarDePila(&pilaASM)->cadena);
+			}
+
+			//<=
+			if(strcmp(linea,"BGT")==0)
+			{
+				fprintf(pf,"\tfcomp\n\tfstsw\tax\n\tfwait\n\tsahf\n\tja\t\t%s\n",sacarDePila(&pilaASM)->cadena);
+			}
+
+			if(strcmp(linea,"BI")==0)
+			{
+				fprintf(pf,"\tjmp\t\t%s\n",sacarDePila(&pilaASM)->cadena);
+			}
+
+			// etiquetas
+			if(strchr(linea, '#')!=NULL)
+			{
+				fprintf(pf,"%s:\n",reemplazarCaracter(linea,"#",""));
+			}
+
+			// saltos
+			if(strchr(linea, '$')!=NULL)
+			{
+				t_info info;
+				info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
+		    	strcpy(info.cadena,(const char*)reemplazarCaracter(linea,"$",""));
+		    	ponerEnPila(&pilaASM,&info);
+			}
+
+			if(strcmp(linea, "EXIT")==0)
+			{
+				fprintf(pf,"\tmov ah, 4ch\n\tint 21h\n");
+			}
+
+			// asignación
+			if(strcmp(linea,"=")==0)
+			{
+				switch(ultimoTipo)
+				{
+					case tipoString:
+						fprintf(pf,";ASIGNACION CADENA\n");
+						fprintf(pf,"\tmov ax, @DATA\n\tmov ds, ax\n\tmov es, ax\n");
+						fprintf(pf,"\tmov si, OFFSET\t@%s\n", sacarDePila(&pilaASM)->cadena);
+						fprintf(pf,"\tmov di, OFFSET\t@%s\n", sacarDePila(&pilaASM)->cadena);
+						fprintf(pf,"\tcall copiar\n");
+						break;
+
+					case tipoInt:
+						fprintf(pf,";ASIGNACION ENTERO\n");
+						t_info *op1=sacarDePila(&pilaASM);
+						fprintf(pf,"\tfild \t@%s\n", op1->cadena);
+						fprintf(pf,"\tfistp \t@%s\n",sacarDePila(&pilaASM)->cadena);
+						huboAsignacion=TRUE;
+						break;
+
+					case tipoFloat:
+						fprintf(pf,";ASIGNACION REAL\n");
+						t_info *op=sacarDePila(&pilaASM);
+						fprintf(pf,"\tfld \t@%s\n", op->cadena);
+						fprintf(pf,"\tfstp \t@%s\n",sacarDePila(&pilaASM)->cadena);
+						huboAsignacion=TRUE;
+						break;
+				}
+			}
+
+		    // write
+			if(strcmp(linea,"WRITE")==0)
+			{
+				fprintf(pf,";SALIDA POR CONSOLA\n");
+				switch(ultimoTipo)
+				{
+			    	case tipoInt:
+				    	fprintf(pf,"\tdisplayInteger \t@%s,3\n\tnewLine 1\n",sacarDePila(&pilaASM)->cadena);
+						break;
+					case tipoFloat:
+						fprintf(pf,"\tdisplayFloat \t@%s,3\n\tnewLine 1\n",sacarDePila(&pilaASM)->cadena);
+						break;
+					case tipoString:
+						fprintf(pf,"\tdisplayString \t@%s\n\tnewLine 1\n",sacarDePila(&pilaASM)->cadena);
+						break;
+		    	}
+			}
+
+			// read
+			if(strcmp(linea,"READ")==0)
+			{
+				fprintf(pf,";ENTRADA POR CONSOLA\n");
+				switch(ultimoTipo)
+				{
+			   		case tipoInt:
+						fprintf(pf,"\tgetFloat \t@%s\n",sacarDePila(&pilaASM)->cadena);
+						break;
+					case tipoFloat:
+						fprintf(pf,"\tgetFloat \t@%s\n",sacarDePila(&pilaASM)->cadena);
+						break;
+					case tipoString:
+						fprintf(pf,"\tgetString \t@%s\n",sacarDePila(&pilaASM)->cadena);
+						break;
+		    	}
+		    }
+	    	aux=aux->psig;
+	    }
+
+	    fprintf(pf,"\tmov ah, 4ch\n\tint 21h\n\n;FIN DEL PROGRAMA DE USUARIO\n");
+
+	    // funciones para manejo de entrada/salida y cadenas
+	    fprintf(pf,"\nstrlen proc\n\tmov bx, 0\n\tstrl01:\n\tcmp BYTE PTR [si+bx],'$'\n\tje strend\n\tinc bx\n\tjmp strl01\n\tstrend:\n\tret\nstrlen endp\n");
+		fprintf(pf,"\ncopiar proc\n\tcall strlen\n\tcmp bx , MAXTEXTSIZE\n\tjle copiarSizeOk\n\tmov bx , MAXTEXTSIZE\n\tcopiarSizeOk:\n\tmov cx , bx\n\tcld\n\trep movsb\n\tmov al , '$'\n\tmov byte ptr[di],al\n\tret\ncopiar endp\n");
+		fprintf(pf,"\nconcat proc\n\tpush ds\n\tpush si\n\tcall strlen\n\tmov dx , bx\n\tmov si , di\n\tpush es\n\tpop ds\n\tcall strlen\n\tadd di, bx\n\tadd bx, dx\n\tcmp bx , MAXTEXTSIZE\n\tjg concatSizeMal\n\tconcatSizeOk:\n\tmov cx , dx\n\tjmp concatSigo\n\tconcatSizeMal:\n\tsub bx , MAXTEXTSIZE\n\tsub dx , bx\n\tmov cx , dx\n\tconcatSigo:\n\tpush ds\n\tpop es\n\tpop si\n\tpop ds\n\tcld\n\trep movsb\n\tmov al , '$'\n\tmov byte ptr[di],al\n\tret\nconcat endp\n");
+		
+		// fin del archivo
+		fprintf(pf,"\nend");
+		fclose(pf);
+
+		printf("\n--ASSEMBLER GENERADO--\n");
+	}
+
+	int buscarEnTablaDeSimbolosASM(enum sectorTabla sector, char* objetivo)
+	{
+		int i;
+		switch(sector)
+		{
+			case sectorConstantes:
+				for(i=0;i<indiceConstante;i++)
+				{
+					if(strcmp(tablaConstantes[i].nombre,objetivo)==0)
+					{
+						return i;
+					}
+				}
+				return NO_ENCONTRADO;
+				break;
+
+			case sectorVariables:
+				for(i=0;i<indiceVariable;i++)
+				{
+					if(strcmp(tablaVariables[i].nombre,objetivo)==0)
+					{
+						return i;
+					}
+				}
+				return NO_ENCONTRADO;
+				break;
+		}
+		return NO_ENCONTRADO;
+}
+

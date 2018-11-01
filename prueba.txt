@@ -16,7 +16,7 @@
 	WRITE "a es:"
 	WRITE a
 
-	-/PRUEBA: cota numérica/-
+	-/PRUEBA: cota numerica/-
 	-/a=1000000000000000000000000000000000000/-
 	b=20
 	WRITE "b es:"

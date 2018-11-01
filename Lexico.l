@@ -6,7 +6,6 @@
 	#include <stdio.h>
 	#include <conio.h>
 	#include <stdlib.h>
-	#include <locale.h>
 	#include <string.h>
 	#include <float.h>
 	#include <limits.h>
@@ -61,14 +60,14 @@
 
 	/* funciones */
 
-	char* cortarCadena(char* ,int);
+	char* cortarCadena(char*, int);
 	char* reemplazarCaracter(char const * const,  char const * const,  char const * const);
 	void grabarTablaDeSimbolos(int);
-	void insertarEnTablaDeSimbolos(enum sectorTabla,enum tipoDato,char*);
+	void insertarEnTablaDeSimbolos(enum sectorTabla, enum tipoDato,char*);
 	char* normalizar(char*);
 	int buscarEnTablaDeSimbolos(enum sectorTabla, char*);
-	void mensajeDeError(enum error,const char*);
-	char * cortarCadena(char* ,int);
+	void mensajeDeError(enum error, char*);
+	char * cortarCadena(char*, int);
 	void guardarToken(char *);
 	char* obtenerTipo(enum sectorTabla, enum tipoDato);
 	void mostrarTablaDeSimbolos();
@@ -399,34 +398,14 @@ COMENTARIO 				{COMENTARIO_I}({LETRA}|{DIGITO}|{CARACTER}|.)*{COMENTARIO_F}
 						return INLIST;
 					}
 
-{COMENTARIO}		{
-						guardarToken("COMENTARIO\n");
-						return COMENTARIO;
-					}
+{COMENTARIO}
 
-"\n"				{
-						mensajeDeError(errorCaracterInvalido,"\n");
-						exit(1);
-					}
-
-"\r\n" 				{
-						mensajeDeError(errorCaracterInvalido,"\r\n");
-						exit(1);
-					}
-
-"\t"				{
-						mensajeDeError(errorCaracterInvalido,"\t");
-						exit(1);
-					}
-
-" "					{
-						mensajeDeError(errorCaracterInvalido," ");
-						exit(1);
-					}
-
-.    				{
+" "
+"\t"
+"\n"
+"\r\n"
+. 					{
 						mensajeDeError(errorCaracterInvalido,".");
-						exit(1);
 					}
 
 %%
@@ -469,7 +448,7 @@ char * reemplazarCaracter(char const * const original,  char const * const patte
 	return returned;
 }
 
-char * cortarCadena(char* cad,int tam){
+char * cortarCadena(char* cad, int tam){
 	if(strlen(cad)>tam)
 	{
 		cad[tam]='\0';
@@ -478,14 +457,12 @@ char * cortarCadena(char* cad,int tam){
 }
 
 void grabarTablaDeSimbolos(int error){
-	
-	setlocale(LC_CTYPE,"Spanish");
 
 	FILE*pt=fopen("tiraDeTokens.txt","w+");
 	
 	if(!pt)
 	{
-		printf("Error al crear la tabla de símbolos\n");
+		printf("Error al crear la tabla de simbolos\n");
 		return;
 	}
 	
@@ -496,7 +473,7 @@ void grabarTablaDeSimbolos(int error){
 	int i;
 	
 	if(!pf){
-		printf("Error al crear la tabla de símbolos\n");
+		printf("Error al crear la tabla de simbolos\n");
 		return;
 	}
 	
@@ -536,8 +513,6 @@ void grabarTablaDeSimbolos(int error){
 
 void mostrarTablaDeSimbolos(){
 
-	setlocale(LC_CTYPE,"Spanish");
-	
 	printf("%-32s|\t%-15s|\t%-32s|\t%-13s|\t%-13s\n\n","NOMBRE","TIPO","VALOR","LONGITUD","LIMITE");
 	int i;
 	
@@ -723,33 +698,31 @@ int buscarEnTablaDeSimbolos(enum sectorTabla sector, char* objetivo){
 	return NO_ENCONTRADO;
 }
 
-void mensajeDeError(enum error error,const char* info){
-
-	setlocale(LC_CTYPE,"Spanish");
+void mensajeDeError(enum error error, char* info){
 
 	grabarTablaDeSimbolos(1);
 
-	printf("[Línea %d] ",yylineno);
+	printf("[Linea %d] ",yylineno);
 	switch(error){ 
 
         case errorEnteroFueraDeRango: 
-            printf("ERROR LÉXICO. Descripción: Int %s fuera de rango [0 ; %d]\n",info,ENTERO_MAXIMO);
+            printf("ERROR LEXICO. Descripcion: Int %s fuera de rango [0 ; %d]\n",info,ENTERO_MAXIMO);
             break ;
 
 		case errorRealFueraDeRango: 
-            printf("ERROR LÉXICO. Descripción: Float %s fuera de rango. Debe ser un float de 32bits.\n",info);
+            printf("ERROR LEXICO. Descripcion: Float %s fuera de rango. Debe ser un float de 32bits.\n",info);
             break ;
 
         case errorCadenaDemasiadoLarga:
-            printf("ERROR LÉXICO. Descripción: String \"%s\" fuera de rango. La longitud máxima es de 30 caracteres.\n", info);
+            printf("ERROR LEXICO. Descripcion: String \"%s\" fuera de rango. La longitud maxima es de 30 caracteres.\n", info);
             break ; 
 
         case errorIdDemasiadoLargo:
-            printf("ERROR LÉXICO. Descripción: Id \"%s\" demasiado largo. La longitud máxima es de 30 caracteres.\n", info);
+            printf("ERROR LEXICO. Descripcion: Id \"%s\" demasiado largo. La longitud maxima es de 30 caracteres.\n", info);
             break ; 
 
         case errorCaracterInvalido:
-        	printf("ERROR LÉXICO. Descripción: El caracter %s es inválido.\n",info);
+        	printf("ERROR LEXICO. Descripcion: El caracter %s es invalido.\n",info);
         	break;
     }
        

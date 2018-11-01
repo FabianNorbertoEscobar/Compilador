@@ -1,173 +1,165 @@
-Nonterminals useless in grammar
-
-   start
-
-
 Terminals unused in grammar
 
    DIGITO
    LETRA
    LETRA_MINUS
    LETRA_MAYUS
+   CARACTER
    LLAVE_I
    LLAVE_F
    COMENTARIO_I
    COMENTARIO_F
-
-
-Rules useless in grammar
-
-   85 start: programa
+   COMP_MAYOR_ESTR
+   COMP_MENOR_ESTR
+   COMP_MAYOR_IGUAL
+   COMP_MENOR_IGUAL
+   COMP_IGUAL
+   COMP_DIST
 
 
 Gramática
 
-    0 $accept: programa $end
+    0 $accept: start $end
 
-    1 $@1: /* vacío */
+    1 start: programa
+    2      | /* vacío */
 
-    2 programa: INICIO_PROGRAMA $@1 bloque FIN_PROGRAMA
+    3 $@1: /* vacío */
 
-    3 bloque: lista_sentencias
+    4 programa: INICIO_PROGRAMA $@1 bloque FIN_PROGRAMA
 
-    4 lista_sentencias: sentencia
-    5                 | lista_sentencias sentencia
+    5 bloque: lista_sentencias
 
-    6 sentencia: bloque_declaracion
-    7          | asignacion
-    8          | lectura
-    9          | escritura
-   10          | iteracion
-   11          | seleccion
-   12          | COMENTARIO
+    6 lista_sentencias: sentencia
+    7                 | lista_sentencias sentencia
 
-   13 asignacion: ID OP_ASIG expresion
+    8 sentencia: bloque_declaracion
+    9          | asignacion
+   10          | lectura
+   11          | escritura
+   12          | iteracion
+   13          | seleccion
+   14          | COMENTARIO
 
-   14 $@2: /* vacío */
+   15 $@2: /* vacío */
 
-   15 iteracion: WHILE PARENTESIS_I condicion PARENTESIS_F $@2 DO bloque ENDWHILE
+   16 asignacion: ID $@2 OP_ASIG expresion
 
-   16 $@3: /* vacío */
+   17 $@3: /* vacío */
 
-   17 seleccion: IF PARENTESIS_I condicion PARENTESIS_F $@3 DO resto ENDIF
+   18 $@4: /* vacío */
 
-   18 condicion: comparacion
+   19 $@5: /* vacío */
 
-   19 $@4: /* vacío */
+   20 iteracion: WHILE PARENTESIS_I condicion $@3 PARENTESIS_F $@4 DO bloque $@5 ENDWHILE
 
-   20 $@5: /* vacío */
+   21 $@6: /* vacío */
 
-   21 condicion: comparacion $@4 OP_AND $@5 comparacion
+   22 $@7: /* vacío */
 
-   22 $@6: /* vacío */
+   23 seleccion: IF $@6 PARENTESIS_I condicion PARENTESIS_F $@7 DO resto ENDIF
 
-   23 $@7: /* vacío */
-
-   24 condicion: comparacion $@6 OP_OR $@7 comparacion
+   24 condicion: comparacion
 
    25 $@8: /* vacío */
 
-   26 condicion: OP_NOT $@8 comparacion
-   27          | between
-   28          | inlist
+   26 condicion: comparacion and_or $@8 comparacion
+   27          | OP_NOT comparacion
+   28          | between
+   29          | inlist
 
-   29 $@9: /* vacío */
+   30 and_or: OP_AND
+   31       | OP_OR
 
-   30 $@10: /* vacío */
+   32 comparacion: expresion COMPARADOR expresion
 
-   31 comparacion: expresion $@9 COMP_MAYOR_ESTR $@10 expresion
+   33 resto: bloque
 
-   32 $@11: /* vacío */
+   34 $@9: /* vacío */
 
-   33 $@12: /* vacío */
+   35 $@10: /* vacío */
 
-   34 comparacion: expresion $@11 COMP_MENOR_ESTR $@12 expresion
+   36 resto: bloque $@9 ELSE $@10 bloque
 
-   35 $@13: /* vacío */
+   37 $@11: /* vacío */
 
-   36 $@14: /* vacío */
+   38 $@12: /* vacío */
 
-   37 comparacion: expresion $@13 COMP_MAYOR_IGUAL $@14 expresion
+   39 $@13: /* vacío */
 
-   38 $@15: /* vacío */
+   40 $@14: /* vacío */
 
-   39 $@16: /* vacío */
+   41 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE $@14 bloque
 
-   40 comparacion: expresion $@15 COMP_MENOR_IGUAL $@16 expresion
+   42 lectura: READ ID
 
-   41 $@17: /* vacío */
+   43 escritura: WRITE ID
+   44          | WRITE CTE_STRING
 
-   42 $@18: /* vacío */
+   45 $@15: /* vacío */
 
-   43 comparacion: expresion $@17 COMP_IGUAL $@18 expresion
+   46 bloque_declaracion: DECVAR $@15 declaraciones ENDDEC
 
-   44 $@19: /* vacío */
+   47 declaraciones: declaraciones lista_id_y_tipo
+   48              | lista_id_y_tipo
 
-   45 $@20: /* vacío */
+   49 lista_id_y_tipo: var_dec COMA lista_id_y_tipo
+   50                | var_dec OP_DEC tipodato
 
-   46 comparacion: expresion $@19 COMP_DIST $@20 expresion
+   51 var_dec: ID
 
-   47 resto: bloque
+   52 $@16: /* vacío */
 
-   48 $@21: /* vacío */
+   53 $@17: /* vacío */
 
-   49 $@22: /* vacío */
+   54 var_dec: ID $@16 PARENTESIS_I CTE_INT $@17 PARENTESIS_F
 
-   50 resto: bloque $@21 ELSE $@22 bloque
+   55 tipodato: INTEGER
+   56         | FLOAT
+   57         | STRING
 
-   51 $@23: /* vacío */
+   58 $@18: /* vacío */
 
-   52 $@24: /* vacío */
+   59 expresion: expresion OP_SUM $@18 termino
 
-   53 $@25: /* vacío */
+   60 $@19: /* vacío */
 
-   54 resto: bloque $@23 ELSIF PARENTESIS_I condicion PARENTESIS_F $@24 bloque ELSE $@25 bloque
+   61 expresion: expresion OP_REST $@19 termino
+   62          | termino
 
-   55 $@26: /* vacío */
+   63 $@20: /* vacío */
 
-   56 lectura: READ $@26 ID
+   64 termino: termino OP_MULT $@20 factor
 
-   57 escritura: WRITE ID
-   58          | WRITE CTE_STRING
+   65 $@21: /* vacío */
 
-   59 $@27: /* vacío */
+   66 termino: termino OP_DIV $@21 factor
+   67        | factor
 
-   60 bloque_declaracion: DECVAR $@27 declaraciones ENDDEC
+   68 factor: CTE_INT
+   69       | CTE_FLOAT
+   70       | CTE_STRING
+   71       | ID
+   72       | PARENTESIS_I expresion PARENTESIS_F
 
-   61 declaraciones: declaraciones lista_id_y_tipo
-   62              | lista_id_y_tipo
+   73 $@22: /* vacío */
 
-   63 lista_id_y_tipo: ID COMA lista_id_y_tipo
-   64                | ID OP_DEC tipodato
+   74 $@23: /* vacío */
 
-   65 tipodato: INTEGER
-   66         | FLOAT
-   67         | STRING
+   75 between: BETWEEN $@22 PARENTESIS_I ID $@23 COMA rango PARENTESIS_F
 
-   68 expresion: expresion OP_SUM termino
-   69          | expresion OP_REST termino
-   70          | termino
+   76 rango: CORCHETE_I expresion PUNTO_Y_COMA expresion CORCHETE_F
 
-   71 termino: termino OP_MULT factor
-   72        | termino OP_DIV factor
-   73        | factor
+   77 $@24: /* vacío */
 
-   74 factor: CTE_INT
-   75       | CTE_FLOAT
-   76       | CTE_STRING
-   77       | ID
-   78       | PARENTESIS_I expresion PARENTESIS_F
+   78 $@25: /* vacío */
 
-   79 between: BETWEEN PARENTESIS_I ID COMA rango PARENTESIS_F
+   79 inlist: INLIST $@24 PARENTESIS_I ID $@25 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 
-   80 rango: CORCHETE_I expresion PUNTO_Y_COMA expresion CORCHETE_F
+   80 lista_expresiones: CORCHETE_I expresiones CORCHETE_F
 
-   81 inlist: INLIST PARENTESIS_I ID PUNTO_Y_COMA lista_expresiones PARENTESIS_F
-
-   82 lista_expresiones: CORCHETE_I expresiones CORCHETE_F
-
-   83 expresiones: expresion
-   84            | expresion PUNTO_Y_COMA expresiones
+   81 expresiones: expresion
+   82            | expresion PUNTO_Y_COMA expresiones
 
 
 Terminales con las reglas donde aparecen
@@ -178,1682 +170,1564 @@ DIGITO (258)
 LETRA (259)
 LETRA_MINUS (260)
 LETRA_MAYUS (261)
-CTE_INT (262) 74
-CTE_FLOAT (263) 75
-CTE_STRING (264) 58 76
-ID (265) 13 56 57 63 64 77 79 81
-INICIO_PROGRAMA (266) 2
-FIN_PROGRAMA (267) 2
-OP_SUM (268) 68
-OP_REST (269) 69
-OP_MULT (270) 71
-OP_DIV (271) 72
-OP_ASIG (272) 13
-OP_DEC (273) 64
-OP_AND (274) 21
-OP_OR (275) 24
-OP_NOT (276) 26
-PARENTESIS_I (277) 15 17 54 78 79 81
-PARENTESIS_F (278) 15 17 54 78 79 81
-LLAVE_I (279)
-LLAVE_F (280)
-CORCHETE_I (281) 80 82
-CORCHETE_F (282) 80 82
-COMENTARIO_I (283)
-COMENTARIO_F (284)
-PUNTO_Y_COMA (285) 80 81 84
-COMA (286) 63 79
-COMP_MAYOR_ESTR (287) 31
-COMP_MENOR_ESTR (288) 34
-COMP_MAYOR_IGUAL (289) 37
-COMP_MENOR_IGUAL (290) 40
-COMP_IGUAL (291) 43
-COMP_DIST (292) 46
-DECVAR (293) 60
-ENDDEC (294) 60
-WHILE (295) 15
-ENDWHILE (296) 15
-DO (297) 15 17
-IF (298) 17
-ELSE (299) 50 54
-ELSIF (300) 54
-ENDIF (301) 17
-INTEGER (302) 65
-FLOAT (303) 66
-STRING (304) 67
-READ (305) 56
-WRITE (306) 57 58
-BETWEEN (307) 79
-INLIST (308) 81
-COMENTARIO (309) 12
+CARACTER (262)
+CTE_INT (263) 54 68
+CTE_FLOAT (264) 69
+CTE_STRING (265) 44 70
+ID (266) 16 42 43 51 54 71 75 79
+INICIO_PROGRAMA (267) 4
+FIN_PROGRAMA (268) 4
+OP_SUM (269) 59
+OP_REST (270) 61
+OP_MULT (271) 64
+OP_DIV (272) 66
+OP_ASIG (273) 16
+OP_DEC (274) 50
+OP_AND (275) 30
+OP_OR (276) 31
+OP_NOT (277) 27
+COMPARADOR (278) 32
+PARENTESIS_I (279) 20 23 41 54 72 75 79
+PARENTESIS_F (280) 20 23 41 54 72 75 79
+LLAVE_I (281)
+LLAVE_F (282)
+CORCHETE_I (283) 76 80
+CORCHETE_F (284) 76 80
+COMENTARIO_I (285)
+COMENTARIO_F (286)
+PUNTO_Y_COMA (287) 76 79 82
+COMA (288) 49 75
+COMP_MAYOR_ESTR (289)
+COMP_MENOR_ESTR (290)
+COMP_MAYOR_IGUAL (291)
+COMP_MENOR_IGUAL (292)
+COMP_IGUAL (293)
+COMP_DIST (294)
+DECVAR (295) 46
+ENDDEC (296) 46
+WHILE (297) 20
+ENDWHILE (298) 20
+DO (299) 20 23
+IF (300) 23
+ELSE (301) 36 41
+ELSIF (302) 41
+ENDIF (303) 23
+INTEGER (304) 55
+FLOAT (305) 56
+STRING (306) 57
+READ (307) 42
+WRITE (308) 43 44
+BETWEEN (309) 75
+INLIST (310) 79
+COMENTARIO (311) 14
 
 
 No terminales con las reglas donde aparecen
 
-$accept (55)
+$accept (57)
     en la izquierda: 0
-programa (56)
-    en la izquierda: 2, en la derecha: 0
-$@1 (57)
-    en la izquierda: 1, en la derecha: 2
-bloque (58)
-    en la izquierda: 3, en la derecha: 2 15 47 50 54
-lista_sentencias (59)
-    en la izquierda: 4 5, en la derecha: 3 5
-sentencia (60)
-    en la izquierda: 6 7 8 9 10 11 12, en la derecha: 4 5
-asignacion (61)
-    en la izquierda: 13, en la derecha: 7
-iteracion (62)
-    en la izquierda: 15, en la derecha: 10
-$@2 (63)
-    en la izquierda: 14, en la derecha: 15
-seleccion (64)
-    en la izquierda: 17, en la derecha: 11
-$@3 (65)
-    en la izquierda: 16, en la derecha: 17
-condicion (66)
-    en la izquierda: 18 21 24 26 27 28, en la derecha: 15 17 54
-$@4 (67)
-    en la izquierda: 19, en la derecha: 21
-$@5 (68)
-    en la izquierda: 20, en la derecha: 21
-$@6 (69)
-    en la izquierda: 22, en la derecha: 24
-$@7 (70)
-    en la izquierda: 23, en la derecha: 24
-$@8 (71)
+start (58)
+    en la izquierda: 1 2, en la derecha: 0
+programa (59)
+    en la izquierda: 4, en la derecha: 1
+$@1 (60)
+    en la izquierda: 3, en la derecha: 4
+bloque (61)
+    en la izquierda: 5, en la derecha: 4 20 33 36 41
+lista_sentencias (62)
+    en la izquierda: 6 7, en la derecha: 5 7
+sentencia (63)
+    en la izquierda: 8 9 10 11 12 13 14, en la derecha: 6 7
+asignacion (64)
+    en la izquierda: 16, en la derecha: 9
+$@2 (65)
+    en la izquierda: 15, en la derecha: 16
+iteracion (66)
+    en la izquierda: 20, en la derecha: 12
+$@3 (67)
+    en la izquierda: 17, en la derecha: 20
+$@4 (68)
+    en la izquierda: 18, en la derecha: 20
+$@5 (69)
+    en la izquierda: 19, en la derecha: 20
+seleccion (70)
+    en la izquierda: 23, en la derecha: 13
+$@6 (71)
+    en la izquierda: 21, en la derecha: 23
+$@7 (72)
+    en la izquierda: 22, en la derecha: 23
+condicion (73)
+    en la izquierda: 24 26 27 28 29, en la derecha: 20 23 41
+$@8 (74)
     en la izquierda: 25, en la derecha: 26
-comparacion (72)
-    en la izquierda: 31 34 37 40 43 46, en la derecha: 18 21 24 26
-$@9 (73)
-    en la izquierda: 29, en la derecha: 31
-$@10 (74)
-    en la izquierda: 30, en la derecha: 31
-$@11 (75)
-    en la izquierda: 32, en la derecha: 34
-$@12 (76)
-    en la izquierda: 33, en la derecha: 34
-$@13 (77)
-    en la izquierda: 35, en la derecha: 37
-$@14 (78)
-    en la izquierda: 36, en la derecha: 37
-$@15 (79)
-    en la izquierda: 38, en la derecha: 40
-$@16 (80)
-    en la izquierda: 39, en la derecha: 40
-$@17 (81)
-    en la izquierda: 41, en la derecha: 43
-$@18 (82)
-    en la izquierda: 42, en la derecha: 43
-$@19 (83)
-    en la izquierda: 44, en la derecha: 46
-$@20 (84)
+and_or (75)
+    en la izquierda: 30 31, en la derecha: 26
+comparacion (76)
+    en la izquierda: 32, en la derecha: 24 26 27
+resto (77)
+    en la izquierda: 33 36 41, en la derecha: 23
+$@9 (78)
+    en la izquierda: 34, en la derecha: 36
+$@10 (79)
+    en la izquierda: 35, en la derecha: 36
+$@11 (80)
+    en la izquierda: 37, en la derecha: 41
+$@12 (81)
+    en la izquierda: 38, en la derecha: 41
+$@13 (82)
+    en la izquierda: 39, en la derecha: 41
+$@14 (83)
+    en la izquierda: 40, en la derecha: 41
+lectura (84)
+    en la izquierda: 42, en la derecha: 10
+escritura (85)
+    en la izquierda: 43 44, en la derecha: 11
+bloque_declaracion (86)
+    en la izquierda: 46, en la derecha: 8
+$@15 (87)
     en la izquierda: 45, en la derecha: 46
-resto (85)
-    en la izquierda: 47 50 54, en la derecha: 17
-$@21 (86)
-    en la izquierda: 48, en la derecha: 50
-$@22 (87)
-    en la izquierda: 49, en la derecha: 50
-$@23 (88)
-    en la izquierda: 51, en la derecha: 54
-$@24 (89)
+declaraciones (88)
+    en la izquierda: 47 48, en la derecha: 46 47
+lista_id_y_tipo (89)
+    en la izquierda: 49 50, en la derecha: 47 48 49
+var_dec (90)
+    en la izquierda: 51 54, en la derecha: 49 50
+$@16 (91)
     en la izquierda: 52, en la derecha: 54
-$@25 (90)
+$@17 (92)
     en la izquierda: 53, en la derecha: 54
-lectura (91)
-    en la izquierda: 56, en la derecha: 8
-$@26 (92)
-    en la izquierda: 55, en la derecha: 56
-escritura (93)
-    en la izquierda: 57 58, en la derecha: 9
-bloque_declaracion (94)
-    en la izquierda: 60, en la derecha: 6
-$@27 (95)
-    en la izquierda: 59, en la derecha: 60
-declaraciones (96)
-    en la izquierda: 61 62, en la derecha: 60 61
-lista_id_y_tipo (97)
-    en la izquierda: 63 64, en la derecha: 61 62 63
-tipodato (98)
-    en la izquierda: 65 66 67, en la derecha: 64
-expresion (99)
-    en la izquierda: 68 69 70, en la derecha: 13 31 34 37 40 43 46
-    68 69 78 80 83 84
-termino (100)
-    en la izquierda: 71 72 73, en la derecha: 68 69 70 71 72
-factor (101)
-    en la izquierda: 74 75 76 77 78, en la derecha: 71 72 73
-between (102)
-    en la izquierda: 79, en la derecha: 27
-rango (103)
+tipodato (93)
+    en la izquierda: 55 56 57, en la derecha: 50
+expresion (94)
+    en la izquierda: 59 61 62, en la derecha: 16 32 59 61 72 76 81
+    82
+$@18 (95)
+    en la izquierda: 58, en la derecha: 59
+$@19 (96)
+    en la izquierda: 60, en la derecha: 61
+termino (97)
+    en la izquierda: 64 66 67, en la derecha: 59 61 62 64 66
+$@20 (98)
+    en la izquierda: 63, en la derecha: 64
+$@21 (99)
+    en la izquierda: 65, en la derecha: 66
+factor (100)
+    en la izquierda: 68 69 70 71 72, en la derecha: 64 66 67
+between (101)
+    en la izquierda: 75, en la derecha: 28
+$@22 (102)
+    en la izquierda: 73, en la derecha: 75
+$@23 (103)
+    en la izquierda: 74, en la derecha: 75
+rango (104)
+    en la izquierda: 76, en la derecha: 75
+inlist (105)
+    en la izquierda: 79, en la derecha: 29
+$@24 (106)
+    en la izquierda: 77, en la derecha: 79
+$@25 (107)
+    en la izquierda: 78, en la derecha: 79
+lista_expresiones (108)
     en la izquierda: 80, en la derecha: 79
-inlist (104)
-    en la izquierda: 81, en la derecha: 28
-lista_expresiones (105)
-    en la izquierda: 82, en la derecha: 81
-expresiones (106)
-    en la izquierda: 83 84, en la derecha: 82 84
+expresiones (109)
+    en la izquierda: 81 82, en la derecha: 80 82
 
 
 estado 0
 
-    0 $accept: . programa $end
+    0 $accept: . start $end
 
     INICIO_PROGRAMA  desplazar e ir al estado 1
 
-    programa  ir al estado 2
+    $default  reduce usando la regla 2 (start)
+
+    start     ir al estado 2
+    programa  ir al estado 3
 
 
 estado 1
 
-    2 programa: INICIO_PROGRAMA . $@1 bloque FIN_PROGRAMA
+    4 programa: INICIO_PROGRAMA . $@1 bloque FIN_PROGRAMA
 
-    $default  reduce usando la regla 1 ($@1)
+    $default  reduce usando la regla 3 ($@1)
 
-    $@1  ir al estado 3
+    $@1  ir al estado 4
 
 
 estado 2
 
-    0 $accept: programa . $end
+    0 $accept: start . $end
 
-    $end  desplazar e ir al estado 4
+    $end  desplazar e ir al estado 5
 
 
 estado 3
 
-    2 programa: INICIO_PROGRAMA $@1 . bloque FIN_PROGRAMA
+    1 start: programa .
 
-    ID          desplazar e ir al estado 5
-    DECVAR      desplazar e ir al estado 6
-    WHILE       desplazar e ir al estado 7
-    IF          desplazar e ir al estado 8
-    READ        desplazar e ir al estado 9
-    WRITE       desplazar e ir al estado 10
-    COMENTARIO  desplazar e ir al estado 11
-
-    bloque              ir al estado 12
-    lista_sentencias    ir al estado 13
-    sentencia           ir al estado 14
-    asignacion          ir al estado 15
-    iteracion           ir al estado 16
-    seleccion           ir al estado 17
-    lectura             ir al estado 18
-    escritura           ir al estado 19
-    bloque_declaracion  ir al estado 20
+    $default  reduce usando la regla 1 (start)
 
 
 estado 4
 
-    0 $accept: programa $end .
+    4 programa: INICIO_PROGRAMA $@1 . bloque FIN_PROGRAMA
 
-    $default  aceptar
+    ID          desplazar e ir al estado 6
+    DECVAR      desplazar e ir al estado 7
+    WHILE       desplazar e ir al estado 8
+    IF          desplazar e ir al estado 9
+    READ        desplazar e ir al estado 10
+    WRITE       desplazar e ir al estado 11
+    COMENTARIO  desplazar e ir al estado 12
+
+    bloque              ir al estado 13
+    lista_sentencias    ir al estado 14
+    sentencia           ir al estado 15
+    asignacion          ir al estado 16
+    iteracion           ir al estado 17
+    seleccion           ir al estado 18
+    lectura             ir al estado 19
+    escritura           ir al estado 20
+    bloque_declaracion  ir al estado 21
 
 
 estado 5
 
-   13 asignacion: ID . OP_ASIG expresion
+    0 $accept: start $end .
 
-    OP_ASIG  desplazar e ir al estado 21
+    $default  aceptar
 
 
 estado 6
 
-   60 bloque_declaracion: DECVAR . $@27 declaraciones ENDDEC
+   16 asignacion: ID . $@2 OP_ASIG expresion
 
-    $default  reduce usando la regla 59 ($@27)
+    $default  reduce usando la regla 15 ($@2)
 
-    $@27  ir al estado 22
+    $@2  ir al estado 22
 
 
 estado 7
 
-   15 iteracion: WHILE . PARENTESIS_I condicion PARENTESIS_F $@2 DO bloque ENDWHILE
+   46 bloque_declaracion: DECVAR . $@15 declaraciones ENDDEC
 
-    PARENTESIS_I  desplazar e ir al estado 23
+    $default  reduce usando la regla 45 ($@15)
+
+    $@15  ir al estado 23
 
 
 estado 8
 
-   17 seleccion: IF . PARENTESIS_I condicion PARENTESIS_F $@3 DO resto ENDIF
+   20 iteracion: WHILE . PARENTESIS_I condicion $@3 PARENTESIS_F $@4 DO bloque $@5 ENDWHILE
 
     PARENTESIS_I  desplazar e ir al estado 24
 
 
 estado 9
 
-   56 lectura: READ . $@26 ID
+   23 seleccion: IF . $@6 PARENTESIS_I condicion PARENTESIS_F $@7 DO resto ENDIF
 
-    $default  reduce usando la regla 55 ($@26)
+    $default  reduce usando la regla 21 ($@6)
 
-    $@26  ir al estado 25
+    $@6  ir al estado 25
 
 
 estado 10
 
-   57 escritura: WRITE . ID
-   58          | WRITE . CTE_STRING
+   42 lectura: READ . ID
 
-    CTE_STRING  desplazar e ir al estado 26
-    ID          desplazar e ir al estado 27
+    ID  desplazar e ir al estado 26
 
 
 estado 11
 
-   12 sentencia: COMENTARIO .
+   43 escritura: WRITE . ID
+   44          | WRITE . CTE_STRING
 
-    $default  reduce usando la regla 12 (sentencia)
+    CTE_STRING  desplazar e ir al estado 27
+    ID          desplazar e ir al estado 28
 
 
 estado 12
 
-    2 programa: INICIO_PROGRAMA $@1 bloque . FIN_PROGRAMA
+   14 sentencia: COMENTARIO .
 
-    FIN_PROGRAMA  desplazar e ir al estado 28
+    $default  reduce usando la regla 14 (sentencia)
 
 
 estado 13
 
-    3 bloque: lista_sentencias .
-    5 lista_sentencias: lista_sentencias . sentencia
+    4 programa: INICIO_PROGRAMA $@1 bloque . FIN_PROGRAMA
 
-    ID          desplazar e ir al estado 5
-    DECVAR      desplazar e ir al estado 6
-    WHILE       desplazar e ir al estado 7
-    IF          desplazar e ir al estado 8
-    READ        desplazar e ir al estado 9
-    WRITE       desplazar e ir al estado 10
-    COMENTARIO  desplazar e ir al estado 11
-
-    $default  reduce usando la regla 3 (bloque)
-
-    sentencia           ir al estado 29
-    asignacion          ir al estado 15
-    iteracion           ir al estado 16
-    seleccion           ir al estado 17
-    lectura             ir al estado 18
-    escritura           ir al estado 19
-    bloque_declaracion  ir al estado 20
+    FIN_PROGRAMA  desplazar e ir al estado 29
 
 
 estado 14
 
-    4 lista_sentencias: sentencia .
+    5 bloque: lista_sentencias .
+    7 lista_sentencias: lista_sentencias . sentencia
 
-    $default  reduce usando la regla 4 (lista_sentencias)
+    ID          desplazar e ir al estado 6
+    DECVAR      desplazar e ir al estado 7
+    WHILE       desplazar e ir al estado 8
+    IF          desplazar e ir al estado 9
+    READ        desplazar e ir al estado 10
+    WRITE       desplazar e ir al estado 11
+    COMENTARIO  desplazar e ir al estado 12
+
+    $default  reduce usando la regla 5 (bloque)
+
+    sentencia           ir al estado 30
+    asignacion          ir al estado 16
+    iteracion           ir al estado 17
+    seleccion           ir al estado 18
+    lectura             ir al estado 19
+    escritura           ir al estado 20
+    bloque_declaracion  ir al estado 21
 
 
 estado 15
 
-    7 sentencia: asignacion .
+    6 lista_sentencias: sentencia .
 
-    $default  reduce usando la regla 7 (sentencia)
+    $default  reduce usando la regla 6 (lista_sentencias)
 
 
 estado 16
 
-   10 sentencia: iteracion .
-
-    $default  reduce usando la regla 10 (sentencia)
-
-
-estado 17
-
-   11 sentencia: seleccion .
-
-    $default  reduce usando la regla 11 (sentencia)
-
-
-estado 18
-
-    8 sentencia: lectura .
-
-    $default  reduce usando la regla 8 (sentencia)
-
-
-estado 19
-
-    9 sentencia: escritura .
+    9 sentencia: asignacion .
 
     $default  reduce usando la regla 9 (sentencia)
 
 
+estado 17
+
+   12 sentencia: iteracion .
+
+    $default  reduce usando la regla 12 (sentencia)
+
+
+estado 18
+
+   13 sentencia: seleccion .
+
+    $default  reduce usando la regla 13 (sentencia)
+
+
+estado 19
+
+   10 sentencia: lectura .
+
+    $default  reduce usando la regla 10 (sentencia)
+
+
 estado 20
 
-    6 sentencia: bloque_declaracion .
+   11 sentencia: escritura .
 
-    $default  reduce usando la regla 6 (sentencia)
+    $default  reduce usando la regla 11 (sentencia)
 
 
 estado 21
 
-   13 asignacion: ID OP_ASIG . expresion
+    8 sentencia: bloque_declaracion .
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
-
-    expresion  ir al estado 35
-    termino    ir al estado 36
-    factor     ir al estado 37
+    $default  reduce usando la regla 8 (sentencia)
 
 
 estado 22
 
-   60 bloque_declaracion: DECVAR $@27 . declaraciones ENDDEC
+   16 asignacion: ID $@2 . OP_ASIG expresion
 
-    ID  desplazar e ir al estado 38
-
-    declaraciones    ir al estado 39
-    lista_id_y_tipo  ir al estado 40
+    OP_ASIG  desplazar e ir al estado 31
 
 
 estado 23
 
-   15 iteracion: WHILE PARENTESIS_I . condicion PARENTESIS_F $@2 DO bloque ENDWHILE
+   46 bloque_declaracion: DECVAR $@15 . declaraciones ENDDEC
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    OP_NOT        desplazar e ir al estado 41
-    PARENTESIS_I  desplazar e ir al estado 34
+    ID  desplazar e ir al estado 32
+
+    declaraciones    ir al estado 33
+    lista_id_y_tipo  ir al estado 34
+    var_dec          ir al estado 35
+
+
+estado 24
+
+   20 iteracion: WHILE PARENTESIS_I . condicion $@3 PARENTESIS_F $@4 DO bloque $@5 ENDWHILE
+
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    OP_NOT        desplazar e ir al estado 40
+    PARENTESIS_I  desplazar e ir al estado 41
     BETWEEN       desplazar e ir al estado 42
     INLIST        desplazar e ir al estado 43
 
     condicion    ir al estado 44
     comparacion  ir al estado 45
     expresion    ir al estado 46
-    termino      ir al estado 36
-    factor       ir al estado 37
-    between      ir al estado 47
-    inlist       ir al estado 48
-
-
-estado 24
-
-   17 seleccion: IF PARENTESIS_I . condicion PARENTESIS_F $@3 DO resto ENDIF
-
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    OP_NOT        desplazar e ir al estado 41
-    PARENTESIS_I  desplazar e ir al estado 34
-    BETWEEN       desplazar e ir al estado 42
-    INLIST        desplazar e ir al estado 43
-
-    condicion    ir al estado 49
-    comparacion  ir al estado 45
-    expresion    ir al estado 46
-    termino      ir al estado 36
-    factor       ir al estado 37
-    between      ir al estado 47
-    inlist       ir al estado 48
+    termino      ir al estado 47
+    factor       ir al estado 48
+    between      ir al estado 49
+    inlist       ir al estado 50
 
 
 estado 25
 
-   56 lectura: READ $@26 . ID
+   23 seleccion: IF $@6 . PARENTESIS_I condicion PARENTESIS_F $@7 DO resto ENDIF
 
-    ID  desplazar e ir al estado 50
+    PARENTESIS_I  desplazar e ir al estado 51
 
 
 estado 26
 
-   58 escritura: WRITE CTE_STRING .
+   42 lectura: READ ID .
 
-    $default  reduce usando la regla 58 (escritura)
+    $default  reduce usando la regla 42 (lectura)
 
 
 estado 27
 
-   57 escritura: WRITE ID .
+   44 escritura: WRITE CTE_STRING .
 
-    $default  reduce usando la regla 57 (escritura)
+    $default  reduce usando la regla 44 (escritura)
 
 
 estado 28
 
-    2 programa: INICIO_PROGRAMA $@1 bloque FIN_PROGRAMA .
+   43 escritura: WRITE ID .
 
-    $default  reduce usando la regla 2 (programa)
+    $default  reduce usando la regla 43 (escritura)
 
 
 estado 29
 
-    5 lista_sentencias: lista_sentencias sentencia .
+    4 programa: INICIO_PROGRAMA $@1 bloque FIN_PROGRAMA .
 
-    $default  reduce usando la regla 5 (lista_sentencias)
+    $default  reduce usando la regla 4 (programa)
 
 
 estado 30
 
-   74 factor: CTE_INT .
+    7 lista_sentencias: lista_sentencias sentencia .
 
-    $default  reduce usando la regla 74 (factor)
+    $default  reduce usando la regla 7 (lista_sentencias)
 
 
 estado 31
 
-   75 factor: CTE_FLOAT .
+   16 asignacion: ID $@2 OP_ASIG . expresion
 
-    $default  reduce usando la regla 75 (factor)
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
+
+    expresion  ir al estado 52
+    termino    ir al estado 47
+    factor     ir al estado 48
 
 
 estado 32
 
-   76 factor: CTE_STRING .
+   51 var_dec: ID .
+   54        | ID . $@16 PARENTESIS_I CTE_INT $@17 PARENTESIS_F
 
-    $default  reduce usando la regla 76 (factor)
+    PARENTESIS_I  reduce usando la regla 52 ($@16)
+    $default      reduce usando la regla 51 (var_dec)
+
+    $@16  ir al estado 53
 
 
 estado 33
 
-   77 factor: ID .
+   46 bloque_declaracion: DECVAR $@15 declaraciones . ENDDEC
+   47 declaraciones: declaraciones . lista_id_y_tipo
 
-    $default  reduce usando la regla 77 (factor)
+    ID      desplazar e ir al estado 32
+    ENDDEC  desplazar e ir al estado 54
+
+    lista_id_y_tipo  ir al estado 55
+    var_dec          ir al estado 35
 
 
 estado 34
 
-   78 factor: PARENTESIS_I . expresion PARENTESIS_F
+   48 declaraciones: lista_id_y_tipo .
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
-
-    expresion  ir al estado 51
-    termino    ir al estado 36
-    factor     ir al estado 37
+    $default  reduce usando la regla 48 (declaraciones)
 
 
 estado 35
 
-   13 asignacion: ID OP_ASIG expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
-
-    OP_SUM   desplazar e ir al estado 52
-    OP_REST  desplazar e ir al estado 53
-
-    $default  reduce usando la regla 13 (asignacion)
-
-
-estado 36
-
-   70 expresion: termino .
-   71 termino: termino . OP_MULT factor
-   72        | termino . OP_DIV factor
-
-    OP_MULT  desplazar e ir al estado 54
-    OP_DIV   desplazar e ir al estado 55
-
-    $default  reduce usando la regla 70 (expresion)
-
-
-estado 37
-
-   73 termino: factor .
-
-    $default  reduce usando la regla 73 (termino)
-
-
-estado 38
-
-   63 lista_id_y_tipo: ID . COMA lista_id_y_tipo
-   64                | ID . OP_DEC tipodato
+   49 lista_id_y_tipo: var_dec . COMA lista_id_y_tipo
+   50                | var_dec . OP_DEC tipodato
 
     OP_DEC  desplazar e ir al estado 56
     COMA    desplazar e ir al estado 57
 
 
+estado 36
+
+   68 factor: CTE_INT .
+
+    $default  reduce usando la regla 68 (factor)
+
+
+estado 37
+
+   69 factor: CTE_FLOAT .
+
+    $default  reduce usando la regla 69 (factor)
+
+
+estado 38
+
+   70 factor: CTE_STRING .
+
+    $default  reduce usando la regla 70 (factor)
+
+
 estado 39
 
-   60 bloque_declaracion: DECVAR $@27 declaraciones . ENDDEC
-   61 declaraciones: declaraciones . lista_id_y_tipo
+   71 factor: ID .
 
-    ID      desplazar e ir al estado 38
-    ENDDEC  desplazar e ir al estado 58
-
-    lista_id_y_tipo  ir al estado 59
+    $default  reduce usando la regla 71 (factor)
 
 
 estado 40
 
-   62 declaraciones: lista_id_y_tipo .
+   27 condicion: OP_NOT . comparacion
 
-    $default  reduce usando la regla 62 (declaraciones)
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
+
+    comparacion  ir al estado 58
+    expresion    ir al estado 46
+    termino      ir al estado 47
+    factor       ir al estado 48
 
 
 estado 41
 
-   26 condicion: OP_NOT . $@8 comparacion
+   72 factor: PARENTESIS_I . expresion PARENTESIS_F
 
-    $default  reduce usando la regla 25 ($@8)
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
 
-    $@8  ir al estado 60
+    expresion  ir al estado 59
+    termino    ir al estado 47
+    factor     ir al estado 48
 
 
 estado 42
 
-   79 between: BETWEEN . PARENTESIS_I ID COMA rango PARENTESIS_F
+   75 between: BETWEEN . $@22 PARENTESIS_I ID $@23 COMA rango PARENTESIS_F
 
-    PARENTESIS_I  desplazar e ir al estado 61
+    $default  reduce usando la regla 73 ($@22)
+
+    $@22  ir al estado 60
 
 
 estado 43
 
-   81 inlist: INLIST . PARENTESIS_I ID PUNTO_Y_COMA lista_expresiones PARENTESIS_F
+   79 inlist: INLIST . $@24 PARENTESIS_I ID $@25 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 
-    PARENTESIS_I  desplazar e ir al estado 62
+    $default  reduce usando la regla 77 ($@24)
+
+    $@24  ir al estado 61
 
 
 estado 44
 
-   15 iteracion: WHILE PARENTESIS_I condicion . PARENTESIS_F $@2 DO bloque ENDWHILE
+   20 iteracion: WHILE PARENTESIS_I condicion . $@3 PARENTESIS_F $@4 DO bloque $@5 ENDWHILE
 
-    PARENTESIS_F  desplazar e ir al estado 63
+    $default  reduce usando la regla 17 ($@3)
+
+    $@3  ir al estado 62
 
 
 estado 45
 
-   18 condicion: comparacion .
-   21          | comparacion . $@4 OP_AND $@5 comparacion
-   24          | comparacion . $@6 OP_OR $@7 comparacion
+   24 condicion: comparacion .
+   26          | comparacion . and_or $@8 comparacion
 
-    OP_AND    reduce usando la regla 19 ($@4)
-    OP_OR     reduce usando la regla 22 ($@6)
-    $default  reduce usando la regla 18 (condicion)
+    OP_AND  desplazar e ir al estado 63
+    OP_OR   desplazar e ir al estado 64
 
-    $@4  ir al estado 64
-    $@6  ir al estado 65
+    $default  reduce usando la regla 24 (condicion)
+
+    and_or  ir al estado 65
 
 
 estado 46
 
-   31 comparacion: expresion . $@9 COMP_MAYOR_ESTR $@10 expresion
-   34            | expresion . $@11 COMP_MENOR_ESTR $@12 expresion
-   37            | expresion . $@13 COMP_MAYOR_IGUAL $@14 expresion
-   40            | expresion . $@15 COMP_MENOR_IGUAL $@16 expresion
-   43            | expresion . $@17 COMP_IGUAL $@18 expresion
-   46            | expresion . $@19 COMP_DIST $@20 expresion
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   32 comparacion: expresion . COMPARADOR expresion
+   59 expresion: expresion . OP_SUM $@18 termino
+   61          | expresion . OP_REST $@19 termino
 
-    OP_SUM   desplazar e ir al estado 52
-    OP_REST  desplazar e ir al estado 53
-
-    COMP_MENOR_ESTR   reduce usando la regla 32 ($@11)
-    COMP_MAYOR_IGUAL  reduce usando la regla 35 ($@13)
-    COMP_MENOR_IGUAL  reduce usando la regla 38 ($@15)
-    COMP_IGUAL        reduce usando la regla 41 ($@17)
-    COMP_DIST         reduce usando la regla 44 ($@19)
-    $default          reduce usando la regla 29 ($@9)
-
-    $@9   ir al estado 66
-    $@11  ir al estado 67
-    $@13  ir al estado 68
-    $@15  ir al estado 69
-    $@17  ir al estado 70
-    $@19  ir al estado 71
+    OP_SUM      desplazar e ir al estado 66
+    OP_REST     desplazar e ir al estado 67
+    COMPARADOR  desplazar e ir al estado 68
 
 
 estado 47
 
-   27 condicion: between .
+   62 expresion: termino .
+   64 termino: termino . OP_MULT $@20 factor
+   66        | termino . OP_DIV $@21 factor
 
-    $default  reduce usando la regla 27 (condicion)
+    OP_MULT  desplazar e ir al estado 69
+    OP_DIV   desplazar e ir al estado 70
+
+    $default  reduce usando la regla 62 (expresion)
 
 
 estado 48
 
-   28 condicion: inlist .
+   67 termino: factor .
 
-    $default  reduce usando la regla 28 (condicion)
+    $default  reduce usando la regla 67 (termino)
 
 
 estado 49
 
-   17 seleccion: IF PARENTESIS_I condicion . PARENTESIS_F $@3 DO resto ENDIF
+   28 condicion: between .
 
-    PARENTESIS_F  desplazar e ir al estado 72
+    $default  reduce usando la regla 28 (condicion)
 
 
 estado 50
 
-   56 lectura: READ $@26 ID .
+   29 condicion: inlist .
 
-    $default  reduce usando la regla 56 (lectura)
+    $default  reduce usando la regla 29 (condicion)
 
 
 estado 51
 
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
-   78 factor: PARENTESIS_I expresion . PARENTESIS_F
+   23 seleccion: IF $@6 PARENTESIS_I . condicion PARENTESIS_F $@7 DO resto ENDIF
 
-    OP_SUM        desplazar e ir al estado 52
-    OP_REST       desplazar e ir al estado 53
-    PARENTESIS_F  desplazar e ir al estado 73
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    OP_NOT        desplazar e ir al estado 40
+    PARENTESIS_I  desplazar e ir al estado 41
+    BETWEEN       desplazar e ir al estado 42
+    INLIST        desplazar e ir al estado 43
+
+    condicion    ir al estado 71
+    comparacion  ir al estado 45
+    expresion    ir al estado 46
+    termino      ir al estado 47
+    factor       ir al estado 48
+    between      ir al estado 49
+    inlist       ir al estado 50
 
 
 estado 52
 
-   68 expresion: expresion OP_SUM . termino
+   16 asignacion: ID $@2 OP_ASIG expresion .
+   59 expresion: expresion . OP_SUM $@18 termino
+   61          | expresion . OP_REST $@19 termino
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
+    OP_SUM   desplazar e ir al estado 66
+    OP_REST  desplazar e ir al estado 67
 
-    termino  ir al estado 74
-    factor   ir al estado 37
+    $default  reduce usando la regla 16 (asignacion)
 
 
 estado 53
 
-   69 expresion: expresion OP_REST . termino
+   54 var_dec: ID $@16 . PARENTESIS_I CTE_INT $@17 PARENTESIS_F
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
-
-    termino  ir al estado 75
-    factor   ir al estado 37
+    PARENTESIS_I  desplazar e ir al estado 72
 
 
 estado 54
 
-   71 termino: termino OP_MULT . factor
+   46 bloque_declaracion: DECVAR $@15 declaraciones ENDDEC .
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
-
-    factor  ir al estado 76
+    $default  reduce usando la regla 46 (bloque_declaracion)
 
 
 estado 55
 
-   72 termino: termino OP_DIV . factor
+   47 declaraciones: declaraciones lista_id_y_tipo .
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
-
-    factor  ir al estado 77
+    $default  reduce usando la regla 47 (declaraciones)
 
 
 estado 56
 
-   64 lista_id_y_tipo: ID OP_DEC . tipodato
+   50 lista_id_y_tipo: var_dec OP_DEC . tipodato
 
-    INTEGER  desplazar e ir al estado 78
-    FLOAT    desplazar e ir al estado 79
-    STRING   desplazar e ir al estado 80
+    INTEGER  desplazar e ir al estado 73
+    FLOAT    desplazar e ir al estado 74
+    STRING   desplazar e ir al estado 75
 
-    tipodato  ir al estado 81
+    tipodato  ir al estado 76
 
 
 estado 57
 
-   63 lista_id_y_tipo: ID COMA . lista_id_y_tipo
+   49 lista_id_y_tipo: var_dec COMA . lista_id_y_tipo
 
-    ID  desplazar e ir al estado 38
+    ID  desplazar e ir al estado 32
 
-    lista_id_y_tipo  ir al estado 82
+    lista_id_y_tipo  ir al estado 77
+    var_dec          ir al estado 35
 
 
 estado 58
 
-   60 bloque_declaracion: DECVAR $@27 declaraciones ENDDEC .
+   27 condicion: OP_NOT comparacion .
 
-    $default  reduce usando la regla 60 (bloque_declaracion)
+    $default  reduce usando la regla 27 (condicion)
 
 
 estado 59
 
-   61 declaraciones: declaraciones lista_id_y_tipo .
+   59 expresion: expresion . OP_SUM $@18 termino
+   61          | expresion . OP_REST $@19 termino
+   72 factor: PARENTESIS_I expresion . PARENTESIS_F
 
-    $default  reduce usando la regla 61 (declaraciones)
+    OP_SUM        desplazar e ir al estado 66
+    OP_REST       desplazar e ir al estado 67
+    PARENTESIS_F  desplazar e ir al estado 78
 
 
 estado 60
 
-   26 condicion: OP_NOT $@8 . comparacion
+   75 between: BETWEEN $@22 . PARENTESIS_I ID $@23 COMA rango PARENTESIS_F
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
-
-    comparacion  ir al estado 83
-    expresion    ir al estado 46
-    termino      ir al estado 36
-    factor       ir al estado 37
+    PARENTESIS_I  desplazar e ir al estado 79
 
 
 estado 61
 
-   79 between: BETWEEN PARENTESIS_I . ID COMA rango PARENTESIS_F
+   79 inlist: INLIST $@24 . PARENTESIS_I ID $@25 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 
-    ID  desplazar e ir al estado 84
+    PARENTESIS_I  desplazar e ir al estado 80
 
 
 estado 62
 
-   81 inlist: INLIST PARENTESIS_I . ID PUNTO_Y_COMA lista_expresiones PARENTESIS_F
+   20 iteracion: WHILE PARENTESIS_I condicion $@3 . PARENTESIS_F $@4 DO bloque $@5 ENDWHILE
 
-    ID  desplazar e ir al estado 85
+    PARENTESIS_F  desplazar e ir al estado 81
 
 
 estado 63
 
-   15 iteracion: WHILE PARENTESIS_I condicion PARENTESIS_F . $@2 DO bloque ENDWHILE
+   30 and_or: OP_AND .
 
-    $default  reduce usando la regla 14 ($@2)
-
-    $@2  ir al estado 86
+    $default  reduce usando la regla 30 (and_or)
 
 
 estado 64
 
-   21 condicion: comparacion $@4 . OP_AND $@5 comparacion
+   31 and_or: OP_OR .
 
-    OP_AND  desplazar e ir al estado 87
+    $default  reduce usando la regla 31 (and_or)
 
 
 estado 65
 
-   24 condicion: comparacion $@6 . OP_OR $@7 comparacion
+   26 condicion: comparacion and_or . $@8 comparacion
 
-    OP_OR  desplazar e ir al estado 88
+    $default  reduce usando la regla 25 ($@8)
+
+    $@8  ir al estado 82
 
 
 estado 66
 
-   31 comparacion: expresion $@9 . COMP_MAYOR_ESTR $@10 expresion
+   59 expresion: expresion OP_SUM . $@18 termino
 
-    COMP_MAYOR_ESTR  desplazar e ir al estado 89
+    $default  reduce usando la regla 58 ($@18)
+
+    $@18  ir al estado 83
 
 
 estado 67
 
-   34 comparacion: expresion $@11 . COMP_MENOR_ESTR $@12 expresion
+   61 expresion: expresion OP_REST . $@19 termino
 
-    COMP_MENOR_ESTR  desplazar e ir al estado 90
+    $default  reduce usando la regla 60 ($@19)
+
+    $@19  ir al estado 84
 
 
 estado 68
 
-   37 comparacion: expresion $@13 . COMP_MAYOR_IGUAL $@14 expresion
+   32 comparacion: expresion COMPARADOR . expresion
 
-    COMP_MAYOR_IGUAL  desplazar e ir al estado 91
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
+
+    expresion  ir al estado 85
+    termino    ir al estado 47
+    factor     ir al estado 48
 
 
 estado 69
 
-   40 comparacion: expresion $@15 . COMP_MENOR_IGUAL $@16 expresion
+   64 termino: termino OP_MULT . $@20 factor
 
-    COMP_MENOR_IGUAL  desplazar e ir al estado 92
+    $default  reduce usando la regla 63 ($@20)
+
+    $@20  ir al estado 86
 
 
 estado 70
 
-   43 comparacion: expresion $@17 . COMP_IGUAL $@18 expresion
+   66 termino: termino OP_DIV . $@21 factor
 
-    COMP_IGUAL  desplazar e ir al estado 93
+    $default  reduce usando la regla 65 ($@21)
+
+    $@21  ir al estado 87
 
 
 estado 71
 
-   46 comparacion: expresion $@19 . COMP_DIST $@20 expresion
+   23 seleccion: IF $@6 PARENTESIS_I condicion . PARENTESIS_F $@7 DO resto ENDIF
 
-    COMP_DIST  desplazar e ir al estado 94
+    PARENTESIS_F  desplazar e ir al estado 88
 
 
 estado 72
 
-   17 seleccion: IF PARENTESIS_I condicion PARENTESIS_F . $@3 DO resto ENDIF
+   54 var_dec: ID $@16 PARENTESIS_I . CTE_INT $@17 PARENTESIS_F
 
-    $default  reduce usando la regla 16 ($@3)
-
-    $@3  ir al estado 95
+    CTE_INT  desplazar e ir al estado 89
 
 
 estado 73
 
-   78 factor: PARENTESIS_I expresion PARENTESIS_F .
+   55 tipodato: INTEGER .
 
-    $default  reduce usando la regla 78 (factor)
+    $default  reduce usando la regla 55 (tipodato)
 
 
 estado 74
 
-   68 expresion: expresion OP_SUM termino .
-   71 termino: termino . OP_MULT factor
-   72        | termino . OP_DIV factor
+   56 tipodato: FLOAT .
 
-    OP_MULT  desplazar e ir al estado 54
-    OP_DIV   desplazar e ir al estado 55
-
-    $default  reduce usando la regla 68 (expresion)
+    $default  reduce usando la regla 56 (tipodato)
 
 
 estado 75
 
-   69 expresion: expresion OP_REST termino .
-   71 termino: termino . OP_MULT factor
-   72        | termino . OP_DIV factor
+   57 tipodato: STRING .
 
-    OP_MULT  desplazar e ir al estado 54
-    OP_DIV   desplazar e ir al estado 55
-
-    $default  reduce usando la regla 69 (expresion)
+    $default  reduce usando la regla 57 (tipodato)
 
 
 estado 76
 
-   71 termino: termino OP_MULT factor .
+   50 lista_id_y_tipo: var_dec OP_DEC tipodato .
 
-    $default  reduce usando la regla 71 (termino)
+    $default  reduce usando la regla 50 (lista_id_y_tipo)
 
 
 estado 77
 
-   72 termino: termino OP_DIV factor .
+   49 lista_id_y_tipo: var_dec COMA lista_id_y_tipo .
 
-    $default  reduce usando la regla 72 (termino)
+    $default  reduce usando la regla 49 (lista_id_y_tipo)
 
 
 estado 78
 
-   65 tipodato: INTEGER .
+   72 factor: PARENTESIS_I expresion PARENTESIS_F .
 
-    $default  reduce usando la regla 65 (tipodato)
+    $default  reduce usando la regla 72 (factor)
 
 
 estado 79
 
-   66 tipodato: FLOAT .
+   75 between: BETWEEN $@22 PARENTESIS_I . ID $@23 COMA rango PARENTESIS_F
 
-    $default  reduce usando la regla 66 (tipodato)
+    ID  desplazar e ir al estado 90
 
 
 estado 80
 
-   67 tipodato: STRING .
+   79 inlist: INLIST $@24 PARENTESIS_I . ID $@25 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 
-    $default  reduce usando la regla 67 (tipodato)
+    ID  desplazar e ir al estado 91
 
 
 estado 81
 
-   64 lista_id_y_tipo: ID OP_DEC tipodato .
+   20 iteracion: WHILE PARENTESIS_I condicion $@3 PARENTESIS_F . $@4 DO bloque $@5 ENDWHILE
 
-    $default  reduce usando la regla 64 (lista_id_y_tipo)
+    $default  reduce usando la regla 18 ($@4)
+
+    $@4  ir al estado 92
 
 
 estado 82
 
-   63 lista_id_y_tipo: ID COMA lista_id_y_tipo .
+   26 condicion: comparacion and_or $@8 . comparacion
 
-    $default  reduce usando la regla 63 (lista_id_y_tipo)
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
+
+    comparacion  ir al estado 93
+    expresion    ir al estado 46
+    termino      ir al estado 47
+    factor       ir al estado 48
 
 
 estado 83
 
-   26 condicion: OP_NOT $@8 comparacion .
+   59 expresion: expresion OP_SUM $@18 . termino
 
-    $default  reduce usando la regla 26 (condicion)
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
+
+    termino  ir al estado 94
+    factor   ir al estado 48
 
 
 estado 84
 
-   79 between: BETWEEN PARENTESIS_I ID . COMA rango PARENTESIS_F
+   61 expresion: expresion OP_REST $@19 . termino
 
-    COMA  desplazar e ir al estado 96
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
+
+    termino  ir al estado 95
+    factor   ir al estado 48
 
 
 estado 85
 
-   81 inlist: INLIST PARENTESIS_I ID . PUNTO_Y_COMA lista_expresiones PARENTESIS_F
+   32 comparacion: expresion COMPARADOR expresion .
+   59 expresion: expresion . OP_SUM $@18 termino
+   61          | expresion . OP_REST $@19 termino
 
-    PUNTO_Y_COMA  desplazar e ir al estado 97
+    OP_SUM   desplazar e ir al estado 66
+    OP_REST  desplazar e ir al estado 67
+
+    $default  reduce usando la regla 32 (comparacion)
 
 
 estado 86
 
-   15 iteracion: WHILE PARENTESIS_I condicion PARENTESIS_F $@2 . DO bloque ENDWHILE
+   64 termino: termino OP_MULT $@20 . factor
 
-    DO  desplazar e ir al estado 98
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
+
+    factor  ir al estado 96
 
 
 estado 87
 
-   21 condicion: comparacion $@4 OP_AND . $@5 comparacion
+   66 termino: termino OP_DIV $@21 . factor
 
-    $default  reduce usando la regla 20 ($@5)
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
 
-    $@5  ir al estado 99
+    factor  ir al estado 97
 
 
 estado 88
 
-   24 condicion: comparacion $@6 OP_OR . $@7 comparacion
+   23 seleccion: IF $@6 PARENTESIS_I condicion PARENTESIS_F . $@7 DO resto ENDIF
 
-    $default  reduce usando la regla 23 ($@7)
+    $default  reduce usando la regla 22 ($@7)
 
-    $@7  ir al estado 100
+    $@7  ir al estado 98
 
 
 estado 89
 
-   31 comparacion: expresion $@9 COMP_MAYOR_ESTR . $@10 expresion
+   54 var_dec: ID $@16 PARENTESIS_I CTE_INT . $@17 PARENTESIS_F
 
-    $default  reduce usando la regla 30 ($@10)
+    $default  reduce usando la regla 53 ($@17)
 
-    $@10  ir al estado 101
+    $@17  ir al estado 99
 
 
 estado 90
 
-   34 comparacion: expresion $@11 COMP_MENOR_ESTR . $@12 expresion
+   75 between: BETWEEN $@22 PARENTESIS_I ID . $@23 COMA rango PARENTESIS_F
 
-    $default  reduce usando la regla 33 ($@12)
+    $default  reduce usando la regla 74 ($@23)
 
-    $@12  ir al estado 102
+    $@23  ir al estado 100
 
 
 estado 91
 
-   37 comparacion: expresion $@13 COMP_MAYOR_IGUAL . $@14 expresion
+   79 inlist: INLIST $@24 PARENTESIS_I ID . $@25 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 
-    $default  reduce usando la regla 36 ($@14)
+    $default  reduce usando la regla 78 ($@25)
 
-    $@14  ir al estado 103
+    $@25  ir al estado 101
 
 
 estado 92
 
-   40 comparacion: expresion $@15 COMP_MENOR_IGUAL . $@16 expresion
+   20 iteracion: WHILE PARENTESIS_I condicion $@3 PARENTESIS_F $@4 . DO bloque $@5 ENDWHILE
 
-    $default  reduce usando la regla 39 ($@16)
-
-    $@16  ir al estado 104
+    DO  desplazar e ir al estado 102
 
 
 estado 93
 
-   43 comparacion: expresion $@17 COMP_IGUAL . $@18 expresion
+   26 condicion: comparacion and_or $@8 comparacion .
 
-    $default  reduce usando la regla 42 ($@18)
-
-    $@18  ir al estado 105
+    $default  reduce usando la regla 26 (condicion)
 
 
 estado 94
 
-   46 comparacion: expresion $@19 COMP_DIST . $@20 expresion
+   59 expresion: expresion OP_SUM $@18 termino .
+   64 termino: termino . OP_MULT $@20 factor
+   66        | termino . OP_DIV $@21 factor
 
-    $default  reduce usando la regla 45 ($@20)
+    OP_MULT  desplazar e ir al estado 69
+    OP_DIV   desplazar e ir al estado 70
 
-    $@20  ir al estado 106
+    $default  reduce usando la regla 59 (expresion)
 
 
 estado 95
 
-   17 seleccion: IF PARENTESIS_I condicion PARENTESIS_F $@3 . DO resto ENDIF
+   61 expresion: expresion OP_REST $@19 termino .
+   64 termino: termino . OP_MULT $@20 factor
+   66        | termino . OP_DIV $@21 factor
 
-    DO  desplazar e ir al estado 107
+    OP_MULT  desplazar e ir al estado 69
+    OP_DIV   desplazar e ir al estado 70
+
+    $default  reduce usando la regla 61 (expresion)
 
 
 estado 96
 
-   79 between: BETWEEN PARENTESIS_I ID COMA . rango PARENTESIS_F
+   64 termino: termino OP_MULT $@20 factor .
 
-    CORCHETE_I  desplazar e ir al estado 108
-
-    rango  ir al estado 109
+    $default  reduce usando la regla 64 (termino)
 
 
 estado 97
 
-   81 inlist: INLIST PARENTESIS_I ID PUNTO_Y_COMA . lista_expresiones PARENTESIS_F
+   66 termino: termino OP_DIV $@21 factor .
 
-    CORCHETE_I  desplazar e ir al estado 110
-
-    lista_expresiones  ir al estado 111
+    $default  reduce usando la regla 66 (termino)
 
 
 estado 98
 
-   15 iteracion: WHILE PARENTESIS_I condicion PARENTESIS_F $@2 DO . bloque ENDWHILE
+   23 seleccion: IF $@6 PARENTESIS_I condicion PARENTESIS_F $@7 . DO resto ENDIF
 
-    ID          desplazar e ir al estado 5
-    DECVAR      desplazar e ir al estado 6
-    WHILE       desplazar e ir al estado 7
-    IF          desplazar e ir al estado 8
-    READ        desplazar e ir al estado 9
-    WRITE       desplazar e ir al estado 10
-    COMENTARIO  desplazar e ir al estado 11
-
-    bloque              ir al estado 112
-    lista_sentencias    ir al estado 13
-    sentencia           ir al estado 14
-    asignacion          ir al estado 15
-    iteracion           ir al estado 16
-    seleccion           ir al estado 17
-    lectura             ir al estado 18
-    escritura           ir al estado 19
-    bloque_declaracion  ir al estado 20
+    DO  desplazar e ir al estado 103
 
 
 estado 99
 
-   21 condicion: comparacion $@4 OP_AND $@5 . comparacion
+   54 var_dec: ID $@16 PARENTESIS_I CTE_INT $@17 . PARENTESIS_F
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
-
-    comparacion  ir al estado 113
-    expresion    ir al estado 46
-    termino      ir al estado 36
-    factor       ir al estado 37
+    PARENTESIS_F  desplazar e ir al estado 104
 
 
 estado 100
 
-   24 condicion: comparacion $@6 OP_OR $@7 . comparacion
+   75 between: BETWEEN $@22 PARENTESIS_I ID $@23 . COMA rango PARENTESIS_F
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
-
-    comparacion  ir al estado 114
-    expresion    ir al estado 46
-    termino      ir al estado 36
-    factor       ir al estado 37
+    COMA  desplazar e ir al estado 105
 
 
 estado 101
 
-   31 comparacion: expresion $@9 COMP_MAYOR_ESTR $@10 . expresion
+   79 inlist: INLIST $@24 PARENTESIS_I ID $@25 . PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
-
-    expresion  ir al estado 115
-    termino    ir al estado 36
-    factor     ir al estado 37
+    PUNTO_Y_COMA  desplazar e ir al estado 106
 
 
 estado 102
 
-   34 comparacion: expresion $@11 COMP_MENOR_ESTR $@12 . expresion
+   20 iteracion: WHILE PARENTESIS_I condicion $@3 PARENTESIS_F $@4 DO . bloque $@5 ENDWHILE
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
+    ID          desplazar e ir al estado 6
+    DECVAR      desplazar e ir al estado 7
+    WHILE       desplazar e ir al estado 8
+    IF          desplazar e ir al estado 9
+    READ        desplazar e ir al estado 10
+    WRITE       desplazar e ir al estado 11
+    COMENTARIO  desplazar e ir al estado 12
 
-    expresion  ir al estado 116
-    termino    ir al estado 36
-    factor     ir al estado 37
+    bloque              ir al estado 107
+    lista_sentencias    ir al estado 14
+    sentencia           ir al estado 15
+    asignacion          ir al estado 16
+    iteracion           ir al estado 17
+    seleccion           ir al estado 18
+    lectura             ir al estado 19
+    escritura           ir al estado 20
+    bloque_declaracion  ir al estado 21
 
 
 estado 103
 
-   37 comparacion: expresion $@13 COMP_MAYOR_IGUAL $@14 . expresion
+   23 seleccion: IF $@6 PARENTESIS_I condicion PARENTESIS_F $@7 DO . resto ENDIF
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
+    ID          desplazar e ir al estado 6
+    DECVAR      desplazar e ir al estado 7
+    WHILE       desplazar e ir al estado 8
+    IF          desplazar e ir al estado 9
+    READ        desplazar e ir al estado 10
+    WRITE       desplazar e ir al estado 11
+    COMENTARIO  desplazar e ir al estado 12
 
-    expresion  ir al estado 117
-    termino    ir al estado 36
-    factor     ir al estado 37
+    bloque              ir al estado 108
+    lista_sentencias    ir al estado 14
+    sentencia           ir al estado 15
+    asignacion          ir al estado 16
+    iteracion           ir al estado 17
+    seleccion           ir al estado 18
+    resto               ir al estado 109
+    lectura             ir al estado 19
+    escritura           ir al estado 20
+    bloque_declaracion  ir al estado 21
 
 
 estado 104
 
-   40 comparacion: expresion $@15 COMP_MENOR_IGUAL $@16 . expresion
+   54 var_dec: ID $@16 PARENTESIS_I CTE_INT $@17 PARENTESIS_F .
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
-
-    expresion  ir al estado 118
-    termino    ir al estado 36
-    factor     ir al estado 37
+    $default  reduce usando la regla 54 (var_dec)
 
 
 estado 105
 
-   43 comparacion: expresion $@17 COMP_IGUAL $@18 . expresion
+   75 between: BETWEEN $@22 PARENTESIS_I ID $@23 COMA . rango PARENTESIS_F
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
+    CORCHETE_I  desplazar e ir al estado 110
 
-    expresion  ir al estado 119
-    termino    ir al estado 36
-    factor     ir al estado 37
+    rango  ir al estado 111
 
 
 estado 106
 
-   46 comparacion: expresion $@19 COMP_DIST $@20 . expresion
+   79 inlist: INLIST $@24 PARENTESIS_I ID $@25 PUNTO_Y_COMA . lista_expresiones PARENTESIS_F
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
+    CORCHETE_I  desplazar e ir al estado 112
 
-    expresion  ir al estado 120
-    termino    ir al estado 36
-    factor     ir al estado 37
+    lista_expresiones  ir al estado 113
 
 
 estado 107
 
-   17 seleccion: IF PARENTESIS_I condicion PARENTESIS_F $@3 DO . resto ENDIF
+   20 iteracion: WHILE PARENTESIS_I condicion $@3 PARENTESIS_F $@4 DO bloque . $@5 ENDWHILE
 
-    ID          desplazar e ir al estado 5
-    DECVAR      desplazar e ir al estado 6
-    WHILE       desplazar e ir al estado 7
-    IF          desplazar e ir al estado 8
-    READ        desplazar e ir al estado 9
-    WRITE       desplazar e ir al estado 10
-    COMENTARIO  desplazar e ir al estado 11
+    $default  reduce usando la regla 19 ($@5)
 
-    bloque              ir al estado 121
-    lista_sentencias    ir al estado 13
-    sentencia           ir al estado 14
-    asignacion          ir al estado 15
-    iteracion           ir al estado 16
-    seleccion           ir al estado 17
-    resto               ir al estado 122
-    lectura             ir al estado 18
-    escritura           ir al estado 19
-    bloque_declaracion  ir al estado 20
+    $@5  ir al estado 114
 
 
 estado 108
 
-   80 rango: CORCHETE_I . expresion PUNTO_Y_COMA expresion CORCHETE_F
+   33 resto: bloque .
+   36      | bloque . $@9 ELSE $@10 bloque
+   41      | bloque . $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE $@14 bloque
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
+    ELSE      reduce usando la regla 34 ($@9)
+    ELSIF     reduce usando la regla 37 ($@11)
+    $default  reduce usando la regla 33 (resto)
 
-    expresion  ir al estado 123
-    termino    ir al estado 36
-    factor     ir al estado 37
+    $@9   ir al estado 115
+    $@11  ir al estado 116
 
 
 estado 109
 
-   79 between: BETWEEN PARENTESIS_I ID COMA rango . PARENTESIS_F
+   23 seleccion: IF $@6 PARENTESIS_I condicion PARENTESIS_F $@7 DO resto . ENDIF
 
-    PARENTESIS_F  desplazar e ir al estado 124
+    ENDIF  desplazar e ir al estado 117
 
 
 estado 110
 
-   82 lista_expresiones: CORCHETE_I . expresiones CORCHETE_F
+   76 rango: CORCHETE_I . expresion PUNTO_Y_COMA expresion CORCHETE_F
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
 
-    expresion    ir al estado 125
-    termino      ir al estado 36
-    factor       ir al estado 37
-    expresiones  ir al estado 126
+    expresion  ir al estado 118
+    termino    ir al estado 47
+    factor     ir al estado 48
 
 
 estado 111
 
-   81 inlist: INLIST PARENTESIS_I ID PUNTO_Y_COMA lista_expresiones . PARENTESIS_F
+   75 between: BETWEEN $@22 PARENTESIS_I ID $@23 COMA rango . PARENTESIS_F
 
-    PARENTESIS_F  desplazar e ir al estado 127
+    PARENTESIS_F  desplazar e ir al estado 119
 
 
 estado 112
 
-   15 iteracion: WHILE PARENTESIS_I condicion PARENTESIS_F $@2 DO bloque . ENDWHILE
+   80 lista_expresiones: CORCHETE_I . expresiones CORCHETE_F
 
-    ENDWHILE  desplazar e ir al estado 128
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
+
+    expresion    ir al estado 120
+    termino      ir al estado 47
+    factor       ir al estado 48
+    expresiones  ir al estado 121
 
 
 estado 113
 
-   21 condicion: comparacion $@4 OP_AND $@5 comparacion .
+   79 inlist: INLIST $@24 PARENTESIS_I ID $@25 PUNTO_Y_COMA lista_expresiones . PARENTESIS_F
 
-    $default  reduce usando la regla 21 (condicion)
+    PARENTESIS_F  desplazar e ir al estado 122
 
 
 estado 114
 
-   24 condicion: comparacion $@6 OP_OR $@7 comparacion .
+   20 iteracion: WHILE PARENTESIS_I condicion $@3 PARENTESIS_F $@4 DO bloque $@5 . ENDWHILE
 
-    $default  reduce usando la regla 24 (condicion)
+    ENDWHILE  desplazar e ir al estado 123
 
 
 estado 115
 
-   31 comparacion: expresion $@9 COMP_MAYOR_ESTR $@10 expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   36 resto: bloque $@9 . ELSE $@10 bloque
 
-    OP_SUM   desplazar e ir al estado 52
-    OP_REST  desplazar e ir al estado 53
-
-    $default  reduce usando la regla 31 (comparacion)
+    ELSE  desplazar e ir al estado 124
 
 
 estado 116
 
-   34 comparacion: expresion $@11 COMP_MENOR_ESTR $@12 expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   41 resto: bloque $@11 . ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE $@14 bloque
 
-    OP_SUM   desplazar e ir al estado 52
-    OP_REST  desplazar e ir al estado 53
-
-    $default  reduce usando la regla 34 (comparacion)
+    ELSIF  desplazar e ir al estado 125
 
 
 estado 117
 
-   37 comparacion: expresion $@13 COMP_MAYOR_IGUAL $@14 expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   23 seleccion: IF $@6 PARENTESIS_I condicion PARENTESIS_F $@7 DO resto ENDIF .
 
-    OP_SUM   desplazar e ir al estado 52
-    OP_REST  desplazar e ir al estado 53
-
-    $default  reduce usando la regla 37 (comparacion)
+    $default  reduce usando la regla 23 (seleccion)
 
 
 estado 118
 
-   40 comparacion: expresion $@15 COMP_MENOR_IGUAL $@16 expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   59 expresion: expresion . OP_SUM $@18 termino
+   61          | expresion . OP_REST $@19 termino
+   76 rango: CORCHETE_I expresion . PUNTO_Y_COMA expresion CORCHETE_F
 
-    OP_SUM   desplazar e ir al estado 52
-    OP_REST  desplazar e ir al estado 53
-
-    $default  reduce usando la regla 40 (comparacion)
+    OP_SUM        desplazar e ir al estado 66
+    OP_REST       desplazar e ir al estado 67
+    PUNTO_Y_COMA  desplazar e ir al estado 126
 
 
 estado 119
 
-   43 comparacion: expresion $@17 COMP_IGUAL $@18 expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   75 between: BETWEEN $@22 PARENTESIS_I ID $@23 COMA rango PARENTESIS_F .
 
-    OP_SUM   desplazar e ir al estado 52
-    OP_REST  desplazar e ir al estado 53
-
-    $default  reduce usando la regla 43 (comparacion)
+    $default  reduce usando la regla 75 (between)
 
 
 estado 120
 
-   46 comparacion: expresion $@19 COMP_DIST $@20 expresion .
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
+   59 expresion: expresion . OP_SUM $@18 termino
+   61          | expresion . OP_REST $@19 termino
+   81 expresiones: expresion .
+   82            | expresion . PUNTO_Y_COMA expresiones
 
-    OP_SUM   desplazar e ir al estado 52
-    OP_REST  desplazar e ir al estado 53
+    OP_SUM        desplazar e ir al estado 66
+    OP_REST       desplazar e ir al estado 67
+    PUNTO_Y_COMA  desplazar e ir al estado 127
 
-    $default  reduce usando la regla 46 (comparacion)
+    $default  reduce usando la regla 81 (expresiones)
 
 
 estado 121
 
-   47 resto: bloque .
-   50      | bloque . $@21 ELSE $@22 bloque
-   54      | bloque . $@23 ELSIF PARENTESIS_I condicion PARENTESIS_F $@24 bloque ELSE $@25 bloque
+   80 lista_expresiones: CORCHETE_I expresiones . CORCHETE_F
 
-    ELSE      reduce usando la regla 48 ($@21)
-    ELSIF     reduce usando la regla 51 ($@23)
-    $default  reduce usando la regla 47 (resto)
-
-    $@21  ir al estado 129
-    $@23  ir al estado 130
+    CORCHETE_F  desplazar e ir al estado 128
 
 
 estado 122
 
-   17 seleccion: IF PARENTESIS_I condicion PARENTESIS_F $@3 DO resto . ENDIF
+   79 inlist: INLIST $@24 PARENTESIS_I ID $@25 PUNTO_Y_COMA lista_expresiones PARENTESIS_F .
 
-    ENDIF  desplazar e ir al estado 131
+    $default  reduce usando la regla 79 (inlist)
 
 
 estado 123
 
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
-   80 rango: CORCHETE_I expresion . PUNTO_Y_COMA expresion CORCHETE_F
+   20 iteracion: WHILE PARENTESIS_I condicion $@3 PARENTESIS_F $@4 DO bloque $@5 ENDWHILE .
 
-    OP_SUM        desplazar e ir al estado 52
-    OP_REST       desplazar e ir al estado 53
-    PUNTO_Y_COMA  desplazar e ir al estado 132
+    $default  reduce usando la regla 20 (iteracion)
 
 
 estado 124
 
-   79 between: BETWEEN PARENTESIS_I ID COMA rango PARENTESIS_F .
+   36 resto: bloque $@9 ELSE . $@10 bloque
 
-    $default  reduce usando la regla 79 (between)
+    $default  reduce usando la regla 35 ($@10)
+
+    $@10  ir al estado 129
 
 
 estado 125
 
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
-   83 expresiones: expresion .
-   84            | expresion . PUNTO_Y_COMA expresiones
+   41 resto: bloque $@11 ELSIF . $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE $@14 bloque
 
-    OP_SUM        desplazar e ir al estado 52
-    OP_REST       desplazar e ir al estado 53
-    PUNTO_Y_COMA  desplazar e ir al estado 133
+    $default  reduce usando la regla 38 ($@12)
 
-    $default  reduce usando la regla 83 (expresiones)
+    $@12  ir al estado 130
 
 
 estado 126
 
-   82 lista_expresiones: CORCHETE_I expresiones . CORCHETE_F
+   76 rango: CORCHETE_I expresion PUNTO_Y_COMA . expresion CORCHETE_F
 
-    CORCHETE_F  desplazar e ir al estado 134
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
+
+    expresion  ir al estado 131
+    termino    ir al estado 47
+    factor     ir al estado 48
 
 
 estado 127
 
-   81 inlist: INLIST PARENTESIS_I ID PUNTO_Y_COMA lista_expresiones PARENTESIS_F .
+   82 expresiones: expresion PUNTO_Y_COMA . expresiones
 
-    $default  reduce usando la regla 81 (inlist)
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
+
+    expresion    ir al estado 120
+    termino      ir al estado 47
+    factor       ir al estado 48
+    expresiones  ir al estado 132
 
 
 estado 128
 
-   15 iteracion: WHILE PARENTESIS_I condicion PARENTESIS_F $@2 DO bloque ENDWHILE .
+   80 lista_expresiones: CORCHETE_I expresiones CORCHETE_F .
 
-    $default  reduce usando la regla 15 (iteracion)
+    $default  reduce usando la regla 80 (lista_expresiones)
 
 
 estado 129
 
-   50 resto: bloque $@21 . ELSE $@22 bloque
+   36 resto: bloque $@9 ELSE $@10 . bloque
 
-    ELSE  desplazar e ir al estado 135
+    ID          desplazar e ir al estado 6
+    DECVAR      desplazar e ir al estado 7
+    WHILE       desplazar e ir al estado 8
+    IF          desplazar e ir al estado 9
+    READ        desplazar e ir al estado 10
+    WRITE       desplazar e ir al estado 11
+    COMENTARIO  desplazar e ir al estado 12
+
+    bloque              ir al estado 133
+    lista_sentencias    ir al estado 14
+    sentencia           ir al estado 15
+    asignacion          ir al estado 16
+    iteracion           ir al estado 17
+    seleccion           ir al estado 18
+    lectura             ir al estado 19
+    escritura           ir al estado 20
+    bloque_declaracion  ir al estado 21
 
 
 estado 130
 
-   54 resto: bloque $@23 . ELSIF PARENTESIS_I condicion PARENTESIS_F $@24 bloque ELSE $@25 bloque
+   41 resto: bloque $@11 ELSIF $@12 . PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE $@14 bloque
 
-    ELSIF  desplazar e ir al estado 136
+    PARENTESIS_I  desplazar e ir al estado 134
 
 
 estado 131
 
-   17 seleccion: IF PARENTESIS_I condicion PARENTESIS_F $@3 DO resto ENDIF .
+   59 expresion: expresion . OP_SUM $@18 termino
+   61          | expresion . OP_REST $@19 termino
+   76 rango: CORCHETE_I expresion PUNTO_Y_COMA expresion . CORCHETE_F
 
-    $default  reduce usando la regla 17 (seleccion)
+    OP_SUM      desplazar e ir al estado 66
+    OP_REST     desplazar e ir al estado 67
+    CORCHETE_F  desplazar e ir al estado 135
 
 
 estado 132
 
-   80 rango: CORCHETE_I expresion PUNTO_Y_COMA . expresion CORCHETE_F
+   82 expresiones: expresion PUNTO_Y_COMA expresiones .
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
-
-    expresion  ir al estado 137
-    termino    ir al estado 36
-    factor     ir al estado 37
+    $default  reduce usando la regla 82 (expresiones)
 
 
 estado 133
 
-   84 expresiones: expresion PUNTO_Y_COMA . expresiones
+   36 resto: bloque $@9 ELSE $@10 bloque .
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    PARENTESIS_I  desplazar e ir al estado 34
-
-    expresion    ir al estado 125
-    termino      ir al estado 36
-    factor       ir al estado 37
-    expresiones  ir al estado 138
+    $default  reduce usando la regla 36 (resto)
 
 
 estado 134
 
-   82 lista_expresiones: CORCHETE_I expresiones CORCHETE_F .
+   41 resto: bloque $@11 ELSIF $@12 PARENTESIS_I . condicion PARENTESIS_F $@13 bloque ELSE $@14 bloque
 
-    $default  reduce usando la regla 82 (lista_expresiones)
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    OP_NOT        desplazar e ir al estado 40
+    PARENTESIS_I  desplazar e ir al estado 41
+    BETWEEN       desplazar e ir al estado 42
+    INLIST        desplazar e ir al estado 43
+
+    condicion    ir al estado 136
+    comparacion  ir al estado 45
+    expresion    ir al estado 46
+    termino      ir al estado 47
+    factor       ir al estado 48
+    between      ir al estado 49
+    inlist       ir al estado 50
 
 
 estado 135
 
-   50 resto: bloque $@21 ELSE . $@22 bloque
+   76 rango: CORCHETE_I expresion PUNTO_Y_COMA expresion CORCHETE_F .
 
-    $default  reduce usando la regla 49 ($@22)
-
-    $@22  ir al estado 139
+    $default  reduce usando la regla 76 (rango)
 
 
 estado 136
 
-   54 resto: bloque $@23 ELSIF . PARENTESIS_I condicion PARENTESIS_F $@24 bloque ELSE $@25 bloque
+   41 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion . PARENTESIS_F $@13 bloque ELSE $@14 bloque
 
-    PARENTESIS_I  desplazar e ir al estado 140
+    PARENTESIS_F  desplazar e ir al estado 137
 
 
 estado 137
 
-   68 expresion: expresion . OP_SUM termino
-   69          | expresion . OP_REST termino
-   80 rango: CORCHETE_I expresion PUNTO_Y_COMA expresion . CORCHETE_F
+   41 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F . $@13 bloque ELSE $@14 bloque
 
-    OP_SUM      desplazar e ir al estado 52
-    OP_REST     desplazar e ir al estado 53
-    CORCHETE_F  desplazar e ir al estado 141
+    $default  reduce usando la regla 39 ($@13)
+
+    $@13  ir al estado 138
 
 
 estado 138
 
-   84 expresiones: expresion PUNTO_Y_COMA expresiones .
+   41 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 . bloque ELSE $@14 bloque
 
-    $default  reduce usando la regla 84 (expresiones)
+    ID          desplazar e ir al estado 6
+    DECVAR      desplazar e ir al estado 7
+    WHILE       desplazar e ir al estado 8
+    IF          desplazar e ir al estado 9
+    READ        desplazar e ir al estado 10
+    WRITE       desplazar e ir al estado 11
+    COMENTARIO  desplazar e ir al estado 12
+
+    bloque              ir al estado 139
+    lista_sentencias    ir al estado 14
+    sentencia           ir al estado 15
+    asignacion          ir al estado 16
+    iteracion           ir al estado 17
+    seleccion           ir al estado 18
+    lectura             ir al estado 19
+    escritura           ir al estado 20
+    bloque_declaracion  ir al estado 21
 
 
 estado 139
 
-   50 resto: bloque $@21 ELSE $@22 . bloque
+   41 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque . ELSE $@14 bloque
 
-    ID          desplazar e ir al estado 5
-    DECVAR      desplazar e ir al estado 6
-    WHILE       desplazar e ir al estado 7
-    IF          desplazar e ir al estado 8
-    READ        desplazar e ir al estado 9
-    WRITE       desplazar e ir al estado 10
-    COMENTARIO  desplazar e ir al estado 11
-
-    bloque              ir al estado 142
-    lista_sentencias    ir al estado 13
-    sentencia           ir al estado 14
-    asignacion          ir al estado 15
-    iteracion           ir al estado 16
-    seleccion           ir al estado 17
-    lectura             ir al estado 18
-    escritura           ir al estado 19
-    bloque_declaracion  ir al estado 20
+    ELSE  desplazar e ir al estado 140
 
 
 estado 140
 
-   54 resto: bloque $@23 ELSIF PARENTESIS_I . condicion PARENTESIS_F $@24 bloque ELSE $@25 bloque
+   41 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE . $@14 bloque
 
-    CTE_INT       desplazar e ir al estado 30
-    CTE_FLOAT     desplazar e ir al estado 31
-    CTE_STRING    desplazar e ir al estado 32
-    ID            desplazar e ir al estado 33
-    OP_NOT        desplazar e ir al estado 41
-    PARENTESIS_I  desplazar e ir al estado 34
-    BETWEEN       desplazar e ir al estado 42
-    INLIST        desplazar e ir al estado 43
+    $default  reduce usando la regla 40 ($@14)
 
-    condicion    ir al estado 143
-    comparacion  ir al estado 45
-    expresion    ir al estado 46
-    termino      ir al estado 36
-    factor       ir al estado 37
-    between      ir al estado 47
-    inlist       ir al estado 48
+    $@14  ir al estado 141
 
 
 estado 141
 
-   80 rango: CORCHETE_I expresion PUNTO_Y_COMA expresion CORCHETE_F .
+   41 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE $@14 . bloque
 
-    $default  reduce usando la regla 80 (rango)
+    ID          desplazar e ir al estado 6
+    DECVAR      desplazar e ir al estado 7
+    WHILE       desplazar e ir al estado 8
+    IF          desplazar e ir al estado 9
+    READ        desplazar e ir al estado 10
+    WRITE       desplazar e ir al estado 11
+    COMENTARIO  desplazar e ir al estado 12
+
+    bloque              ir al estado 142
+    lista_sentencias    ir al estado 14
+    sentencia           ir al estado 15
+    asignacion          ir al estado 16
+    iteracion           ir al estado 17
+    seleccion           ir al estado 18
+    lectura             ir al estado 19
+    escritura           ir al estado 20
+    bloque_declaracion  ir al estado 21
 
 
 estado 142
 
-   50 resto: bloque $@21 ELSE $@22 bloque .
+   41 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE $@14 bloque .
 
-    $default  reduce usando la regla 50 (resto)
-
-
-estado 143
-
-   54 resto: bloque $@23 ELSIF PARENTESIS_I condicion . PARENTESIS_F $@24 bloque ELSE $@25 bloque
-
-    PARENTESIS_F  desplazar e ir al estado 144
-
-
-estado 144
-
-   54 resto: bloque $@23 ELSIF PARENTESIS_I condicion PARENTESIS_F . $@24 bloque ELSE $@25 bloque
-
-    $default  reduce usando la regla 52 ($@24)
-
-    $@24  ir al estado 145
-
-
-estado 145
-
-   54 resto: bloque $@23 ELSIF PARENTESIS_I condicion PARENTESIS_F $@24 . bloque ELSE $@25 bloque
-
-    ID          desplazar e ir al estado 5
-    DECVAR      desplazar e ir al estado 6
-    WHILE       desplazar e ir al estado 7
-    IF          desplazar e ir al estado 8
-    READ        desplazar e ir al estado 9
-    WRITE       desplazar e ir al estado 10
-    COMENTARIO  desplazar e ir al estado 11
-
-    bloque              ir al estado 146
-    lista_sentencias    ir al estado 13
-    sentencia           ir al estado 14
-    asignacion          ir al estado 15
-    iteracion           ir al estado 16
-    seleccion           ir al estado 17
-    lectura             ir al estado 18
-    escritura           ir al estado 19
-    bloque_declaracion  ir al estado 20
-
-
-estado 146
-
-   54 resto: bloque $@23 ELSIF PARENTESIS_I condicion PARENTESIS_F $@24 bloque . ELSE $@25 bloque
-
-    ELSE  desplazar e ir al estado 147
-
-
-estado 147
-
-   54 resto: bloque $@23 ELSIF PARENTESIS_I condicion PARENTESIS_F $@24 bloque ELSE . $@25 bloque
-
-    $default  reduce usando la regla 53 ($@25)
-
-    $@25  ir al estado 148
-
-
-estado 148
-
-   54 resto: bloque $@23 ELSIF PARENTESIS_I condicion PARENTESIS_F $@24 bloque ELSE $@25 . bloque
-
-    ID          desplazar e ir al estado 5
-    DECVAR      desplazar e ir al estado 6
-    WHILE       desplazar e ir al estado 7
-    IF          desplazar e ir al estado 8
-    READ        desplazar e ir al estado 9
-    WRITE       desplazar e ir al estado 10
-    COMENTARIO  desplazar e ir al estado 11
-
-    bloque              ir al estado 149
-    lista_sentencias    ir al estado 13
-    sentencia           ir al estado 14
-    asignacion          ir al estado 15
-    iteracion           ir al estado 16
-    seleccion           ir al estado 17
-    lectura             ir al estado 18
-    escritura           ir al estado 19
-    bloque_declaracion  ir al estado 20
-
-
-estado 149
-
-   54 resto: bloque $@23 ELSIF PARENTESIS_I condicion PARENTESIS_F $@24 bloque ELSE $@25 bloque .
-
-    $default  reduce usando la regla 54 (resto)
+    $default  reduce usando la regla 41 (resto)

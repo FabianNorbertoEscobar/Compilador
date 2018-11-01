@@ -6,7 +6,6 @@
 	#include <stdio.h>
 	#include <conio.h>
 	#include <stdlib.h>
-	#include <locale.h>
 	#include <string.h>
 	#include <float.h>
 	#include "y.tab.h"
@@ -198,6 +197,7 @@
 %token OP_AND
 %token OP_OR
 %token OP_NOT
+%token COMPARADOR
 %token PARENTESIS_I
 %token PARENTESIS_F
 %token LLAVE_I
@@ -236,7 +236,7 @@
 %left OP_SUM OP_REST
 %left OP_MULT OP_DIV
 
-%start programa
+%start start
 
 /* definicion de reglas */
 
@@ -245,6 +245,10 @@
 	start: 				programa
 						{
 							printf("COMPILACION EXITOSA\n");
+						}
+	|
+						{
+							printf("No hay programa\n");
 						}
 
 	programa:			INICIO_PROGRAMA
@@ -464,7 +468,7 @@
 									ponerEnPolaca(&polaca,obtenerSalto(inverso));
 									break;
 
-								case condicionRepeat:
+								case condicionWhile:
 									ponerEnPolaca(&polaca,"CMP");
 							 		ponerEnPolaca(&polaca,topeDePila(&pilaWhile)->cadena);
 									ponerEnPolaca(&polaca,obtenerSalto(normal));
@@ -511,7 +515,7 @@
 						}
 	;
 
-	and_or:				AND
+	and_or:				OP_AND
 						{
 							if(tipoCondicion==condicionIf)
 							{
@@ -522,7 +526,7 @@
 								topeDePila(&pilaWhile)->andOr=and;
 							}
 						}
-	|					OR
+	|					OP_OR
 						{
 							if(tipoCondicion==condicionIf)
 							{
@@ -722,7 +726,7 @@
 						{
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
 							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
-							if(strcmp("sin tipo",obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
+							if(strcmp("sin tipo",(const char*)obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
 								tablaVariables[posicion].tipo=tipoInt;
 							}
@@ -737,7 +741,7 @@
 						{
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
 							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
-							if(strcmp("sin tipo",obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
+							if(strcmp("sin tipo",(const char*)obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
 								tablaVariables[posicion].tipo=tipoFloat;
 							}
@@ -752,7 +756,7 @@
 						{	
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
 							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
-							if(strcmp("sin tipo",obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
+							if(strcmp("sin tipo",(const char*)obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
 								tablaVariables[posicion].tipo=tipoString;
 							}
@@ -783,7 +787,7 @@
 						{
 							printf("-\n");
 							auxiliaresNecesarios++;
-							if(esAsignacion==1&&tipoAsignacion==tipoStrinhg)
+							if(esAsignacion==1&&tipoAsignacion==tipoString)
 							{
 								yyerrormsj("resta", ErrorSintactico,ErrorOperacionNoValida,"");
 							}
@@ -871,13 +875,10 @@
 					    	{
 								yyerrormsj($<cadena>1,ErrorSintactico,ErrorIdNoDeclarado,"");
 					    	}
-					    	if(topeDePila(&pilaAVG)==NULL)
-					    	{
-					    		if(esAsignacion==1&& tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,$<cadena>1)].tipo!=tipoAsignacion)
-					    		{
-									yyerrormsj($<cadena>1, ErrorSintactico,ErrorIdDistintoTipo,"");
-					    		}
-					    	}
+				    		if(esAsignacion==1&& tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,$<cadena>1)].tipo!=tipoAsignacion)
+				    		{
+								yyerrormsj($<cadena>1, ErrorSintactico,ErrorIdDistintoTipo,"");
+				    		}
 							ponerEnPolaca(&polaca,tablaVariables[buscarEnTablaDeSimbolos(sectorVariables,$<cadena>1)].nombre);
 	                  	}
 	|
@@ -909,7 +910,6 @@
 						COMA rango PARENTESIS_F
 						{
 							printf("rango de expresiones\n");
-							printf("%s\n", );
 						}
 	;
 
@@ -969,9 +969,6 @@
 
 int main(int argc,char *argv[])
 {
-
-	setlocale(LC_CTYPE,"Spanish");
-
 	crearPila(&pilaIf);
 	crearPila(&pilaWhile);
 	crearPolaca(&polaca);
@@ -1007,14 +1004,13 @@ int main(int argc,char *argv[])
 
 /* funciones */
 
-int yyerrormsj(char * info,enum tipoDeError tipoDeError ,enum error error, const char *infoAdicional)
+int yyerrormsj(const char * info,enum tipoDeError tipoDeError ,enum error error, const char *infoAdicional)
 {
-	setlocale(LC_CTYPE,"Spanish");
 	grabarTablaDeSimbolos(1);
-	printf("[Línea %d] ",yylineno);
+	printf("[Linea %d] ",yylineno);
   	switch(tipoDeError){
         case ErrorSintactico:
-            printf("Error sintáctico. ");
+            printf("Error sintactico. ");
             break;
         case ErrorLexico:
             printf("Error lexico. ");
@@ -1044,9 +1040,8 @@ int yyerrormsj(char * info,enum tipoDeError tipoDeError ,enum error error, const
 
 int yyerror()
 {
-	setlocale(LC_CTYPE,"Spanish");
 	grabarTablaDeSimbolos(1);
-	printf("Error sintáctico \n");
+	printf("Error sintactico \n");
 	system ("Pause");
 	exit (1);
 }
@@ -1177,7 +1172,7 @@ void guardarPolaca(t_polaca *pp)
 	t_nodoPolaca* pn;
 	if(!pt)
 	{
-		printf("Error al crear la tabla de símbolos\n");
+		printf("Error al crear la tabla de simbolos\n");
 		return;
 	}
 	while(*pp)
@@ -1621,7 +1616,7 @@ void generar_assembler2(t_polaca *pp)
 			{
 				t_info info;
 				info.cadena=(char*)malloc(sizeof(char)*CADENA_MAXIMA);
-		    	strcpy(info.cadena,reemplazarCaracter(linea,"$",""));
+		    	strcpy(info.cadena,(const char*)reemplazarCaracter(linea,"$",""));
 		    	ponerEnPila(&pilaASM,&info);
 			}
 
