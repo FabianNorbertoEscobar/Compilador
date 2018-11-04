@@ -285,37 +285,37 @@ COMENTARIO 				{COMENTARIO_I}({LETRA}|{DIGITO}|{CARACTER}|.)*{COMENTARIO_F}
 {COMP_MAYOR_ESTR} 	{
 						guardarToken("COMP_MAYOR_ESTR\n");
 						strcpy(yylval.cadena, yytext);
-						return COMP_MAYOR_ESTR;
+						return COMPARADOR;
 					}
 
 {COMP_MENOR_ESTR} 	{
 						guardarToken("COMP_MENOR_ESTR\n");
 						strcpy(yylval.cadena, yytext);
-						return COMP_MENOR_ESTR;
+						return COMPARADOR;
 					}
 
 {COMP_MAYOR_IGUAL} 	{
 						guardarToken("COMP_MAYOR_IGUAL\n");
 						strcpy(yylval.cadena, yytext);
-						return COMP_MAYOR_IGUAL;
+						return COMPARADOR;
 					}
 
 {COMP_MENOR_IGUAL} 	{
 						guardarToken("COMP_MENOR_IGUAL\n");
 						strcpy(yylval.cadena, yytext);
-						return COMP_MENOR_IGUAL;
+						return COMPARADOR;
 					}
 
 {COMP_IGUAL} 		{
 						guardarToken("COMP_IGUAL\n");
 						strcpy(yylval.cadena, yytext);
-						return COMP_IGUAL;
+						return COMPARADOR;
 					}
 
 {COMP_DIST} 		{
 						guardarToken("COMP_DIST\n");
 						strcpy(yylval.cadena, yytext);
-						return COMP_DIST;
+						return COMPARADOR;
 					}
 
 {DECVAR} 			{

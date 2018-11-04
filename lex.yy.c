@@ -1049,7 +1049,7 @@ YY_RULE_SETUP
 {
 						guardarToken("COMP_MAYOR_ESTR\n");
 						strcpy(yylval.cadena, yytext);
-						return COMP_MAYOR_ESTR;
+						return COMPARADOR;
 					}
 	YY_BREAK
 case 27:
@@ -1058,7 +1058,7 @@ YY_RULE_SETUP
 {
 						guardarToken("COMP_MENOR_ESTR\n");
 						strcpy(yylval.cadena, yytext);
-						return COMP_MENOR_ESTR;
+						return COMPARADOR;
 					}
 	YY_BREAK
 case 28:
@@ -1067,7 +1067,7 @@ YY_RULE_SETUP
 {
 						guardarToken("COMP_MAYOR_IGUAL\n");
 						strcpy(yylval.cadena, yytext);
-						return COMP_MAYOR_IGUAL;
+						return COMPARADOR;
 					}
 	YY_BREAK
 case 29:
@@ -1076,7 +1076,7 @@ YY_RULE_SETUP
 {
 						guardarToken("COMP_MENOR_IGUAL\n");
 						strcpy(yylval.cadena, yytext);
-						return COMP_MENOR_IGUAL;
+						return COMPARADOR;
 					}
 	YY_BREAK
 case 30:
@@ -1085,7 +1085,7 @@ YY_RULE_SETUP
 {
 						guardarToken("COMP_IGUAL\n");
 						strcpy(yylval.cadena, yytext);
-						return COMP_IGUAL;
+						return COMPARADOR;
 					}
 	YY_BREAK
 case 31:
@@ -1094,7 +1094,7 @@ YY_RULE_SETUP
 {
 						guardarToken("COMP_DIST\n");
 						strcpy(yylval.cadena, yytext);
-						return COMP_DIST;
+						return COMPARADOR;
 					}
 	YY_BREAK
 case 32:

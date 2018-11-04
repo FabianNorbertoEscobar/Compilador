@@ -128,9 +128,8 @@
 	int ponerEnPila(t_pila*,t_info*);
 	t_info* topeDePila(t_pila*);
 
-	void generar_assembler ();
-	void generar_assembler2 (t_polaca*);
-	char * sacarDePolaca(t_polaca*);
+	void generar_assembler(t_polaca*);
+	char* sacarDePolaca(t_polaca*);
 	int buscarEnTablaDeSimbolosASM(enum sectorTabla, char*);
 
 	/* variables globales */
@@ -182,10 +181,10 @@
 %token LETRA_MINUS
 %token LETRA_MAYUS
 %token CARACTER
-%token CTE_INT
-%token CTE_FLOAT
-%token CTE_STRING		
-%token ID
+%token <cadena>CTE_INT
+%token <cadena>CTE_FLOAT
+%token <cadena>CTE_STRING		
+%token <cadena>ID
 %token INICIO_PROGRAMA
 %token FIN_PROGRAMA
 %token OP_SUM
@@ -232,7 +231,7 @@
 %token INLIST
 %token COMENTARIO
 
-%right OP_ASIG
+%left OP_ASIG
 %left OP_SUM OP_REST
 %left OP_MULT OP_DIV
 
@@ -939,7 +938,6 @@
 						}
 						PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 						{
-							printf("lista de expresiones\n");
 							printf("Expresiones en InList_%d: %d\n", topeDePila(&pilaInList)->nro,topeDePila(&pilaInList)->cantExpresiones);
 							char aux[50];
 							sprintf(aux,"%d.0",topeDePila(&pilaInList)->cantExpresiones);
@@ -951,12 +949,25 @@
 	;
 
 	lista_expresiones:	CORCHETE_I expresiones CORCHETE_F
+						{
+							printf("lista de expresiones\n");
+						}
 
 	;
 
 	expresiones: 		expresion
+						{
+							
+						}
 	|
-						expresion PUNTO_Y_COMA expresiones
+						expresion
+						{
+							
+						}
+						PUNTO_Y_COMA expresiones
+						{
+							
+						}
 	;
 
 %%
@@ -967,6 +978,9 @@ int main(int argc,char *argv[])
 {
 	crearPila(&pilaIf);
 	crearPila(&pilaWhile);
+	crearPila(&pilaBetween);
+	crearPila(&pilaInList);
+	crearPila(&pilaASM);
 	crearPolaca(&polaca);
 
   	if ((yyin = fopen(argv[1], "rt")) == NULL)
@@ -990,7 +1004,10 @@ int main(int argc,char *argv[])
 
 	vaciarPila(&pilaIf);
 	vaciarPila(&pilaWhile);
+	vaciarPila(&pilaBetween);
+	vaciarPila(&pilaInList);
 
+	generar_assembler(&polaca);
 	guardarPolaca(&polaca);
 
   	return 0;
@@ -1253,7 +1270,7 @@ char* obtenerSalto2(char* comparador,enum tipoSalto tipo)
 
 /* assembler */
 
-void generar_assembler2(t_polaca *pp)
+void generar_assembler(t_polaca *pp)
 {
 		t_nodoPolaca* aux;
 		aux=*pp;
@@ -1730,4 +1747,4 @@ void generar_assembler2(t_polaca *pp)
 				break;
 		}
 		return NO_ENCONTRADO;
-}
+	}

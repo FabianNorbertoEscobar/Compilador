@@ -158,7 +158,10 @@ Gramática
    79 lista_expresiones: CORCHETE_I expresiones CORCHETE_F
 
    80 expresiones: expresion
-   81            | expresion PUNTO_Y_COMA expresiones
+
+   81 $@26: /* vacío */
+
+   82 expresiones: expresion $@26 PUNTO_Y_COMA expresiones
 
 
 Terminales con las reglas donde aparecen
@@ -194,7 +197,7 @@ CORCHETE_I (283) 75 79
 CORCHETE_F (284) 75 79
 COMENTARIO_I (285)
 COMENTARIO_F (286)
-PUNTO_Y_COMA (287) 75 78 81
+PUNTO_Y_COMA (287) 75 78 82
 COMA (288) 48 74
 COMP_MAYOR_ESTR (289)
 COMP_MENOR_ESTR (290)
@@ -299,7 +302,7 @@ tipodato (93)
     en la izquierda: 54 55 56, en la derecha: 49
 expresion (94)
     en la izquierda: 58 60 61, en la derecha: 15 31 58 60 71 75 80
-    81
+    82
 $@18 (95)
     en la izquierda: 57, en la derecha: 58
 $@19 (96)
@@ -329,7 +332,9 @@ $@25 (107)
 lista_expresiones (108)
     en la izquierda: 79, en la derecha: 78
 expresiones (109)
-    en la izquierda: 80 81, en la derecha: 79 81
+    en la izquierda: 80 82, en la derecha: 79 82
+$@26 (110)
+    en la izquierda: 81, en la derecha: 82
 
 
 estado 0
@@ -1475,13 +1480,15 @@ estado 120
    58 expresion: expresion . OP_SUM $@18 termino
    60          | expresion . OP_REST $@19 termino
    80 expresiones: expresion .
-   81            | expresion . PUNTO_Y_COMA expresiones
+   82            | expresion . $@26 PUNTO_Y_COMA expresiones
 
-    OP_SUM        desplazar e ir al estado 66
-    OP_REST       desplazar e ir al estado 67
-    PUNTO_Y_COMA  desplazar e ir al estado 127
+    OP_SUM   desplazar e ir al estado 66
+    OP_REST  desplazar e ir al estado 67
 
-    $default  reduce usando la regla 80 (expresiones)
+    PUNTO_Y_COMA  reduce usando la regla 81 ($@26)
+    $default      reduce usando la regla 80 (expresiones)
+
+    $@26  ir al estado 127
 
 
 estado 121
@@ -1540,18 +1547,9 @@ estado 126
 
 estado 127
 
-   81 expresiones: expresion PUNTO_Y_COMA . expresiones
+   82 expresiones: expresion $@26 . PUNTO_Y_COMA expresiones
 
-    CTE_INT       desplazar e ir al estado 36
-    CTE_FLOAT     desplazar e ir al estado 37
-    CTE_STRING    desplazar e ir al estado 38
-    ID            desplazar e ir al estado 39
-    PARENTESIS_I  desplazar e ir al estado 41
-
-    expresion    ir al estado 120
-    termino      ir al estado 47
-    factor       ir al estado 48
-    expresiones  ir al estado 132
+    PUNTO_Y_COMA  desplazar e ir al estado 132
 
 
 estado 128
@@ -1604,9 +1602,18 @@ estado 131
 
 estado 132
 
-   81 expresiones: expresion PUNTO_Y_COMA expresiones .
+   82 expresiones: expresion $@26 PUNTO_Y_COMA . expresiones
 
-    $default  reduce usando la regla 81 (expresiones)
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
+
+    expresion    ir al estado 120
+    termino      ir al estado 47
+    factor       ir al estado 48
+    expresiones  ir al estado 136
 
 
 estado 133
@@ -1629,7 +1636,7 @@ estado 134
     BETWEEN       desplazar e ir al estado 42
     INLIST        desplazar e ir al estado 43
 
-    condicion    ir al estado 136
+    condicion    ir al estado 137
     comparacion  ir al estado 45
     expresion    ir al estado 46
     termino      ir al estado 47
@@ -1647,21 +1654,28 @@ estado 135
 
 estado 136
 
-   40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion . PARENTESIS_F $@13 bloque ELSE $@14 bloque
+   82 expresiones: expresion $@26 PUNTO_Y_COMA expresiones .
 
-    PARENTESIS_F  desplazar e ir al estado 137
+    $default  reduce usando la regla 82 (expresiones)
 
 
 estado 137
+
+   40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion . PARENTESIS_F $@13 bloque ELSE $@14 bloque
+
+    PARENTESIS_F  desplazar e ir al estado 138
+
+
+estado 138
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F . $@13 bloque ELSE $@14 bloque
 
     $default  reduce usando la regla 38 ($@13)
 
-    $@13  ir al estado 138
+    $@13  ir al estado 139
 
 
-estado 138
+estado 139
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 . bloque ELSE $@14 bloque
 
@@ -1673,7 +1687,7 @@ estado 138
     WRITE       desplazar e ir al estado 11
     COMENTARIO  desplazar e ir al estado 12
 
-    bloque              ir al estado 139
+    bloque              ir al estado 140
     lista_sentencias    ir al estado 14
     sentencia           ir al estado 15
     asignacion          ir al estado 16
@@ -1684,23 +1698,23 @@ estado 138
     bloque_declaracion  ir al estado 21
 
 
-estado 139
+estado 140
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque . ELSE $@14 bloque
 
-    ELSE  desplazar e ir al estado 140
+    ELSE  desplazar e ir al estado 141
 
 
-estado 140
+estado 141
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE . $@14 bloque
 
     $default  reduce usando la regla 39 ($@14)
 
-    $@14  ir al estado 141
+    $@14  ir al estado 142
 
 
-estado 141
+estado 142
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE $@14 . bloque
 
@@ -1712,7 +1726,7 @@ estado 141
     WRITE       desplazar e ir al estado 11
     COMENTARIO  desplazar e ir al estado 12
 
-    bloque              ir al estado 142
+    bloque              ir al estado 143
     lista_sentencias    ir al estado 14
     sentencia           ir al estado 15
     asignacion          ir al estado 16
@@ -1723,7 +1737,7 @@ estado 141
     bloque_declaracion  ir al estado 21
 
 
-estado 142
+estado 143
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE $@14 bloque .
 
