@@ -67,10 +67,10 @@ Gramática
    27          | between
    28          | inlist
 
-   29 and_or: OP_AND
-   30       | OP_OR
+   29 comparacion: expresion COMPARADOR expresion
 
-   31 comparacion: expresion COMPARADOR expresion
+   30 and_or: OP_AND
+   31       | OP_OR
 
    32 resto: bloque
 
@@ -147,21 +147,25 @@ Gramática
 
    74 between: BETWEEN $@22 PARENTESIS_I ID $@23 COMA rango PARENTESIS_F
 
-   75 rango: CORCHETE_I expresion PUNTO_Y_COMA expresion CORCHETE_F
+   75 $@24: /* vacío */
 
-   76 $@24: /* vacío */
+   76 $@25: /* vacío */
 
-   77 $@25: /* vacío */
+   77 rango: CORCHETE_I expresion $@24 PUNTO_Y_COMA expresion $@25 CORCHETE_F
 
-   78 inlist: INLIST $@24 PARENTESIS_I ID $@25 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
+   78 $@26: /* vacío */
 
-   79 lista_expresiones: CORCHETE_I expresiones CORCHETE_F
+   79 $@27: /* vacío */
 
-   80 expresiones: expresion
+   80 inlist: INLIST $@26 PARENTESIS_I ID $@27 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 
-   81 $@26: /* vacío */
+   81 lista_expresiones: CORCHETE_I expresiones CORCHETE_F
 
-   82 expresiones: expresion $@26 PUNTO_Y_COMA expresiones
+   82 expresiones: expresion
+
+   83 $@28: /* vacío */
+
+   84 expresiones: expresion $@28 PUNTO_Y_COMA expresiones
 
 
 Terminales con las reglas donde aparecen
@@ -176,7 +180,7 @@ CARACTER (262)
 CTE_INT (263) 53 67
 CTE_FLOAT (264) 68
 CTE_STRING (265) 43 69
-ID (266) 15 41 42 50 53 70 74 78
+ID (266) 15 41 42 50 53 70 74 80
 INICIO_PROGRAMA (267) 3
 FIN_PROGRAMA (268) 3
 OP_SUM (269) 58
@@ -185,19 +189,19 @@ OP_MULT (271) 63
 OP_DIV (272) 65
 OP_ASIG (273) 15
 OP_DEC (274) 49
-OP_AND (275) 29
-OP_OR (276) 30
+OP_AND (275) 30
+OP_OR (276) 31
 OP_NOT (277) 26
-COMPARADOR (278) 31
-PARENTESIS_I (279) 19 22 40 53 71 74 78
-PARENTESIS_F (280) 19 22 40 53 71 74 78
+COMPARADOR (278) 29
+PARENTESIS_I (279) 19 22 40 53 71 74 80
+PARENTESIS_F (280) 19 22 40 53 71 74 80
 LLAVE_I (281)
 LLAVE_F (282)
-CORCHETE_I (283) 75 79
-CORCHETE_F (284) 75 79
+CORCHETE_I (283) 77 81
+CORCHETE_F (284) 77 81
 COMENTARIO_I (285)
 COMENTARIO_F (286)
-PUNTO_Y_COMA (287) 75 78 82
+PUNTO_Y_COMA (287) 77 80 84
 COMA (288) 48 74
 COMP_MAYOR_ESTR (289)
 COMP_MENOR_ESTR (290)
@@ -220,7 +224,7 @@ STRING (306) 56
 READ (307) 41
 WRITE (308) 42 43
 BETWEEN (309) 74
-INLIST (310) 78
+INLIST (310) 80
 COMENTARIO (311) 13
 
 
@@ -262,10 +266,10 @@ condicion (73)
     en la izquierda: 23 25 26 27 28, en la derecha: 19 22 40
 $@8 (74)
     en la izquierda: 24, en la derecha: 25
-and_or (75)
-    en la izquierda: 29 30, en la derecha: 25
-comparacion (76)
-    en la izquierda: 31, en la derecha: 23 25 26
+comparacion (75)
+    en la izquierda: 29, en la derecha: 23 25 26
+and_or (76)
+    en la izquierda: 30 31, en la derecha: 25
 resto (77)
     en la izquierda: 32 35 40, en la derecha: 22
 $@9 (78)
@@ -301,8 +305,8 @@ $@17 (92)
 tipodato (93)
     en la izquierda: 54 55 56, en la derecha: 49
 expresion (94)
-    en la izquierda: 58 60 61, en la derecha: 15 31 58 60 71 75 80
-    82
+    en la izquierda: 58 60 61, en la derecha: 15 29 58 60 71 77 82
+    84
 $@18 (95)
     en la izquierda: 57, en la derecha: 58
 $@19 (96)
@@ -322,19 +326,23 @@ $@22 (102)
 $@23 (103)
     en la izquierda: 73, en la derecha: 74
 rango (104)
-    en la izquierda: 75, en la derecha: 74
-inlist (105)
-    en la izquierda: 78, en la derecha: 28
-$@24 (106)
-    en la izquierda: 76, en la derecha: 78
-$@25 (107)
-    en la izquierda: 77, en la derecha: 78
-lista_expresiones (108)
-    en la izquierda: 79, en la derecha: 78
-expresiones (109)
-    en la izquierda: 80 82, en la derecha: 79 82
-$@26 (110)
-    en la izquierda: 81, en la derecha: 82
+    en la izquierda: 77, en la derecha: 74
+$@24 (105)
+    en la izquierda: 75, en la derecha: 77
+$@25 (106)
+    en la izquierda: 76, en la derecha: 77
+inlist (107)
+    en la izquierda: 80, en la derecha: 28
+$@26 (108)
+    en la izquierda: 78, en la derecha: 80
+$@27 (109)
+    en la izquierda: 79, en la derecha: 80
+lista_expresiones (110)
+    en la izquierda: 81, en la derecha: 80
+expresiones (111)
+    en la izquierda: 82 84, en la derecha: 81 84
+$@28 (112)
+    en la izquierda: 83, en la derecha: 84
 
 
 estado 0
@@ -743,11 +751,11 @@ estado 42
 
 estado 43
 
-   78 inlist: INLIST . $@24 PARENTESIS_I ID $@25 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
+   80 inlist: INLIST . $@26 PARENTESIS_I ID $@27 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 
-    $default  reduce usando la regla 76 ($@24)
+    $default  reduce usando la regla 78 ($@26)
 
-    $@24  ir al estado 61
+    $@26  ir al estado 61
 
 
 estado 44
@@ -774,7 +782,7 @@ estado 45
 
 estado 46
 
-   31 comparacion: expresion . COMPARADOR expresion
+   29 comparacion: expresion . COMPARADOR expresion
    58 expresion: expresion . OP_SUM $@18 termino
    60          | expresion . OP_REST $@19 termino
 
@@ -919,7 +927,7 @@ estado 60
 
 estado 61
 
-   78 inlist: INLIST $@24 . PARENTESIS_I ID $@25 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
+   80 inlist: INLIST $@26 . PARENTESIS_I ID $@27 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 
     PARENTESIS_I  desplazar e ir al estado 80
 
@@ -933,16 +941,16 @@ estado 62
 
 estado 63
 
-   29 and_or: OP_AND .
+   30 and_or: OP_AND .
 
-    $default  reduce usando la regla 29 (and_or)
+    $default  reduce usando la regla 30 (and_or)
 
 
 estado 64
 
-   30 and_or: OP_OR .
+   31 and_or: OP_OR .
 
-    $default  reduce usando la regla 30 (and_or)
+    $default  reduce usando la regla 31 (and_or)
 
 
 estado 65
@@ -974,7 +982,7 @@ estado 67
 
 estado 68
 
-   31 comparacion: expresion COMPARADOR . expresion
+   29 comparacion: expresion COMPARADOR . expresion
 
     CTE_INT       desplazar e ir al estado 36
     CTE_FLOAT     desplazar e ir al estado 37
@@ -1070,7 +1078,7 @@ estado 79
 
 estado 80
 
-   78 inlist: INLIST $@24 PARENTESIS_I . ID $@25 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
+   80 inlist: INLIST $@26 PARENTESIS_I . ID $@27 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 
     ID  desplazar e ir al estado 91
 
@@ -1130,14 +1138,14 @@ estado 84
 
 estado 85
 
-   31 comparacion: expresion COMPARADOR expresion .
+   29 comparacion: expresion COMPARADOR expresion .
    58 expresion: expresion . OP_SUM $@18 termino
    60          | expresion . OP_REST $@19 termino
 
     OP_SUM   desplazar e ir al estado 66
     OP_REST  desplazar e ir al estado 67
 
-    $default  reduce usando la regla 31 (comparacion)
+    $default  reduce usando la regla 29 (comparacion)
 
 
 estado 86
@@ -1195,11 +1203,11 @@ estado 90
 
 estado 91
 
-   78 inlist: INLIST $@24 PARENTESIS_I ID . $@25 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
+   80 inlist: INLIST $@26 PARENTESIS_I ID . $@27 PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 
-    $default  reduce usando la regla 77 ($@25)
+    $default  reduce usando la regla 79 ($@27)
 
-    $@25  ir al estado 101
+    $@27  ir al estado 101
 
 
 estado 92
@@ -1277,7 +1285,7 @@ estado 100
 
 estado 101
 
-   78 inlist: INLIST $@24 PARENTESIS_I ID $@25 . PUNTO_Y_COMA lista_expresiones PARENTESIS_F
+   80 inlist: INLIST $@26 PARENTESIS_I ID $@27 . PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 
     PUNTO_Y_COMA  desplazar e ir al estado 106
 
@@ -1347,7 +1355,7 @@ estado 105
 
 estado 106
 
-   78 inlist: INLIST $@24 PARENTESIS_I ID $@25 PUNTO_Y_COMA . lista_expresiones PARENTESIS_F
+   80 inlist: INLIST $@26 PARENTESIS_I ID $@27 PUNTO_Y_COMA . lista_expresiones PARENTESIS_F
 
     CORCHETE_I  desplazar e ir al estado 112
 
@@ -1386,7 +1394,7 @@ estado 109
 
 estado 110
 
-   75 rango: CORCHETE_I . expresion PUNTO_Y_COMA expresion CORCHETE_F
+   77 rango: CORCHETE_I . expresion $@24 PUNTO_Y_COMA expresion $@25 CORCHETE_F
 
     CTE_INT       desplazar e ir al estado 36
     CTE_FLOAT     desplazar e ir al estado 37
@@ -1408,7 +1416,7 @@ estado 111
 
 estado 112
 
-   79 lista_expresiones: CORCHETE_I . expresiones CORCHETE_F
+   81 lista_expresiones: CORCHETE_I . expresiones CORCHETE_F
 
     CTE_INT       desplazar e ir al estado 36
     CTE_FLOAT     desplazar e ir al estado 37
@@ -1424,7 +1432,7 @@ estado 112
 
 estado 113
 
-   78 inlist: INLIST $@24 PARENTESIS_I ID $@25 PUNTO_Y_COMA lista_expresiones . PARENTESIS_F
+   80 inlist: INLIST $@26 PARENTESIS_I ID $@27 PUNTO_Y_COMA lista_expresiones . PARENTESIS_F
 
     PARENTESIS_F  desplazar e ir al estado 122
 
@@ -1461,11 +1469,14 @@ estado 118
 
    58 expresion: expresion . OP_SUM $@18 termino
    60          | expresion . OP_REST $@19 termino
-   75 rango: CORCHETE_I expresion . PUNTO_Y_COMA expresion CORCHETE_F
+   77 rango: CORCHETE_I expresion . $@24 PUNTO_Y_COMA expresion $@25 CORCHETE_F
 
-    OP_SUM        desplazar e ir al estado 66
-    OP_REST       desplazar e ir al estado 67
-    PUNTO_Y_COMA  desplazar e ir al estado 126
+    OP_SUM   desplazar e ir al estado 66
+    OP_REST  desplazar e ir al estado 67
+
+    $default  reduce usando la regla 75 ($@24)
+
+    $@24  ir al estado 126
 
 
 estado 119
@@ -1479,30 +1490,30 @@ estado 120
 
    58 expresion: expresion . OP_SUM $@18 termino
    60          | expresion . OP_REST $@19 termino
-   80 expresiones: expresion .
-   82            | expresion . $@26 PUNTO_Y_COMA expresiones
+   82 expresiones: expresion .
+   84            | expresion . $@28 PUNTO_Y_COMA expresiones
 
     OP_SUM   desplazar e ir al estado 66
     OP_REST  desplazar e ir al estado 67
 
-    PUNTO_Y_COMA  reduce usando la regla 81 ($@26)
-    $default      reduce usando la regla 80 (expresiones)
+    PUNTO_Y_COMA  reduce usando la regla 83 ($@28)
+    $default      reduce usando la regla 82 (expresiones)
 
-    $@26  ir al estado 127
+    $@28  ir al estado 127
 
 
 estado 121
 
-   79 lista_expresiones: CORCHETE_I expresiones . CORCHETE_F
+   81 lista_expresiones: CORCHETE_I expresiones . CORCHETE_F
 
     CORCHETE_F  desplazar e ir al estado 128
 
 
 estado 122
 
-   78 inlist: INLIST $@24 PARENTESIS_I ID $@25 PUNTO_Y_COMA lista_expresiones PARENTESIS_F .
+   80 inlist: INLIST $@26 PARENTESIS_I ID $@27 PUNTO_Y_COMA lista_expresiones PARENTESIS_F .
 
-    $default  reduce usando la regla 78 (inlist)
+    $default  reduce usando la regla 80 (inlist)
 
 
 estado 123
@@ -1532,31 +1543,23 @@ estado 125
 
 estado 126
 
-   75 rango: CORCHETE_I expresion PUNTO_Y_COMA . expresion CORCHETE_F
+   77 rango: CORCHETE_I expresion $@24 . PUNTO_Y_COMA expresion $@25 CORCHETE_F
 
-    CTE_INT       desplazar e ir al estado 36
-    CTE_FLOAT     desplazar e ir al estado 37
-    CTE_STRING    desplazar e ir al estado 38
-    ID            desplazar e ir al estado 39
-    PARENTESIS_I  desplazar e ir al estado 41
-
-    expresion  ir al estado 131
-    termino    ir al estado 47
-    factor     ir al estado 48
+    PUNTO_Y_COMA  desplazar e ir al estado 131
 
 
 estado 127
 
-   82 expresiones: expresion $@26 . PUNTO_Y_COMA expresiones
+   84 expresiones: expresion $@28 . PUNTO_Y_COMA expresiones
 
     PUNTO_Y_COMA  desplazar e ir al estado 132
 
 
 estado 128
 
-   79 lista_expresiones: CORCHETE_I expresiones CORCHETE_F .
+   81 lista_expresiones: CORCHETE_I expresiones CORCHETE_F .
 
-    $default  reduce usando la regla 79 (lista_expresiones)
+    $default  reduce usando la regla 81 (lista_expresiones)
 
 
 estado 129
@@ -1591,18 +1594,22 @@ estado 130
 
 estado 131
 
-   58 expresion: expresion . OP_SUM $@18 termino
-   60          | expresion . OP_REST $@19 termino
-   75 rango: CORCHETE_I expresion PUNTO_Y_COMA expresion . CORCHETE_F
+   77 rango: CORCHETE_I expresion $@24 PUNTO_Y_COMA . expresion $@25 CORCHETE_F
 
-    OP_SUM      desplazar e ir al estado 66
-    OP_REST     desplazar e ir al estado 67
-    CORCHETE_F  desplazar e ir al estado 135
+    CTE_INT       desplazar e ir al estado 36
+    CTE_FLOAT     desplazar e ir al estado 37
+    CTE_STRING    desplazar e ir al estado 38
+    ID            desplazar e ir al estado 39
+    PARENTESIS_I  desplazar e ir al estado 41
+
+    expresion  ir al estado 135
+    termino    ir al estado 47
+    factor     ir al estado 48
 
 
 estado 132
 
-   82 expresiones: expresion $@26 PUNTO_Y_COMA . expresiones
+   84 expresiones: expresion $@28 PUNTO_Y_COMA . expresiones
 
     CTE_INT       desplazar e ir al estado 36
     CTE_FLOAT     desplazar e ir al estado 37
@@ -1647,35 +1654,56 @@ estado 134
 
 estado 135
 
-   75 rango: CORCHETE_I expresion PUNTO_Y_COMA expresion CORCHETE_F .
+   58 expresion: expresion . OP_SUM $@18 termino
+   60          | expresion . OP_REST $@19 termino
+   77 rango: CORCHETE_I expresion $@24 PUNTO_Y_COMA expresion . $@25 CORCHETE_F
 
-    $default  reduce usando la regla 75 (rango)
+    OP_SUM   desplazar e ir al estado 66
+    OP_REST  desplazar e ir al estado 67
+
+    $default  reduce usando la regla 76 ($@25)
+
+    $@25  ir al estado 138
 
 
 estado 136
 
-   82 expresiones: expresion $@26 PUNTO_Y_COMA expresiones .
+   84 expresiones: expresion $@28 PUNTO_Y_COMA expresiones .
 
-    $default  reduce usando la regla 82 (expresiones)
+    $default  reduce usando la regla 84 (expresiones)
 
 
 estado 137
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion . PARENTESIS_F $@13 bloque ELSE $@14 bloque
 
-    PARENTESIS_F  desplazar e ir al estado 138
+    PARENTESIS_F  desplazar e ir al estado 139
 
 
 estado 138
+
+   77 rango: CORCHETE_I expresion $@24 PUNTO_Y_COMA expresion $@25 . CORCHETE_F
+
+    CORCHETE_F  desplazar e ir al estado 140
+
+
+estado 139
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F . $@13 bloque ELSE $@14 bloque
 
     $default  reduce usando la regla 38 ($@13)
 
-    $@13  ir al estado 139
+    $@13  ir al estado 141
 
 
-estado 139
+estado 140
+
+   77 rango: CORCHETE_I expresion $@24 PUNTO_Y_COMA expresion $@25 CORCHETE_F .
+
+    $default  reduce usando la regla 77 (rango)
+
+
+estado 141
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 . bloque ELSE $@14 bloque
 
@@ -1687,7 +1715,7 @@ estado 139
     WRITE       desplazar e ir al estado 11
     COMENTARIO  desplazar e ir al estado 12
 
-    bloque              ir al estado 140
+    bloque              ir al estado 142
     lista_sentencias    ir al estado 14
     sentencia           ir al estado 15
     asignacion          ir al estado 16
@@ -1698,23 +1726,23 @@ estado 139
     bloque_declaracion  ir al estado 21
 
 
-estado 140
+estado 142
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque . ELSE $@14 bloque
 
-    ELSE  desplazar e ir al estado 141
+    ELSE  desplazar e ir al estado 143
 
 
-estado 141
+estado 143
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE . $@14 bloque
 
     $default  reduce usando la regla 39 ($@14)
 
-    $@14  ir al estado 142
+    $@14  ir al estado 144
 
 
-estado 142
+estado 144
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE $@14 . bloque
 
@@ -1726,7 +1754,7 @@ estado 142
     WRITE       desplazar e ir al estado 11
     COMENTARIO  desplazar e ir al estado 12
 
-    bloque              ir al estado 143
+    bloque              ir al estado 145
     lista_sentencias    ir al estado 14
     sentencia           ir al estado 15
     asignacion          ir al estado 16
@@ -1737,7 +1765,7 @@ estado 142
     bloque_declaracion  ir al estado 21
 
 
-estado 143
+estado 145
 
    40 resto: bloque $@11 ELSIF $@12 PARENTESIS_I condicion PARENTESIS_F $@13 bloque ELSE $@14 bloque .
 

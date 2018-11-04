@@ -417,19 +417,19 @@
 							{
 								case condicionIf:
 									switch(topeDePila(&pilaIf)->andOr){
-									case and:
-										topeDePila(&pilaIf)->salto2=contadorPolaca+1;
-										ponerEnPolaca(&polaca,"CMP");
-										ponerEnPolaca(&polaca,"");
-										ponerEnPolaca(&polaca,obtenerSalto(inverso));
-										break;
+										case and:
+											topeDePila(&pilaIf)->salto2=contadorPolaca+1;
+											ponerEnPolaca(&polaca,"CMP");
+											ponerEnPolaca(&polaca,"");
+											ponerEnPolaca(&polaca,obtenerSalto(inverso));
+											break;
 
-									case or:
-										topeDePila(&pilaIf)->salto2=contadorPolaca+1;
-										ponerEnPolaca(&polaca,"CMP");
-										ponerEnPolaca(&polaca,"");
-										ponerEnPolaca(&polaca,obtenerSalto(normal));
-										break;
+										case or:
+											topeDePila(&pilaIf)->salto2=contadorPolaca+1;
+											ponerEnPolaca(&polaca,"CMP");
+											ponerEnPolaca(&polaca,"");
+											ponerEnPolaca(&polaca,obtenerSalto(normal));
+											break;
 									}
 									break;
 
@@ -906,6 +906,7 @@
 						PARENTESIS_I ID
 						{
 							printf("id paramBetween\n");
+							paramBetween = atof($<cadena>3);
 						}
 						COMA rango PARENTESIS_F
 						{
@@ -913,9 +914,24 @@
 						}
 	;
 
-	rango:				CORCHETE_I expresion PUNTO_Y_COMA expresion CORCHETE_F
+	rango:				CORCHETE_I expresion
 						{
-							printf("rango\n");
+							printf("limite inferior de rango\n");
+							topeDePila(&pilaBetween)->salto1=contadorPolaca+1;
+							ponerEnPolaca(&polaca,"CMP");
+							ponerEnPolaca(&polaca,"");
+							ponerEnPolaca(&polaca,"BLT");
+						}
+						PUNTO_Y_COMA expresion
+						{
+							printf("limite superior de rango\n");
+							ponerEnPolaca(&polaca,"CMP");
+							ponerEnPolaca(&polaca,"");
+							ponerEnPolaca(&polaca,"BGT");							
+						}
+						CORCHETE_F
+						{
+							sacarDePila(&pilaBetween);
 						}
 	;
 
@@ -940,6 +956,7 @@
 						PARENTESIS_I ID
 						{
 							printf("id paramInList\n");
+							paramInList = atof($<cadena>3);
 						}
 						PUNTO_Y_COMA lista_expresiones PARENTESIS_F
 						{
@@ -962,12 +979,14 @@
 
 	expresiones: 		expresion
 						{
-							
+							ponerEnPolaca(&polaca, "CMP");
+							ponerEnPolaca(&polaca, "BEQ");
 						}
 	|
 						expresion
 						{
-							
+							ponerEnPolaca(&polaca, "CMP");
+							ponerEnPolaca(&polaca, "BEQ");
 						}
 						PUNTO_Y_COMA expresiones
 						{
