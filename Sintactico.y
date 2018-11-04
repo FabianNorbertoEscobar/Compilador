@@ -243,17 +243,17 @@
 
 	start: 				programa
 						{
-							printf("COMPILACION EXITOSA\n");
+							printf("\nCOMPILACION EXITOSA\n");
 						}
 
 	programa:			INICIO_PROGRAMA
 						{
-							printf("inicio del programa\n");
+							printf("\ninicio del programa\n\n");
 						}
 						bloque
 						FIN_PROGRAMA
 						{
-							printf("fin del programa\n");
+							printf("\nfin del programa\n");
 	             		}
 	;
 
@@ -265,7 +265,7 @@
 	
 	lista_sentencias: 	sentencia
 						{
-
+							
 						}
 	|					
 						lista_sentencias sentencia
@@ -417,19 +417,19 @@
 							{
 								case condicionIf:
 									switch(topeDePila(&pilaIf)->andOr){
-										case and:
-											topeDePila(&pilaIf)->salto2=contadorPolaca+1;
-											ponerEnPolaca(&polaca,"CMP");
-											ponerEnPolaca(&polaca,"");
-											ponerEnPolaca(&polaca,obtenerSalto(inverso));
-											break;
+									case and:
+										topeDePila(&pilaIf)->salto2=contadorPolaca+1;
+										ponerEnPolaca(&polaca,"CMP");
+										ponerEnPolaca(&polaca,"");
+										ponerEnPolaca(&polaca,obtenerSalto(inverso));
+										break;
 
-										case or:
-											topeDePila(&pilaIf)->salto2=contadorPolaca+1;
-											ponerEnPolaca(&polaca,"CMP");
-											ponerEnPolaca(&polaca,"");
-											ponerEnPolaca(&polaca,obtenerSalto(normal));
-											break;
+									case or:
+										topeDePila(&pilaIf)->salto2=contadorPolaca+1;
+										ponerEnPolaca(&polaca,"CMP");
+										ponerEnPolaca(&polaca,"");
+										ponerEnPolaca(&polaca,obtenerSalto(normal));
+										break;
 									}
 									break;
 
@@ -681,7 +681,7 @@
 
 	declaraciones:		declaraciones lista_id_y_tipo
 						{
-							printf("múltiple\n");
+							printf("multiple\n");
 						}
 	|
 						lista_id_y_tipo
@@ -720,7 +720,7 @@
 	tipodato: 			INTEGER
 						{
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
-							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
+							printf("Tipo de a: ");
 							if(strcmp("sin tipo",(const char*)obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
 								tablaVariables[posicion].tipo=tipoInt;
@@ -735,7 +735,7 @@
 	|					FLOAT
 						{
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
-							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
+							printf("Tipo de a: ");
 							if(strcmp("sin tipo",(const char*)obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
 								tablaVariables[posicion].tipo=tipoFloat;
@@ -750,7 +750,7 @@
 	|					STRING
 						{	
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
-							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
+							printf("Tipo de a: ");
 							if(strcmp("sin tipo",(const char*)obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
 								tablaVariables[posicion].tipo=tipoString;
@@ -1000,15 +1000,25 @@ int main(int argc,char *argv[])
 	}
 	fclose(yyin);
 
+	printf("\nANALIZADOR LEXICO GENERADO\n");
+	printf("\nANALIZADOR SINTACTICO GENERADO\n");
+
+	grabarTiraDeTokens();
+	printf("\nTIRA DE TOKENS GENERADA\n");
+
 	grabarTablaDeSimbolos(0);
+	printf("\nTABLA DE SIMBOLOS GENERADA\n");
 
 	vaciarPila(&pilaIf);
 	vaciarPila(&pilaWhile);
 	vaciarPila(&pilaBetween);
 	vaciarPila(&pilaInList);
 
-	generar_assembler(&polaca);
 	guardarPolaca(&polaca);
+	printf("\nPOLACA INVERSA GENERADA\n");
+
+	generar_assembler(&polaca);
+	printf("\nASSEMBLER GENERADO\n");
 
   	return 0;
 }
@@ -1715,8 +1725,6 @@ void generar_assembler(t_polaca *pp)
 		// fin del archivo
 		fprintf(pf,"\nend");
 		fclose(pf);
-
-		printf("\n--ASSEMBLER GENERADO--\n");
 	}
 
 	int buscarEnTablaDeSimbolosASM(enum sectorTabla sector, char* objetivo)

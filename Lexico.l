@@ -62,6 +62,7 @@
 
 	char* cortarCadena(char*, int);
 	char* reemplazarCaracter(char const * const,  char const * const,  char const * const);
+	void grabarTiraDeTokens();
 	void grabarTablaDeSimbolos(int);
 	void insertarEnTablaDeSimbolos(enum sectorTabla, enum tipoDato,char*);
 	char* normalizar(char*);
@@ -448,7 +449,8 @@ char * reemplazarCaracter(char const * const original,  char const * const patte
 	return returned;
 }
 
-char * cortarCadena(char* cad, int tam){
+char * cortarCadena(char* cad, int tam)
+{
 	if(strlen(cad)>tam)
 	{
 		cad[tam]='\0';
@@ -456,8 +458,8 @@ char * cortarCadena(char* cad, int tam){
 	return cad;
 }
 
-void grabarTablaDeSimbolos(int error){
-
+void grabarTiraDeTokens()
+{
 	FILE*pt=fopen("tiraDeTokens.txt","w+");
 	
 	if(!pt)
@@ -468,7 +470,10 @@ void grabarTablaDeSimbolos(int error){
 	
 	fprintf(pt,"%s",tiraDeTokens);
 	fclose(pt);
-	
+}
+
+void grabarTablaDeSimbolos(int error)
+{
 	FILE*pf=fopen("ts.txt","w+");
 	int i;
 	

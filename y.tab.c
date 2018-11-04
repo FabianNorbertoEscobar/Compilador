@@ -1742,7 +1742,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 245 "Sintactico.y"
     {
-							printf("COMPILACION EXITOSA\n");
+							printf("\nCOMPILACION EXITOSA\n");
 						}
     break;
 
@@ -1751,7 +1751,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 250 "Sintactico.y"
     {
-							printf("inicio del programa\n");
+							printf("\ninicio del programa\n\n");
 						}
     break;
 
@@ -1760,7 +1760,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 255 "Sintactico.y"
     {
-							printf("fin del programa\n");
+							printf("\nfin del programa\n");
 	             		}
     break;
 
@@ -1778,7 +1778,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 267 "Sintactico.y"
     {
-
+							
 						}
     break;
 
@@ -2005,19 +2005,19 @@ yyreduce:
 							{
 								case condicionIf:
 									switch(topeDePila(&pilaIf)->andOr){
-										case and:
-											topeDePila(&pilaIf)->salto2=contadorPolaca+1;
-											ponerEnPolaca(&polaca,"CMP");
-											ponerEnPolaca(&polaca,"");
-											ponerEnPolaca(&polaca,obtenerSalto(inverso));
-											break;
+									case and:
+										topeDePila(&pilaIf)->salto2=contadorPolaca+1;
+										ponerEnPolaca(&polaca,"CMP");
+										ponerEnPolaca(&polaca,"");
+										ponerEnPolaca(&polaca,obtenerSalto(inverso));
+										break;
 
-										case or:
-											topeDePila(&pilaIf)->salto2=contadorPolaca+1;
-											ponerEnPolaca(&polaca,"CMP");
-											ponerEnPolaca(&polaca,"");
-											ponerEnPolaca(&polaca,obtenerSalto(normal));
-											break;
+									case or:
+										topeDePila(&pilaIf)->salto2=contadorPolaca+1;
+										ponerEnPolaca(&polaca,"CMP");
+										ponerEnPolaca(&polaca,"");
+										ponerEnPolaca(&polaca,obtenerSalto(normal));
+										break;
 									}
 									break;
 
@@ -2359,7 +2359,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 683 "Sintactico.y"
     {
-							printf("múltiple\n");
+							printf("multiple\n");
 						}
     break;
 
@@ -2411,7 +2411,7 @@ yyreduce:
 #line 721 "Sintactico.y"
     {
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
-							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
+							printf("Tipo de a: ");
 							if(strcmp("sin tipo",(const char*)obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
 								tablaVariables[posicion].tipo=tipoInt;
@@ -2431,7 +2431,7 @@ yyreduce:
 #line 736 "Sintactico.y"
     {
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
-							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
+							printf("Tipo de a: ");
 							if(strcmp("sin tipo",(const char*)obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
 								tablaVariables[posicion].tipo=tipoFloat;
@@ -2451,7 +2451,7 @@ yyreduce:
 #line 751 "Sintactico.y"
     {	
 							int posicion=buscarEnTablaDeSimbolos(sectorVariables,yylval.cadena);
-							printf("Tipo de a: %s", obtenerTipo(sectorVariables, tablaVariables[posicion].tipo));
+							printf("Tipo de a: ");
 							if(strcmp("sin tipo",(const char*)obtenerTipo(sectorVariables, tablaVariables[posicion].tipo)) == 0)
 							{
 								tablaVariables[posicion].tipo=tipoString;
@@ -3015,15 +3015,25 @@ int main(int argc,char *argv[])
 	}
 	fclose(yyin);
 
+	printf("\nANALIZADOR LEXICO GENERADO\n");
+	printf("\nANALIZADOR SINTACTICO GENERADO\n");
+
+	grabarTiraDeTokens();
+	printf("\nTIRA DE TOKENS GENERADA\n");
+
 	grabarTablaDeSimbolos(0);
+	printf("\nTABLA DE SIMBOLOS GENERADA\n");
 
 	vaciarPila(&pilaIf);
 	vaciarPila(&pilaWhile);
 	vaciarPila(&pilaBetween);
 	vaciarPila(&pilaInList);
 
-	generar_assembler(&polaca);
 	guardarPolaca(&polaca);
+	printf("\nPOLACA INVERSA GENERADA\n");
+
+	generar_assembler(&polaca);
+	printf("\nASSEMBLER GENERADO\n");
 
   	return 0;
 }
@@ -3730,8 +3740,6 @@ void generar_assembler(t_polaca *pp)
 		// fin del archivo
 		fprintf(pf,"\nend");
 		fclose(pf);
-
-		printf("\n--ASSEMBLER GENERADO--\n");
 	}
 
 	int buscarEnTablaDeSimbolosASM(enum sectorTabla sector, char* objetivo)

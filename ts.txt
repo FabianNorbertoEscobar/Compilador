@@ -1,4 +1,4 @@
 NOMBRE                          |	TIPO           |	VALOR                           |	LONGITUD     |	LIMITE       
 
-
-**** TABLA INCOMPLETA (ERROR DE COMPILACION) ****
+_a                              |	int            |	----------------------------    |	----------   |	----------   
+_5                              |	CTE_INT        |	5                               |	----------   |	----------   
