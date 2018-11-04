@@ -1,0 +1,81 @@
+<start>					::=	<programa>
+
+<programa> 				::= INICIO_PROGRAMA <bloque> FIN_PROGRAMA
+				
+<bloque> 				::= <lista_sentencias>
+
+<lista_sentencias>		::=	<sentencia> |
+						<lista_sentencias> <sentencia>
+
+<sentencia>				::= <bloque_declaracion> |
+						<asignacion> |
+						<lectura> |
+						<escritura> |
+						<iteracion> |
+						<seleccion> |
+						COMENTARIO
+						
+<asignacion> 			::=	ID OP_ASIG <expresion>
+
+<iteracion> 			::= WHILE PARENTESIS_I <condicion> PARENTESIS_F DO <bloque> ENDWHILE
+
+<seleccion>				::= IF PARENTESIS_I	<condicion> PARENTESIS_F DO <resto> ENDIF
+
+<condicion>				::= <comparacion> |
+						<comparacion> <and_or> <comparacion> |
+						OP_NOT <comparacion> |
+						<between> |
+						<inlist>
+
+<comparacion> 			::= <expresion> COMPARADOR <expresion>
+
+<and_or>				::= OP_AND |
+						OP_OR
+
+<resto>					::= <bloque> |
+						<bloque> ELSE <bloque> 	
+						<bloque> ELSIF PARENTESIS_I <condicion> PARENTESIS_F ELSE <bloque>
+
+<lectura>				::= READ ID
+
+<escritura> 			::=	WRITE ID |
+						WRITE CTE_STRING
+
+<bloque_declaracion>	::= DECVAR <declaraciones> ENDDEC
+
+<declaraciones>			::= <declaraciones> <lista_id_y_tipo> |
+						<lista_id_y_tipo>
+
+<lista_id_y_tipo>		::=	<var_dec> COMA <lista_id_y_tipo> |
+						<var_dec> OP_DEC <tipodato>
+
+<var_dec>				::=	ID |
+						ID PARENTESIS_I CTE_INT PARENTESIS_F
+
+<tipodato>				::= INTEGER |
+						FLOAT |
+						STRING
+
+<expresion>				::=	<expresion> OP_SUM <termino> |
+						<expresion> OP_REST <termino> |
+						<termino>
+
+<termino>				::= <termino> OP_MULT <factor> |
+						<termino> OP_DIV <factor> |
+						<factor>
+
+<factor>				::= CTE_INT |
+						CTE_FLOAT |
+						CTE_STRING |
+						ID
+
+<between>				::= BETWEEN PARENTESIS_I ID COMA <rango> PARENTESIS_F
+
+<rango>					::= CORCHETE_I <expresion> PUNTO_Y_COMA <expresion> CORCHETE_F
+
+<inlist>				::=	INLIST PARENTESIS_I ID PUNTO_Y_COMA <lista_expresiones> PARENTESIS_F
+
+<lista_expresiones>		::=	CORCHETE_I <expresiones> CORCHETE_F
+
+<expresiones>			::= <expresion> |
+						<expresion> PUNTO_Y_COMA <expresiones>

@@ -510,6 +510,12 @@
 						}
 	;
 
+	comparacion : 		expresion COMPARADOR expresion
+						{
+							strcpy(ultimoComparador,$<cadena>2);
+						}
+	;
+
 	and_or:				OP_AND
 						{
 							if(tipoCondicion==condicionIf)
@@ -534,16 +540,15 @@
 						}
 	;
 
-	comparacion : expresion COMPARADOR expresion {strcpy(ultimoComparador,$<cadena>2);}
-	;
-
 	resto:				bloque
 						{
 							printf("if true\n");
 							char aux[10];
 					 		sprintf(aux,"$endif_%d",topeDePila(&pilaIf)->nro);
 					 		if(topeDePila(&pilaIf)->andOr==and||topeDePila(&pilaIf)->andOr==or)
+					 		{
 					 			ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto2,aux);
+					 		}
 					 		ponerEnPolacaNro(&polaca,topeDePila(&pilaIf)->salto1,aux);
 						}
 	|
